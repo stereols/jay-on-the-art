@@ -1,0 +1,171 @@
+/* Canonical Jay. SVGs and the reference's display / section / body hierarchy. */
+:root{--paper:#F6F1E8;--ink:#182525;--muted:#656565;--body:#515151;--primary:#FF616B;--primary-ink:var(--ink);--primary-soft:#fff0f1;--teal:var(--ink);--pad-left:calc(var(--pad,5.5vw) * 2);--type-display:clamp(40px,4.4vw,66px);--type-section:clamp(28px,2.6vw,38px);--type-card:clamp(22px,2vw,30px);--type-body:15px;--type-intro:22px}
+::selection{background:#ffd7dc;color:#182525}
+.brand{display:block;flex:none;padding:0;border-radius:0;line-height:0}
+.brand-logo{display:block;height:auto;width:100%;font-style:normal}
+.brand-logo .logo-ink{fill:currentColor}.brand-logo .logo-dot{fill:var(--primary)}
+.brand,.brand:hover,.footer-mark,.footer-mark:hover,.hero-brand,.resume-brand{color:var(--ink)}
+.brand .logo-horizontal{width:210px}.brand .logo-stacked{display:none}
+.dark-chapter .topbar .brand{background:transparent;padding:0;color:var(--paper)}
+.hero .hero-brand{width:clamp(300px,30vw,450px);font-size:0;line-height:0;letter-spacing:0;margin:0}
+.hero-brand .logo-stacked{display:block;width:100%;height:auto}
+.hero-name{margin-top:8px}
+.footer-mark{display:block;line-height:0;flex:none}.footer-mark .logo-horizontal{width:225px}.footer-mark .logo-stacked{display:none}
+.topbar,.hero,.section-pad,.pov-pin,.career-project,.career-project:nth-child(even),.lab-pin{padding-left:var(--pad-left)}
+.page-grid{left:var(--pad-left)}
+.hero-foot{left:var(--pad-left)}
+.hero-divider{width:calc(100vw - var(--pad-left) - var(--pad))}
+.pov-film-title{left:var(--pad-left)!important}
+.motion-layout .pov-pin{padding-left:var(--pad-left)}
+.journey-intro h2{font-size:var(--type-display);font-weight:650;line-height:1.35}
+.statement{font-size:clamp(40px,4.1vw,62px);font-weight:650;line-height:1.4}
+.special-intro>h2{font-size:var(--type-display);font-weight:650;line-height:1.4}
+.passage-heading{padding-left:var(--pad-left)}.passage-heading h2{font-size:clamp(45px,5vw,76px);font-weight:650;line-height:1.4}
+.passage-orbit span{left:var(--pad-left)}
+.career-heading h2,.lab-heading h2{font-size:clamp(38px,3.8vw,58px);font-weight:650;line-height:1.4}
+.closing h2{font-size:clamp(38px,4.1vw,62px);font-weight:650;line-height:1.4}
+.tile-wall-heading h2{font-size:clamp(30px,3vw,44px);font-weight:700;line-height:1.4}
+.hero-role,.hero-description,.pov-description,.journey-intro>p,.special-description p:not(.eyebrow),.career-content p,.about-copy>p:not(.eyebrow):not(.lead){font-size:var(--type-body);line-height:1.95}
+.career-content h3,.project-caption h3{font-weight:700}.process-list h3{font-size:var(--type-card);font-weight:700;line-height:1.5}
+.career-item{grid-template-columns:200px minmax(0,1fr);gap:32px}
+.lab-heading h2,.career-heading h2{letter-spacing:-.055em}
+.about .profile-name{font-size:32px;font-weight:750}.about-copy .lead{font-size:clamp(22px,2.1vw,30px);line-height:1.75}
+.read-progress span,.discover-progress span,.workflow-path span{background:var(--primary)}
+.process-list li.is-reached .workflow-node{background:var(--primary);color:#182525!important;box-shadow:0 0 0 5px #ff616b1c}
+.map-grid a[aria-current=true]{font-weight:800}
+.hotspot.is-active{background:var(--primary);color:#182525;box-shadow:0 0 0 5px #ff616b33}.step-nav button.is-active{color:var(--primary-ink);border-bottom-color:var(--primary)}
+a:focus-visible,button:focus-visible,summary:focus-visible{outline-color:var(--ink)}
+footer{padding-left:var(--pad-left)}
+.discover-heading{padding-left:var(--pad-left)}.discover-window{padding-left:var(--pad-left)}.discover-progress{margin-left:var(--pad-left)}
+.discover-intro{padding-left:var(--pad-left)}
+.world-tiles{padding-left:var(--pad-left)}
+@media(min-width:761px){
+ .motion-layout .journey-intro{padding-left:var(--pad-left)}.motion-layout .journey-intro h2{font-size:var(--type-display)}
+ .motion-layout .world-tiles{padding-left:var(--pad-left);padding-right:var(--pad)}
+ .motion-layout .tile-wall-heading{width:100%;max-width:1240px;align-self:flex-start}
+ .motion-layout .tile-board{width:min(100%,calc((100svh - 350px) * 2.17),1240px);align-self:flex-start}
+ .motion-layout .career-project-copy{left:calc(var(--pad) * 1.45);width:min(27vw,420px);padding:clamp(22px,3vw,45px)}
+ .motion-layout .career-project h3{font-size:clamp(25px,2.6vw,40px)}
+ .motion-layout .lab-pin{padding-left:var(--pad-left)}
+ .motion-layout .discover-intro{left:var(--pad-left);right:var(--pad);padding:0}
+ .motion-layout .discover-heading h2{font-weight:500}
+ .motion-layout .discover-intro .feature-heading h2{font-size:32px;font-weight:700}
+}
+@media(min-width:761px) and (max-height:740px){.motion-layout .tile-board{width:min(100%,calc((100svh - 300px) * 2.17))}}
+@media(max-width:1100px) and (min-width:761px){.brand .logo-horizontal{width:185px}.career-item{grid-template-columns:150px minmax(0,1fr);gap:25px}.desktop-nav{gap:20px;margin-right:0}}
+@media(max-width:760px){
+ :root{--type-display:clamp(34px,8.2vw,46px);--type-body:14px;--type-intro:18px}
+ .brand .logo-horizontal{display:none}.brand .logo-stacked{display:block;width:84px}
+ .topbar{gap:12px;padding-left:var(--pad-left)}.topbar.is-scrolled{padding-block:12px}
+ .dark-chapter .topbar .brand{padding:0}
+ .hero{padding-top:225px;min-height:940px}.hero .hero-brand{width:min(100%,290px)}.hero-name{margin-top:7px}
+ .hero-foot{left:var(--pad-left);bottom:155px}.hero-actions{gap:9px}.hero-actions .quiet-link{margin-left:0}
+ .statement{font-size:34px;line-height:1.45}.journey-intro h2,.special-intro>h2{font-size:var(--type-display)}
+ .passage-heading h2{font-size:38px}.career-heading h2,.lab-heading h2,.closing h2{font-size:34px}
+ .tile-wall-heading h2{font-size:27px}.tile-wall-heading>p:last-child{font-size:12px}
+ .career-project,.career-project:nth-child(even){padding-left:var(--pad-left)}
+ .career-item{display:block}.project-company{flex-direction:column;gap:6px;align-items:flex-start}
+ .motion-layout .pov-pin,.motion-layout .lab-pin{padding-left:var(--pad-left)}
+ .discover-heading .discover-subtitle{max-width:none;font-size:12px}
+ .discover-intro .feature-heading h2{font-size:30px;font-weight:700}.discover-intro .feature-heading-copy p{font-size:13px}
+ .footer-mark .logo-horizontal{display:none}.footer-mark .logo-stacked{display:block;width:110px}
+ footer{column-gap:24px;row-gap:20px}.back-top{width:100%;margin-left:0}
+ .about-copy .lead{font-size:22px}.about .profile-name{font-size:28px}
+}
+/* The separate resume retains its document typography and gains the canonical logo. */
+.resume-brand{width:190px;line-height:0!important;font-size:0!important;letter-spacing:0!important}.resume-brand .logo-stacked{display:block}
+.resume-page .resume-topbar{padding-left:10vw}.resume-page .brand .logo-horizontal{width:200px}
+@media(max-width:760px){.resume-page .brand .logo-stacked{width:80px}.resume-page .resume-topbar{gap:15px;padding-left:10vw}.resume-page .resume-brand{width:175px}.resume-page .resume-topbar nav{display:none}}
+@media(max-width:500px){.resume-page .back-link{display:none}.resume-page .header-actions{gap:10px}}
+@media print{.hero .hero-brand{width:240px}.footer-mark .logo-horizontal{width:140px}.resume-brand{width:130px}.resume-page .resume-topbar{display:none}}
+
+/* Warm daylight surfaces; dark passages and video surfaces keep their own paint. */
+body,.cosmos{background:var(--paper)}
+.cosmos-fallback{background-image:linear-gradient(90deg,rgba(246,241,232,.98) 2%,rgba(246,241,232,.1) 70%),url('assets/aj-living-cosmos-keyframe-temp.webp')}
+.cosmos-wash{background:rgba(246,241,232,calc(1 - var(--scene-dark,0)))}
+.topbar.is-scrolled,.resume-topbar{background:rgba(246,241,232,.92)}
+.dark-chapter .topbar,.dark-chapter .topbar.is-scrolled{background:rgba(15,21,38,.76);color:var(--paper)}
+.dark-chapter .desktop-nav{color:var(--paper)}
+.mobile-nav{background:var(--paper)}
+.topbar .resume-link{background:rgba(246,241,232,.5)}
+.topbar .resume-link:hover{background:var(--ink);color:var(--paper)}
+.dark-chapter .topbar .resume-link{background:#ffffff08;border-color:#ffffff33}
+.dark-chapter .topbar .resume-link:hover{background:var(--paper);color:var(--ink)}
+.journey-intro{background:linear-gradient(transparent,rgba(246,241,232,.93))}
+.career-journey{background:rgba(246,241,232,.86)}
+.world-tiles,.project-card{background:var(--paper)}
+.project-card{border-color:var(--line)}
+.discover{background:var(--paper)}
+.modular-detail{background:rgba(246,241,232,.85)}
+.career{background:linear-gradient(#F6F1E8bb,#F6F1E8de 65%,#F6F1E877)}
+.lab{background:#F6F1E8cc}
+.about{background:linear-gradient(145deg,#F6F1E8f5,#F6F1E8d9)}
+.closing{background:linear-gradient(#F6F1E880,#F6F1E8e6)}
+footer{background:#F6F1E8eb}
+.scene-location{background:#F6F1E8ad}
+#motion-toggle{background:#F6F1E8d9}
+#map-toggle{background:#F6F1E8e8}
+#map-panel{background:#F6F1E8f5}
+.workflow-node{background:var(--paper)}
+.no-motion .experience-passage{background:#F6F1E8b0}
+html:not(.js-enabled) .experience-passage{background:var(--paper)}
+@media(min-width:761px){
+ .motion-layout .worlds-pin{background:rgba(246,241,232,var(--world-veil,.06))}
+ .motion-layout .journey-intro,.motion-layout .world-tiles,.motion-layout .career-journey{background:transparent}
+ .motion-layout .career-project-copy{background:#F6F1E8f5;border-color:var(--line)}
+ .motion-layout .discover{background:linear-gradient(#F6F1E8ed 0%,#F6F1E8df 86%,#F6F1E800)}
+ .worlds-navigation button{background:#F6F1E8dd}
+}
+@media(max-width:760px){
+ .cosmos-fallback{background-image:linear-gradient(180deg,#F6F1E8d9 10%,#F6F1E85e 65%),url('assets/aj-living-cosmos-keyframe-temp.webp')}
+}
+
+/* Neutral reading colors; the accent belongs to dots, progress and interaction. */
+.statement span,.feature-heading h2 span,.journey-intro h2 span,.special-intro>h2 span,
+.aelin-copy h2 span,.passage-heading h2 span,.career-heading h2 span,.lab-heading h2 span,
+.about h2 span,.closing h2 span{color:inherit}
+.hero-description,.hero-orbit-caption,.pov-description,.journey-intro>p,.tile-wall-heading>p:last-child,
+.discover-heading .discover-subtitle,.career-heading>p,.lab-heading>p,.lab-intro,
+.about-copy>p:not(.eyebrow):not(.lead),.project-copy,.project-subtitle,.project-tech,
+.career-period,.career-content p,.career-skills p,.source-note,.profile-portrait figcaption,
+.scene-location,.concept-label,.inline-meta,.project-caption .eyebrow,.process-list .eyebrow,
+.career-project-copy>.eyebrow,.step-story>span{color:var(--muted)}
+.career-content b,.process-list li.is-reached h3,.step-nav button.is-active,
+.step-nav button.is-active span{color:var(--ink)}
+.credit{color:var(--muted)!important}
+.practice .special-description p:not(.eyebrow),.practice .special-title p{color:#d1d1ce}
+.dark-chapter .scene-location{background:#101d2bcc;color:#ededeb}
+.dark-chapter #motion-toggle,.dark-chapter #map-toggle{background:#172239e6;color:#ededeb}
+
+/* Enlarge headline introductions only, leaving facts, credits and controls intact. */
+.hero-role,.hero-description,.pov-description,.journey-intro>p,
+.tile-wall-heading>p:last-child,.discover-heading .discover-subtitle,
+.special-description p:not(.eyebrow),.career-heading>p,.lab-heading>p,.lab-intro,
+.about-copy>p:not(.eyebrow):not(.lead):not(.profile-affiliation){font-size:var(--type-intro);line-height:1.8;word-break:keep-all}
+.about-copy .lead{font-size:38px;line-height:1.65;word-break:keep-all}
+@media(max-width:760px){.about-copy .lead{font-size:28px}}
+.motion-layout .tile-wall-heading>p:last-child{font-size:var(--type-intro)}
+.discover-heading .discover-subtitle{max-width:30ch;min-width:0}
+
+/* Text links share a hover underline. Logos, artwork links and header Resume are exceptions. */
+body a:not(.brand):not(.footer-mark):not(.project-image):not(.world-tile):not(.resume-link){
+ background:transparent;border:0;border-radius:0;box-shadow:none;color:inherit;
+ text-decoration-line:underline;text-decoration-color:transparent;text-decoration-thickness:1px;
+ text-underline-offset:.25em;text-decoration-skip-ink:auto;
+ transition:color .2s,text-decoration-color .2s;
+}
+body a:not(.brand):not(.footer-mark):not(.project-image):not(.world-tile):not(.resume-link):is(:hover,:focus-visible){color:var(--primary);text-decoration-color:var(--primary)}
+body a:not(.brand):not(.footer-mark):not(.project-image):not(.world-tile):not(.resume-link)>:is(span,small){text-decoration:inherit}
+body a:not(.brand):not(.footer-mark):not(.project-image):not(.world-tile):not(.resume-link):is(:hover,:focus-visible) :is(span,small,i){color:inherit}
+.desktop-nav a::after{content:none}
+.hero-actions .pill-link{padding:10px 0;gap:12px;transform:none}
+.hero-actions .quiet-link{gap:12px}
+.scroll-link .scroll-arrow{border:0;border-radius:0;width:auto;height:auto}
+.closing-links a:hover>span:last-child{transform:none}
+.map-grid a[aria-current=true]::before{content:'';position:absolute;left:0;top:22px;width:4px;height:4px;border-radius:50%;background:var(--primary)}
+body .skip-link:focus-visible{background:var(--paper)!important}
+:is(.practice,.film-frame) :is(a,button):focus-visible,
+.dark-chapter .topbar :is(a,button):focus-visible,
+.dark-chapter .scene-controls button:focus-visible,
+.dark-chapter #map-toggle:focus-visible{outline-color:var(--paper)}
+@media print{body{background:#fff}.scene-section{background:#fff!important}}

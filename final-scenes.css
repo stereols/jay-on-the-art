@@ -1,0 +1,34 @@
+/* Film-first chapter and direct personal artwork rail. */
+.special-story{position:relative}
+.hero-description{word-break:keep-all}
+.special-pin{position:relative}
+.special-pin #special-film{margin:0 3vw;height:86svh;min-height:450px;aspect-ratio:auto;border-radius:4px;transform:none}
+.special-headline{padding:60px var(--pad) 0 var(--pad-left);position:relative}
+.special-headline h2{font-size:var(--type-display);font-weight:650;line-height:1.4;letter-spacing:-.055em;margin:24px 0 0}
+#yigo .special-headline h2,#yigo .special-headline h2 span{color:#f6f1e8}
+.special-headline .eyebrow{color:#f6f1e8}
+.special-pin #special-film:after{inset:0;background:rgba(4,8,14,var(--film-shade,0));z-index:1}
+.special-pin .film-toggle,.special-pin .film-caption{z-index:4}
+.special-description{padding-top:65px}
+.discover-window,.discover-progress,.discover-navigation{opacity:1!important}
+.motion-layout .discover{height:440svh}
+.motion-layout .discover-pin{overflow:clip}
+@media(min-width:761px){
+ .motion-layout .special-story{height:360svh}
+ .motion-layout .special-pin{position:sticky;top:0;height:100svh;overflow:clip}
+ .motion-layout .special-pin #special-film{position:absolute;inset:var(--film-inset-y,0%) var(--film-inset-x,0%);height:auto;min-height:0;margin:0;border-radius:var(--film-radius,0px);will-change:inset}
+ .motion-layout .special-headline{position:absolute;inset:0;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;padding:90px var(--pad);pointer-events:none;z-index:2;opacity:var(--film-title-alpha,0);transform:translate3d(0,var(--film-title-y,86px),0)}
+ .motion-layout .special-headline h2{font-size:var(--type-display);text-shadow:0 4px 40px #0006}
+ .motion-layout .special-pin .film-toggle{top:100px}
+ .motion-layout .special-pin .film-caption{top:auto;bottom:34px;left:34px}
+ .motion-layout .discover-pin{padding-bottom:80px}
+}
+@media(max-width:760px){
+ .special-pin #special-film{margin:0;height:65svh;min-height:390px;border-radius:0}
+ .special-headline{padding:38px var(--pad) 0 var(--pad-left)}
+ .special-headline h2{font-size:clamp(30px,8vw,40px)}
+ .special-description{padding-top:32px}
+ .special-pin .film-caption{top:auto;bottom:22px}
+ .motion-layout .discover{height:auto}
+}
+@media print{.special-story,.special-pin{height:auto!important;position:relative!important}.special-headline{opacity:1!important;transform:none!important;position:relative!important}}

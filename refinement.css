@@ -1,0 +1,43 @@
+/* Editorial refinement: Korean headlines, quieter chrome, and the artwork rail. */
+.scene-controls{justify-content:flex-end}.worlds-location{display:none}
+.cosmos:before{background:#02040d;opacity:var(--scene-dark)}
+.hero h1{font-size:clamp(112px,12vw,200px)}.hero-subtitle{font-size:clamp(30px,3.5vw,54px)}
+.statement{font-size:clamp(38px,5.3vw,80px)}
+.pov-film-title{font-size:clamp(48px,6vw,95px)!important;letter-spacing:-.055em!important}
+.journey-intro h2{font-size:clamp(46px,5.8vw,90px);line-height:1.3;letter-spacing:-.065em}
+.tile-wall-heading h2{font-size:clamp(28px,3.3vw,50px);font-weight:650;letter-spacing:-.055em;line-height:1.35}
+.tile-wall-heading>p:last-child{font-size:14px;color:var(--muted);flex:none}
+.tile-wall-heading{align-items:baseline;gap:25px;margin-bottom:30px}
+.special-intro>h2{font-size:clamp(50px,6.2vw,100px);line-height:1.3;letter-spacing:-.065em}
+.passage-heading h2{font-size:clamp(46px,6.5vw,105px);line-height:1.3;letter-spacing:-.065em}
+.career-heading h2{font-size:clamp(38px,4.5vw,65px);line-height:1.3}
+.lab-heading h2{font-size:clamp(38px,4.6vw,66px);line-height:1.3}
+.closing h2{font-size:clamp(38px,5vw,76px);line-height:1.3}
+.about .profile-name{font-size:32px}.about-copy .lead{font-size:clamp(20px,2vw,28px)}
+.discover-heading .discover-subtitle{font-size:14px;line-height:1.8;letter-spacing:-.035em;margin-right:auto;margin-left:25px;color:var(--muted)}
+.discover-hint{font-size:10px;color:var(--muted)}
+@media(min-width:761px){
+ .motion-layout .worlds-hud{justify-content:flex-end}
+ .motion-layout .journey-intro h2{font-size:clamp(46px,5.8vw,90px)}
+ .motion-layout .tile-wall-heading{margin-bottom:28px}.motion-layout .tile-wall-heading>p:last-child{font-size:14px}
+ .motion-layout .tile-board{width:min(88vw,calc((100svh - 350px) * 2.17),1240px)}
+ .motion-layout .career-project h3{font-size:clamp(25px,2.8vw,44px)}
+ .motion-layout .discover{height:620svh;background:linear-gradient(#e9eee7ed 0%,#e9eee7df 86%,#e9eee700)}
+ .motion-layout .discover-pin{padding-top:100px;padding-bottom:70px;overflow:clip}
+ .motion-layout .discover-window{opacity:var(--rail-alpha,0)}
+ .motion-layout .discover-progress{opacity:var(--rail-alpha,0)}
+ .motion-layout .discover-navigation{opacity:var(--navigation-alpha,0);pointer-events:auto}
+ .motion-layout .discover-heading .discover-subtitle{margin-right:auto}
+ .process-list h3{font-size:clamp(22px,2vw,29px)}
+}
+@media(min-width:761px) and (max-height:740px){
+ .motion-layout .tile-wall-heading h2{font-size:32px}.motion-layout .tile-board{width:min(85vw,calc((100svh - 300px) * 2.17))}
+}
+@media(max-width:760px){
+ .hero h1{font-size:clamp(95px,26vw,145px)}.hero-subtitle{font-size:31px}
+ .statement{font-size:clamp(33px,8vw,51px)}.journey-intro h2{font-size:clamp(39px,9.5vw,62px)}
+ .tile-wall-heading h2{font-size:29px;line-height:1.4}.tile-wall-heading>p:last-child{font-size:12px;margin-top:14px}
+ .special-intro>h2{font-size:clamp(35px,8.7vw,55px)}.passage-heading h2{font-size:clamp(39px,10vw,62px)}.career-heading h2,.lab-heading h2{font-size:39px}.closing h2{font-size:36px}.about .profile-name{font-size:29px}.about-copy .lead{font-size:21px}
+ .discover-heading{align-items:baseline;gap:10px 14px}.discover-heading .discover-subtitle{display:block;font-size:11px;margin:0;max-width:150px}.discover-navigation{width:100%;justify-content:flex-end;margin-top:4px}
+ #discover .discover-pin{padding-top:85px}
+}

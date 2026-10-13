@@ -1,10 +1,11 @@
 import * as THREE from './vendor/three.module.js';
+import {CAMERA_POSES} from './camera-timeline.js';
 
 // Original procedural scene. No screenshot or generated still is used as 3D geometry.
 // The static concept image is a separate, accessible rendering fallback in CSS.
 export function createCosmos(canvas, options = {}) {
   const renderer = new THREE.WebGLRenderer({canvas,alpha:true,antialias:true,powerPreference:'high-performance'});
-  renderer.setClearColor(0xf5f4f0,0);
+  renderer.setClearColor(0xf6f1e8,0);
   renderer.outputColorSpace = THREE.SRGBColorSpace;
   renderer.toneMapping = THREE.ACESFilmicToneMapping;
   renderer.toneMappingExposure = 1.12;
@@ -17,6 +18,9 @@ export function createCosmos(canvas, options = {}) {
   const random = () => { seed=(seed*1664525+1013904223)>>>0; return seed/4294967296; };
   const TAU = Math.PI*2;
   const colors = {teal:0x77aaa5,lilac:0xb9a8cd,coral:0xdca38e,pearl:0xece6d8,gold:0xc6a66c};
+  const environment={uNight:{value:0},uFogColor:{value:new THREE.Color(0xf6f1e8)}};
+  const daySky=new THREE.Color(0xf6f1e8),nightSky=new THREE.Color(0x02040d),sky=new THREE.Color();
+  scene.fog=new THREE.Fog(daySky,19,60);
   const shaderUniforms=[];
   const orbiters=[];
   const planets=[];
@@ -27,7 +31,7 @@ export function createCosmos(canvas, options = {}) {
     float fbm(vec3 p){float f=0.;float a=.5;for(int i=0;i<4;i++){f+=a*noise3(p);p=p*2.03+vec3(2.7,3.1,1.2);a*=.5;}return f;}
   `;
   function pearlMaterial(tint,offset,detail=1) {
-    const uniforms={uTint:{value:new THREE.Color(tint)},uTime:{value:0},uOffset:{value:offset},uDetail:{value:detail}};
+    const uniforms={...environment,uTint:{value:new THREE.Color(tint)},uOffset:{value:offset},uDetail:{value:detail}};
     shaderUniforms.push(uniforms);
     return new THREE.ShaderMaterial({uniforms,
       vertexShader:/* glsl */`
@@ -35,7 +39,7 @@ export function createCosmos(canvas, options = {}) {
         void main(){vPosition=position;vNormal=normalize(normalMatrix*normal);vec4 mv=modelViewMatrix*vec4(position,1.);vView=-mv.xyz;gl_Position=projectionMatrix*mv;}
       `,
       fragmentShader:/* glsl */`
-        uniform vec3 uTint;uniform float uTime,uOffset,uDetail;
+        uniform vec3 uTint,uFogColor;uniform float uNight,uOffset,uDetail;
         varying vec3 vPosition,vNormal,vView;
         ${noise}
         void main(){
@@ -61,6 +65,18 @@ export function createCosmos(canvas, options = {}) {
           color=mix(color,vec3(.91,.94,.90),fresnel*.58);
           color+=iridescent*fresnel*.09;
           color+=vein*vec3(.18,.12,.035)*max(diffuse,.1)*uDetail;
+          // The nocturnal view relights the actual relief rather than covering it.
+          vec3 nightLight=normalize(vec3(-.86,.42,.13));
+          float nightDiffuse=max(dot(N,nightLight),0.);
+          float nightSpecular=pow(max(dot(reflect(-nightLight,N),V),0.),28.);
+          vec3 midnight=mix(vec3(.018,.033,.084),vec3(.084,.045,.17),terrain);
+          vec3 nightColor=midnight*(.5+nightDiffuse*2.8)+uTint*nightDiffuse*.12;
+          nightColor+=vec3(.10,.48,.56)*fresnel*.72;
+          nightColor+=vec3(.46,.28,.69)*nightSpecular*.7;
+          nightColor+=vein*vec3(.025,.14,.20)*(.4+nightDiffuse)*uDetail;
+          color=mix(color,nightColor*.62,uNight);
+          float fog=smoothstep(17.,52.,length(vView))*uNight*.88;
+          color=mix(color,uFogColor,fog);
           gl_FragColor=vec4(color,1.);
           #include <tonemapping_fragment>
           #include <colorspace_fragment>
@@ -90,6 +106,7 @@ export function createCosmos(canvas, options = {}) {
   makePlanet([-4.2,-11.4,-2.8],1.35,colors.lilac,28.3,.8);
   makePlanet([5.9,-11.4,-2.6],1.6,colors.pearl,32.8,1);
   const nightRing=new THREE.Mesh(new THREE.TorusGeometry(2.15,.008,8,220),new THREE.MeshBasicMaterial({color:0xbcb1ce,transparent:true,opacity:.7}));
+  const nightRingDay=new THREE.Color(0xbcb1ce),nightRingGlow=new THREE.Color(0x73bacb);
   nightRing.rotation.set(.8,.2,-.5);nightWorld.add(nightRing);
 
   // A transparent, asymmetrically ribbed crystal envelope around the hero world.
@@ -104,17 +121,17 @@ export function createCosmos(canvas, options = {}) {
     v.multiplyScalar(r);shellPos.setXYZ(i,v.x,v.y,v.z);
   }
   shellGeo.computeVertexNormals();
-  const shell=new THREE.Mesh(shellGeo,new THREE.ShaderMaterial({transparent:true,depthWrite:false,side:THREE.FrontSide,uniforms:{},
+  const shell=new THREE.Mesh(shellGeo,new THREE.ShaderMaterial({transparent:true,depthWrite:false,side:THREE.FrontSide,uniforms:{...environment},
     vertexShader:`varying vec3 vNormal;varying vec3 vView;varying vec3 vP;void main(){vP=position;vNormal=normalize(normalMatrix*normal);vec4 mv=modelViewMatrix*vec4(position,1.);vView=-mv.xyz;gl_Position=projectionMatrix*mv;}`,
-    fragmentShader:`varying vec3 vNormal,vView,vP;void main(){float f=pow(1.-abs(dot(normalize(vNormal),normalize(vView))),3.);float t=.5+.5*sin(vP.y*4.+vP.x*2.);vec3 c=mix(vec3(.70,.83,.82),vec3(.92,.79,.63),t);gl_FragColor=vec4(c,.04+f*.43);#include <colorspace_fragment>}`.replace(';#include',';\n#include')
+    fragmentShader:`uniform float uNight;varying vec3 vNormal,vView,vP;void main(){float f=pow(1.-abs(dot(normalize(vNormal),normalize(vView))),3.);float t=.5+.5*sin(vP.y*4.+vP.x*2.);vec3 c=mix(vec3(.70,.83,.82),vec3(.92,.79,.63),t);c=mix(c,mix(vec3(.12,.46,.56),vec3(.39,.20,.59),t),uNight);gl_FragColor=vec4(c,.04+f*.43);#include <colorspace_fragment>}`.replace(';#include',';\n#include')
   }));main.add(shell);
 
   // Raised crystal membranes share a radial origin, like an asymmetrical living seed.
   // Their geometry, ribbing and shadows remain dimensional as the camera moves.
   const corolla=new THREE.Group();corolla.rotation.set(.82,.30,-.48);main.add(corolla);
-  const membraneMaterial=new THREE.ShaderMaterial({transparent:true,depthWrite:false,side:THREE.DoubleSide,
+  const membraneMaterial=new THREE.ShaderMaterial({transparent:true,depthWrite:false,side:THREE.DoubleSide,uniforms:{...environment},
     vertexShader:`varying vec2 vUv;varying vec3 vN,vV;void main(){vUv=uv;vN=normalize(normalMatrix*normal);vec4 mv=modelViewMatrix*vec4(position,1.);vV=-mv.xyz;gl_Position=projectionMatrix*mv;}`,
-    fragmentShader:`varying vec2 vUv;varying vec3 vN,vV;void main(){float f=pow(1.-abs(dot(normalize(vN),normalize(vV))),2.5);float edge=pow(abs(vUv.y*2.-1.),12.);float rib=pow(.5+.5*cos(vUv.y*23.+vUv.x*13.),20.);vec3 pearl=mix(vec3(.65,.80,.79),vec3(.87,.75,.69),vUv.x);pearl=mix(pearl,vec3(.96,.94,.83),edge*.7+f*.3);gl_FragColor=vec4(pearl,.07+f*.35+edge*.39+rib*.025);#include <colorspace_fragment>}`.replace(';#include',';\n#include')
+    fragmentShader:`uniform float uNight;varying vec2 vUv;varying vec3 vN,vV;void main(){float f=pow(1.-abs(dot(normalize(vN),normalize(vV))),2.5);float edge=pow(abs(vUv.y*2.-1.),12.);float rib=pow(.5+.5*cos(vUv.y*23.+vUv.x*13.),20.);vec3 pearl=mix(vec3(.65,.80,.79),vec3(.87,.75,.69),vUv.x);pearl=mix(pearl,vec3(.96,.94,.83),edge*.7+f*.3);pearl=mix(pearl,vec3(.10,.27,.43)+vec3(.08,.24,.28)*(edge+f),uNight);gl_FragColor=vec4(pearl,.07+f*.35+edge*.39+rib*.025);#include <colorspace_fragment>}`.replace(';#include',';\n#include')
   });
   const membraneLines=[];
   function petalPoint(u,v,angle,width){
@@ -225,11 +242,30 @@ export function createCosmos(canvas, options = {}) {
   galaxyGeo.setAttribute('position',new THREE.Float32BufferAttribute(galaxyPositions,3));
   galaxyGeo.setAttribute('color',new THREE.Float32BufferAttribute(galaxyColors,3));
   galaxyGeo.setAttribute('aSize',new THREE.Float32BufferAttribute(galaxySizes,1));
-  const galaxyMat=new THREE.ShaderMaterial({transparent:true,depthWrite:false,vertexColors:true,uniforms:{uPixelRatio:{value:1}},
+  const galaxyMat=new THREE.ShaderMaterial({transparent:true,depthWrite:false,vertexColors:true,uniforms:{...environment,uPixelRatio:{value:1}},
     vertexShader:`attribute float aSize;uniform float uPixelRatio;varying vec3 vColor;void main(){vColor=color;vec4 mv=modelViewMatrix*vec4(position,1.);gl_PointSize=clamp(aSize*uPixelRatio*18./-mv.z,1.,9.);gl_Position=projectionMatrix*mv;}`,
-    fragmentShader:`varying vec3 vColor;void main(){float d=length(gl_PointCoord-.5);if(d>.5)discard;float a=pow(1.-d*2.,1.6)*.70;gl_FragColor=vec4(vColor,a);#include <colorspace_fragment>}`.replace(';#include',';\n#include')
+    fragmentShader:`uniform float uNight;varying vec3 vColor;void main(){float d=length(gl_PointCoord-.5);if(d>.5)discard;float a=pow(1.-d*2.,1.6)*mix(.70,.95,uNight);vec3 c=mix(vColor,vColor*vec3(.42,.76,1.15),uNight);gl_FragColor=vec4(c,a);#include <colorspace_fragment>}`.replace(';#include',';\n#include')
   });
   const galaxy=new THREE.Points(galaxyGeo,galaxyMat);universe.add(galaxy);
+
+  // Stars occupy multiple depths through the night chapter, so the passage has
+  // real parallax and planet occlusion. Their brightness never flickers.
+  const starPositions=[],starColors=[],starSizes=[];
+  const starPalette=[0x83c8d0,0xc4b7eb,0xe4ddd3].map(c=>new THREE.Color(c));
+  for(let i=0;i<(mobile()?850:1650);i++){
+    starPositions.push((random()-.5)*42,-6+(random()-.5)*30,-5-random()*36);
+    const tint=starPalette[i%starPalette.length];starColors.push(tint.r,tint.g,tint.b);
+    starSizes.push(.35+Math.pow(random(),7)*2.3);
+  }
+  const starGeo=new THREE.BufferGeometry();
+  starGeo.setAttribute('position',new THREE.Float32BufferAttribute(starPositions,3));
+  starGeo.setAttribute('color',new THREE.Float32BufferAttribute(starColors,3));
+  starGeo.setAttribute('aSize',new THREE.Float32BufferAttribute(starSizes,1));
+  const starMat=new THREE.ShaderMaterial({transparent:true,depthWrite:false,vertexColors:true,uniforms:{...environment,uPixelRatio:{value:1}},
+    vertexShader:`attribute float aSize;uniform float uPixelRatio;varying vec3 vColor;varying float vDepth;void main(){vColor=color;vec4 mv=modelViewMatrix*vec4(position,1.);vDepth=-mv.z;gl_PointSize=clamp(aSize*uPixelRatio*32./max(1.,vDepth),.65,5.);gl_Position=projectionMatrix*mv;}`,
+    fragmentShader:`uniform float uNight;varying vec3 vColor;varying float vDepth;void main(){float d=length(gl_PointCoord-.5);if(d>.5)discard;float a=pow(1.-2.*d,1.8)*uNight*(1.-smoothstep(30.,70.,vDepth)*.45);gl_FragColor=vec4(vColor,a);#include <colorspace_fragment>}`.replace(';#include',';\n#include')
+  });
+  const stars=new THREE.Points(starGeo,starMat);universe.add(stars);
 
   const longLines=[];
   for(let j=0;j<16;j++){
@@ -243,7 +279,7 @@ export function createCosmos(canvas, options = {}) {
   }
   universe.add(new THREE.LineSegments(lineGeometry(longLines),new THREE.LineBasicMaterial({color:0xc7c8b4,transparent:true,opacity:.18,depthWrite:false})));
 
-  // Keyframes are tied to narrative chapters, not absolute document pixel lengths.
+  // Legacy stage coordinates remain available for older app.js callers.
   const frames=[
     {c:[0,.2,9.1],t:[0,0,0],r:[0,0,0]},
     {c:[.6,.4,8.1],t:[1,0,0],r:[0,0,0]},
@@ -255,47 +291,138 @@ export function createCosmos(canvas, options = {}) {
     {c:[6,-11.3,9.4],t:[5,-10.8,-2],r:[0,0,0]},
     {c:[.2,-5.5,19],t:[1,-5,-3],r:[0,0,0]}
   ];
-  let progress=0,current=0,paused=!!options.paused,reducedMotion=!!options.reducedMotion;
-  let time=0,previousTime=0,lastDraw=0,raf=0,disposed=false,dirty=true,contextLost=false,drawCount=0;
+  // Semantic endpoints are shared between adjacent scenes. Every camera and
+  // object transform can be reconstructed from this absolute scroll state.
+  const poses=CAMERA_POSES;
+  const route=(...stops)=>stops.map(([at,name])=>({at,...poses[name]}));
+  const routes={
+    hero:route([0,'hero'],[1,'perspective']),
+    perspective:route([0,'perspective'],[1,'intro']),
+    yigo:route([0,'cards'],[.3,'yigoEntry'],[1,'yigo']),
+    discover:route([0,'yigo'],[.25,'discover'],[.94,'discover'],[1,'nightClose']),
+    passage:route([0,'nightClose'],[1,'career']),
+    career:route([0,'career'],[1,'careerEnd']),
+    lab:route([0,'careerEnd'],[1,'lab']),
+    about:route([0,'lab'],[1,'about']),
+    links:route([0,'about'],[1,'links'])
+  };
+  const worldRoutes={
+    intro:route([0,'intro'],[1,'rightEntry']),
+    tile:route([0,'rightEntry'],[1,'tiles']),
+    focus:route([0,'tiles'],[1,'focus']),
+    cards:route([0,'focus'],[.22,'cards'],[1,'cards'])
+  };
+  const validSceneIds=new Set(['hero','perspective','works','yigo','discover','passage','career','lab','about','links']);
+  const clamp01=value=>THREE.MathUtils.clamp(Number.isFinite(value)?value:0,0,1);
+  const smooth=(start,end,value)=>THREE.MathUtils.smoothstep(value,start,end);
+  let progress=0,legacyMode=true,sceneState={id:'hero',progress:0,night:0,worldPhase:'intro'};
+  let paused=!!options.paused,reducedMotion=!!options.reducedMotion;
+  let previousTime=0,lastDraw=0,raf=0,disposed=false,dirty=true,contextLost=false,drawCount=0,poseReady=false,orbitPhase=0;
   const pointer=new THREE.Vector2(),softPointer=new THREE.Vector2();
-  const target=new THREE.Vector3();
+  const target=new THREE.Vector3(),cameraBase=new THREE.Vector3(),targetBase=new THREE.Vector3();
+  let mobileBaseZ=4.6,mobileBaseTarget=[0,0];
+  const environmentMaterials=[];
+  scene.traverse(object=>{
+    const material=object.material;
+    if(material?.isLineBasicMaterial||material?.isPointsMaterial||material?.isMeshBasicMaterial){
+      environmentMaterials.push({material,day:material.color.clone(),night:new THREE.Color(material.isLineBasicMaterial?0x659bad:0x9c9eda),opacity:material.opacity});
+    }
+  });
   function onPointer(e){if(!paused&&!reducedMotion){pointer.set(e.clientX/innerWidth-.5,e.clientY/innerHeight-.5);dirty=true;}}
-  function onPointerLeave(){pointer.set(0,0);}
+  function onPointerLeave(){pointer.set(0,0);dirty=true;}
   function resize(){
     const ratio=Math.min(devicePixelRatio||1,mobile()?1.4:1.6);
     renderer.setPixelRatio(ratio);renderer.setSize(innerWidth,innerHeight,false);
     camera.aspect=innerWidth/innerHeight;camera.updateProjectionMatrix();
     galaxyMat.uniforms.uPixelRatio.value=ratio;
+    starMat.uniforms.uPixelRatio.value=ratio;
     dirty=true;renderFrame();
   }
+  function sampleRoute(stops,value){
+    const p=clamp01(value);
+    let index=0;
+    while(index<stops.length-2&&p>stops[index+1].at)index++;
+    const a=stops[index],b=stops[index+1];
+    const mix=smooth(a.at,b.at,p);
+    cameraBase.set(THREE.MathUtils.lerp(a.c[0],b.c[0],mix),THREE.MathUtils.lerp(a.c[1],b.c[1],mix),THREE.MathUtils.lerp(a.c[2],b.c[2],mix));
+    targetBase.set(THREE.MathUtils.lerp(a.t[0],b.t[0],mix),THREE.MathUtils.lerp(a.t[1],b.t[1],mix),THREE.MathUtils.lerp(a.t[2],b.t[2],mix));
+    orbitPhase=THREE.MathUtils.lerp(a.o,b.o,mix);
+  }
+  function resolvePose(){
+    if(legacyMode){
+      const stage=reducedMotion?0:progress;
+      const index=Math.min(frames.length-2,Math.floor(stage));
+      const a=frames[index],b=frames[index+1],f=stage-index;
+      cameraBase.set(THREE.MathUtils.lerp(a.c[0],b.c[0],f),THREE.MathUtils.lerp(a.c[1],b.c[1],f),THREE.MathUtils.lerp(a.c[2],b.c[2],f));
+      targetBase.set(THREE.MathUtils.lerp(a.t[0],b.t[0],f),THREE.MathUtils.lerp(a.t[1],b.t[1],f),THREE.MathUtils.lerp(a.t[2],b.t[2],f));
+      orbitPhase=stage*.5;
+    }else if(sceneState.pose&&!reducedMotion){
+      cameraBase.fromArray(sceneState.pose.position);
+      targetBase.fromArray(sceneState.pose.target);
+      orbitPhase=sceneState.pose.orbit;
+    }else if(reducedMotion){
+      // Stable chapter compositions replace travel in the reduced-motion path.
+      if(sceneState.id==='works')sampleRoute(worldRoutes.cards,1);
+      else if(sceneState.id==='passage')sampleRoute(routes.passage,sceneState.progress<.8?.2:1);
+      else sampleRoute(routes[sceneState.id],sceneState.id==='hero'?0:sceneState.id==='discover'?.25:1);
+    }else{
+      sampleRoute(sceneState.id==='works'?worldRoutes[sceneState.worldPhase]:routes[sceneState.id],sceneState.progress);
+    }
+    if(sceneState.pose&&!legacyMode&&!reducedMotion){
+      mobileBaseZ=sceneState.pose.mobileZ;mobileBaseTarget=sceneState.pose.mobileTarget;
+    }else{
+      mobileBaseZ=sceneState.id==='passage'?2.2:4.6;
+      mobileBaseTarget=(legacyMode?progress<1:sceneState.id==='hero')?[1.3,-2.1]:[0,0];
+    }
+    poseReady=true;
+  }
+  function updateEnvironment(){
+    const night=legacyMode?0:sceneState.night;
+    environment.uNight.value=night;
+    sky.copy(daySky).lerp(nightSky,night);
+    environment.uFogColor.value.copy(sky);
+    renderer.setClearColor(sky,night);
+    renderer.toneMappingExposure=THREE.MathUtils.lerp(1.12,.74,night);
+    scene.fog.color.copy(sky);scene.fog.near=THREE.MathUtils.lerp(19,10,night);scene.fog.far=THREE.MathUtils.lerp(60,48,night);
+    environmentMaterials.forEach(({material,day,night:nightTint,opacity})=>{
+      material.color.copy(day).lerp(nightTint,night);
+      material.opacity=Math.min(1,opacity*(1+night*.2));
+    });
+    stars.visible=night>.001;
+    nightRing.material.color.copy(nightRingDay).lerp(nightRingGlow,night);
+  }
   function updateCamera(){
-    const stage=reducedMotion?0:current;
-    const a=frames[Math.min(frames.length-1,Math.floor(stage))];
-    const b=frames[Math.min(frames.length-1,Math.floor(stage)+1)];
-    const f=stage%1;
-    const lerp=(x,y)=>THREE.MathUtils.lerp(x,y,f);
-    camera.position.set(lerp(a.c[0],b.c[0]),lerp(a.c[1],b.c[1]),lerp(a.c[2],b.c[2]));
-    target.set(lerp(a.t[0],b.t[0]),lerp(a.t[1],b.t[1]),lerp(a.t[2],b.t[2]));
+    if(!paused||reducedMotion||!poseReady)resolvePose();
+    camera.position.copy(cameraBase);target.copy(targetBase);
     if(mobile()){
-      camera.position.z+=4.6;
-      if(stage<1){target.x+=1.3;target.y-=2.1;}
-      universe.position.set(0,0,0);
-    }else{universe.position.set(0,0,0);}
-    camera.position.x+=softPointer.x*.7;camera.position.y-=softPointer.y*.5;
-    target.x-=softPointer.x*.14;target.y+=softPointer.y*.12;
+      camera.position.z+=mobileBaseZ;
+      target.x+=mobileBaseTarget[0];target.y+=mobileBaseTarget[1];
+    }
+    const reading=!legacyMode&&((sceneState.id==='works'&&sceneState.worldPhase==='cards')||['career','about','links'].includes(sceneState.id));
+    const amplitude=paused||reducedMotion?0:sceneState.pose&&!legacyMode?sceneState.pose.pointerStrength:reading?.22:1;
+    camera.position.x+=softPointer.x*.7*amplitude;camera.position.y-=softPointer.y*.5*amplitude;
+    target.x-=softPointer.x*.14*amplitude;target.y+=softPointer.y*.12*amplitude;
     camera.lookAt(target);
-    universe.rotation.set(lerp(a.r[0],b.r[0]),lerp(a.r[1],b.r[1]),lerp(a.r[2],b.r[2]));
+    universe.position.set(0,0,0);universe.rotation.set(0,0,0);
   }
   function renderFrame(){
     if(disposed||contextLost)return;
     updateCamera();
-    main.rotation.y=time*.027+softPointer.x*.06;
-    main.rotation.x=softPointer.y*.045;
-    shell.rotation.y=-time*.015;
-    planets.forEach((planet,i)=>{if(i>0){planet.surface.rotation.y=time*.018*(i%2?1:-1);planet.group.position.y=planet.baseY+Math.sin(time*.13+i)*.035;}});
-    orbiters.forEach(o=>{const t=o.phase+time*.04;o.mesh.position.set(Math.cos(t)*o.radius,Math.sin(t)*o.radius*.49,Math.sin(t)*.13);});
+    updateEnvironment();
+    main.rotation.y=orbitPhase*.12+softPointer.x*.04;
+    main.rotation.x=softPointer.y*.03;
+    shell.rotation.y=-orbitPhase*.08;
+    planets.forEach((planet,i)=>{if(i>0){planet.surface.rotation.y=orbitPhase*.1*(i%2?1:-1);planet.group.position.y=planet.baseY+Math.sin(orbitPhase*.7+i)*.035;}});
+    orbiters.forEach(o=>{const t=o.phase+orbitPhase*.22;o.mesh.position.set(Math.cos(t)*o.radius,Math.sin(t)*o.radius*.49,Math.sin(t)*.13);});
     renderer.render(scene,camera);
-    canvas.dataset.scene=String(current.toFixed(3));
+    canvas.dataset.scene=legacyMode?String(progress.toFixed(3)):sceneState.id;
+    canvas.dataset.progress=String((legacyMode?progress:sceneState.progress).toFixed(4));
+    canvas.dataset.worldPhase=sceneState.worldPhase;
+    canvas.dataset.night=String(environment.uNight.value.toFixed(4));
+    canvas.dataset.camera=camera.position.toArray().map(value=>value.toFixed(3)).join(',');
+    canvas.dataset.target=target.toArray().map(value=>value.toFixed(3)).join(',');
+    canvas.dataset.orbit=orbitPhase.toFixed(5);
+    canvas.dataset.timeline=String(!!sceneState.pose&&!legacyMode);
     canvas.dataset.frame=String(++drawCount);
   }
   function tick(now){
@@ -304,9 +431,8 @@ export function createCosmos(canvas, options = {}) {
     if(document.hidden){previousTime=now;return;}
     if(now-lastDraw<1000/45)return;
     const dt=Math.min((now-previousTime)/1000,.07)||0;previousTime=now;lastDraw=now;
-    if(!paused&&!reducedMotion){
-      time+=dt;current=THREE.MathUtils.damp(current,progress,4.4,dt);
-      softPointer.lerp(pointer,.07);dirty=true;
+    if(!paused&&!reducedMotion&&softPointer.distanceToSquared(pointer)>.0000001){
+      softPointer.lerp(pointer,1-Math.exp(-5.5*dt));dirty=true;
     }
     if(dirty){renderFrame();dirty=false;}
   }
@@ -327,9 +453,32 @@ export function createCosmos(canvas, options = {}) {
   document.documentElement.dataset.renderMode='webgl';
   raf=requestAnimationFrame(tick);
   return {
-    setProgress(value){progress=THREE.MathUtils.clamp(value,0,frames.length-1);},
-    setPaused(value){paused=value;dirty=true;canvas.dataset.motion=paused?'paused':'playing';},
-    setReducedMotion(value){reducedMotion=value;current=value?0:progress;dirty=true;},
+    // Absolute timeline samples take priority over the legacy section routes.
+    setScene(value={}){
+      const id=validSceneIds.has(value.id)?value.id:'hero';
+      const p=clamp01(value.progress);
+      const phase=Object.hasOwn(worldRoutes,value.worldPhase)?value.worldPhase:'intro';
+      const automaticNight=id==='passage'?1-smooth(.2,.8,p):id==='discover'?smooth(.93,1,p):0;
+      const night=Number.isFinite(value.night)?clamp01(value.night):automaticNight;
+      const validVector=vector=>Array.isArray(vector)&&vector.length===3&&vector.every(Number.isFinite);
+      const pose=validVector(value.position)&&validVector(value.target)&&Number.isFinite(value.orbit)?{
+        position:value.position.slice(),target:value.target.slice(),orbit:value.orbit,
+        mobileZ:Number.isFinite(value.mobileZ)?value.mobileZ:4.6,
+        mobileTarget:Array.isArray(value.mobileTarget)&&value.mobileTarget.length===2&&value.mobileTarget.every(Number.isFinite)?value.mobileTarget.slice():[0,0],
+        pointerStrength:Number.isFinite(value.pointerStrength)?clamp01(value.pointerStrength):1
+      }:null;
+      const previous=sceneState.pose;
+      const poseChanged=!!pose!==!!previous||(pose&&previous&&(
+        pose.position.some((v,i)=>v!==previous.position[i])||pose.target.some((v,i)=>v!==previous.target[i])||
+        pose.orbit!==previous.orbit||pose.mobileZ!==previous.mobileZ||pose.pointerStrength!==previous.pointerStrength||
+        pose.mobileTarget.some((v,i)=>v!==previous.mobileTarget[i])));
+      if(legacyMode||id!==sceneState.id||p!==sceneState.progress||night!==sceneState.night||phase!==sceneState.worldPhase||poseChanged){
+        sceneState={id,progress:p,night,worldPhase:phase,pose};legacyMode=false;dirty=true;
+      }
+    },
+    setProgress(value){const next=THREE.MathUtils.clamp(Number.isFinite(value)?value:0,0,frames.length-1);if(!legacyMode||next!==progress){legacyMode=true;progress=next;dirty=true;}},
+    setPaused(value){paused=!!value;pointer.set(0,0);softPointer.set(0,0);if(!paused)poseReady=false;dirty=true;canvas.dataset.motion=paused?'paused':'playing';},
+    setReducedMotion(value){reducedMotion=!!value;pointer.set(0,0);softPointer.set(0,0);poseReady=false;dirty=true;},
     dispose(){disposed=true;cancelAnimationFrame(raf);removeEventListener('pointermove',onPointer);removeEventListener('resize',resize);document.removeEventListener('pointerleave',onPointerLeave);canvas.removeEventListener('webglcontextlost',onLost);canvas.removeEventListener('webglcontextrestored',onRestored);scene.traverse(o=>{o.geometry?.dispose();if(o.material){(Array.isArray(o.material)?o.material:[o.material]).forEach(m=>m.dispose());}});renderer.dispose();}
   };
 }
