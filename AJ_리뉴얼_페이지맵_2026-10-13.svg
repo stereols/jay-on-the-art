@@ -1,0 +1,62 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1300 1080" role="img" aria-labelledby="title desc">
+  <title id="title">Jay. 브랜드 페이지 리뉴얼 2열 페이지맵</title>
+  <desc id="desc">첫 화면에서 00 Point of View로 진입한 뒤 오른쪽 01 Personal Worlds, 아래 02 Building What's Next, 왼쪽 03 Experience, 아래 04 AI in Practice, 오른쪽 05 About으로 이동하는 카메라 경로.</desc>
+  <defs>
+    <linearGradient id="paper" x2="1" y2="1"><stop stop-color="#faf9f6"/><stop offset="1" stop-color="#ebefeb"/></linearGradient>
+    <linearGradient id="pearl" x2="1" y2="1"><stop stop-color="#d8f0e8"/><stop offset=".55" stop-color="#f0e3ef"/><stop offset="1" stop-color="#f8e6dc"/></linearGradient>
+    <linearGradient id="night" x2="1" y2="1"><stop stop-color="#182735"/><stop offset="1" stop-color="#3c3154"/></linearGradient>
+    <marker id="arrow" markerWidth="10" markerHeight="10" refX="8" refY="5" orient="auto"><path d="M1 1L9 5L1 9" fill="none" stroke="#417e79" stroke-width="1.7"/></marker>
+    <pattern id="grid" width="36" height="36" patternUnits="userSpaceOnUse"><path d="M36 0H0V36" fill="none" stroke="#91a9a0" stroke-opacity=".17"/></pattern>
+    <filter id="shadow" x="-25%" y="-25%" width="150%" height="150%"><feDropShadow dx="0" dy="15" stdDeviation="16" flood-color="#435f57" flood-opacity=".11"/></filter>
+  </defs>
+  <rect width="1300" height="1080" fill="url(#paper)"/>
+  <rect width="1300" height="1080" fill="url(#grid)"/>
+  <text x="64" y="73" fill="#192b2a" font-family="Manrope,Noto Sans KR,sans-serif" font-size="42" font-weight="700" letter-spacing="-2">Jay.</text>
+  <text x="65" y="103" fill="#58706d" font-family="Manrope,Noto Sans KR,sans-serif" font-size="15" font-weight="600" letter-spacing=".12em">RENEWAL CAMERA MAP / 2026.10</text>
+  <text x="1200" y="69" text-anchor="end" fill="#345f5c" font-family="Manrope,Noto Sans KR,sans-serif" font-size="13" letter-spacing=".1em">SCROLL → CAMERA X + Y + Z</text>
+
+  <rect x="505" y="124" width="290" height="44" rx="22" fill="#1d3432"/>
+  <text x="650" y="152" text-anchor="middle" fill="#f8faf7" font-family="Manrope,Noto Sans KR,sans-serif" font-size="14" font-weight="700" letter-spacing=".08em">ENTRY · Jay. / 최효재</text>
+  <path d="M650 168V194H326V219" fill="none" stroke="#417e79" stroke-width="3" marker-end="url(#arrow)"/>
+
+  <path d="M551 314H747" fill="none" stroke="#417e79" stroke-width="4" stroke-linecap="round" marker-end="url(#arrow)"/>
+  <path d="M984 408V503" fill="none" stroke="#b77e85" stroke-width="4" stroke-linecap="round" marker-end="url(#arrow)"/>
+  <path d="M747 599H551" fill="none" stroke="#417e79" stroke-width="4" stroke-linecap="round" marker-end="url(#arrow)"/>
+  <path d="M316 693V788" fill="none" stroke="#417e79" stroke-width="4" stroke-linecap="round" marker-end="url(#arrow)"/>
+  <path d="M551 884H747" fill="none" stroke="#417e79" stroke-width="4" stroke-linecap="round" marker-end="url(#arrow)"/>
+
+  <g filter="url(#shadow)">
+    <rect x="66" y="219" width="485" height="189" rx="22" fill="#fffefa" stroke="#d9e4dd"/>
+    <rect x="747" y="219" width="485" height="189" rx="22" fill="url(#pearl)" stroke="#d9e4dd"/>
+    <rect x="66" y="504" width="485" height="189" rx="22" fill="#fffefa" stroke="#d9e4dd"/>
+    <rect x="747" y="504" width="485" height="189" rx="22" fill="url(#night)"/>
+    <rect x="66" y="789" width="485" height="189" rx="22" fill="url(#pearl)" stroke="#d9e4dd"/>
+    <rect x="747" y="789" width="485" height="189" rx="22" fill="#fffefa" stroke="#d9e4dd"/>
+  </g>
+
+  <g font-family="Manrope,Noto Sans KR,sans-serif" fill="#203a37">
+    <text x="98" y="256" font-size="13" font-weight="800" letter-spacing=".12em" fill="#417e79">00 / POINT OF VIEW</text>
+    <text x="98" y="313" font-size="36" font-weight="600" letter-spacing="-1.5">문장 → 영상의 문</text>
+    <text x="98" y="353" font-size="15" fill="#617672">마스크가 열리고 게임플레이가 진입</text>
+    <text x="779" y="256" font-size="13" font-weight="800" letter-spacing=".12em" fill="#417e79">01 / PERSONAL WORLDS</text>
+    <text x="779" y="313" font-size="34" font-weight="600" letter-spacing="-1.2">프로젝트 커리어</text>
+    <text x="779" y="353" font-size="15" fill="#506e67">Launching · Projects / R&amp;D · Discover 06</text>
+    <text x="98" y="541" font-size="13" font-weight="800" letter-spacing=".12em" fill="#417e79">03 / EXPERIENCE</text>
+    <text x="98" y="598" font-size="36" font-weight="600" letter-spacing="-1.5">기록의 공간</text>
+    <text x="98" y="638" font-size="15" fill="#617672">회사·기간·역할·상태 → Resume</text>
+    <text x="98" y="826" font-size="13" font-weight="800" letter-spacing=".12em" fill="#417e79">04 / AI IN PRACTICE</text>
+    <text x="98" y="883" font-size="36" font-weight="600" letter-spacing="-1.5">작업의 궤도</text>
+    <text x="98" y="923" font-size="15" fill="#506e67">Source → Narrative → Build → Review</text>
+    <text x="779" y="826" font-size="13" font-weight="800" letter-spacing=".12em" fill="#417e79">05 / ABOUT + LINKS</text>
+    <text x="779" y="883" font-size="36" font-weight="600" letter-spacing="-1.5">열린 우주</text>
+    <text x="779" y="923" font-size="15" fill="#617672">Jay. · LinkedIn · ArtStation · Resume</text>
+  </g>
+  <g font-family="Manrope,Noto Sans KR,sans-serif" fill="#faf8fb">
+    <text x="779" y="541" font-size="13" font-weight="800" letter-spacing=".12em" fill="#d7b6d0">02 / BUILDING WHAT’S NEXT</text>
+    <text x="779" y="598" font-size="36" font-weight="600" letter-spacing="-1.5">YIGO. / Aelin</text>
+    <text x="779" y="638" font-size="15" fill="#d7d5e1">행성 줌 → 짧은 어둠 → 풀화면 영상</text>
+  </g>
+  <circle cx="984" cy="456" r="19" fill="#d9b7a9" stroke="#f4e5df" stroke-width="7"/>
+  <text x="1007" y="460" font-family="Manrope,Noto Sans KR,sans-serif" font-size="12" font-weight="700" fill="#4f5f61">PLANET PORTAL</text>
+  <text x="65" y="1030" font-family="Manrope,Noto Sans KR,sans-serif" font-size="14" fill="#526b66">세로 스크롤이 서사의 진행값을 제공하고, 카메라는 가로·세로·깊이로 이동합니다. 모바일은 같은 순서의 읽기 흐름을 사용합니다.</text>
+</svg>

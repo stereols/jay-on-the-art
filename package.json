@@ -1,0 +1,16 @@
+{
+  "dependencies": {
+    "three": "0.186.1"
+  },
+  "devDependencies": {
+    "esbuild": "0.28.2",
+    "sharp": "0.35.5"
+  },
+  "name": "artweaver-jay",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "node scripts/serve.mjs",
+    "build": "node scripts/build.mjs"
+  }
+}
