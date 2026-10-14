@@ -1,0 +1,55 @@
+/* Project periods are factual; the coral point only connects active project starts. */
+.world-year-nav{position:relative;min-width:0;padding:24px var(--pad) 28px var(--pad-left);background:var(--paper);color:var(--ink)}
+.world-year-heading{font-size:10px;font-weight:700;letter-spacing:var(--tracking-meta);margin-bottom:12px}
+.world-year-current{display:flex;flex-wrap:wrap;align-items:baseline;gap:6px 18px;margin-bottom:16px;min-height:38px}
+.world-year-name{font-size:13px;font-weight:700;line-height:1.5}
+.world-year-period{font-size:11px;line-height:1.6;color:var(--muted);font-variant-numeric:tabular-nums}
+.world-year-plot{position:relative;min-width:0}
+.world-year-stops{display:flex;gap:8px 18px;list-style:none;padding:0 0 7px;margin:0;overflow-x:auto;overscroll-behavior-x:contain;scrollbar-width:thin;scrollbar-color:#a7a29a transparent}
+.world-year-stop{position:relative;flex:0 0 112px;min-width:0;color:var(--muted)}
+.world-year-stop.is-current{color:var(--ink)}
+.world-year-link{display:flex;flex-direction:column;gap:2px;padding:5px 0;min-height:44px;line-height:1.4}
+.world-year-link time{font-size:12px;font-weight:650;font-variant-numeric:tabular-nums;text-decoration:inherit}
+.world-year-link .world-year-project{font-size:10px;line-height:1.4;word-break:keep-all;text-decoration:inherit}
+.world-year-link[aria-current=true]{font-weight:800}
+.world-year-link[aria-current=true] time{font-weight:800}
+.world-year-axis,.world-year-active-range,.world-year-point,.world-year-origin,.world-year-connectors,.world-year-bounds{display:none}
+
+@media(min-width:761px){
+ .motion-layout .world-year-nav{position:absolute;right:var(--pad);top:138px;bottom:125px;width:clamp(94px,8vw,112px);padding:0;display:flex;flex-direction:column;background:transparent;z-index:5;opacity:var(--year-alpha,0)}
+ .motion-layout .world-year-heading{font-size:9px;margin-bottom:12px;white-space:nowrap}
+ .motion-layout .world-year-current{display:block;flex:none;min-height:66px;margin:0 0 13px}
+ .motion-layout .world-year-name{display:block;font-size:12px;line-height:1.55;word-break:keep-all}
+ .motion-layout .world-year-period{display:block;font-size:10px;line-height:1.6;margin-top:5px}
+ .motion-layout .world-year-plot{flex:1;min-height:0}
+ .motion-layout .world-year-axis{display:block;position:absolute;left:3px;top:0;bottom:0;width:1px;background:var(--line)}
+ .motion-layout .world-year-active-range{display:block;position:absolute;left:2px;top:var(--year-start,4.85%);height:var(--year-duration,10.57%);width:3px;background:var(--primary);opacity:.35}
+ .motion-layout .world-year-point{display:block;position:absolute;left:0;top:var(--year-point,4.85%);width:7px;height:7px;transform:translateY(-50%);border-radius:50%;background:var(--primary);z-index:2;box-shadow:0 0 0 4px #ff616b15}
+ .motion-layout .world-year-origin{display:block;position:absolute;left:1px;top:var(--year-at);width:5px;height:5px;transform:translateY(-50%);border:1px solid var(--muted);border-radius:50%;background:var(--paper)}
+ .motion-layout .world-year-connectors{display:block;position:absolute;inset:0 auto 0 3px;width:20px;height:100%;overflow:visible;pointer-events:none}
+ .world-year-connectors line{stroke:var(--line);stroke-width:1;vector-effect:non-scaling-stroke}
+ .motion-layout .world-year-stops{position:absolute;inset:0;display:block;overflow:visible;padding:0}
+ .motion-layout .world-year-stop{position:absolute;left:25px;right:0;top:var(--year-label-y,0px);transform:translateY(-50%)}
+ .motion-layout .world-year-link{gap:0;padding:2px 0;min-height:30px;justify-content:center}
+ .motion-layout .world-year-link time{font-size:11px;line-height:1.3}
+ .motion-layout .world-year-link .world-year-project{font-size:9px;line-height:1.3}
+ .motion-layout .world-year-bounds{display:flex;justify-content:space-between;gap:10px;font-size:9px;line-height:1.5;margin-top:14px;color:var(--muted);font-variant-numeric:tabular-nums}
+ .motion-layout .career-project-copy{left:calc(var(--pad) * 1.45);width:min(24vw,370px);padding:clamp(22px,2.35vw,36px)}
+ .motion-layout .career-project h3{font-size:clamp(25px,2.35vw,37px)}
+ .motion-layout .worlds-hud{right:var(--pad);bottom:65px}
+}
+@media(min-width:761px) and (max-height:740px){
+ .motion-layout .world-year-nav{top:105px;bottom:108px}
+ .motion-layout .world-year-heading{margin-bottom:7px;font-size:8px}
+ .motion-layout .world-year-current{min-height:52px;margin-bottom:7px}
+ .motion-layout .world-year-name{font-size:11px}.motion-layout .world-year-period{font-size:9px;margin-top:2px}
+ .motion-layout .world-year-link{min-height:26px}.motion-layout .world-year-link time{font-size:10px}.motion-layout .world-year-link .world-year-project{font-size:8px}
+ .motion-layout .world-year-bounds{margin-top:10px}
+ .motion-layout .career-project-copy{padding:22px}
+}
+@media(max-width:760px){
+ .world-year-current{margin-bottom:10px;min-height:0}
+ .world-year-stops{gap:8px 15px}.world-year-stop{flex-basis:100px}
+ .world-year-nav{padding-top:18px;padding-bottom:24px}
+}
+@media print{.world-year-nav{display:none}}

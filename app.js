@@ -1,7 +1,8 @@
-import {createWorlds, ease} from './worlds.js';
+import {createWorlds} from './worlds.js';
 import {createDiscover,discoverFrame} from './discover.js';
 import {createSpecialFilm} from './special-film.js';
 import {createCameraTimeline} from './camera-timeline.js';
+import {createExperience} from './experience.js';
 (() => {
   'use strict';
   const root = document.documentElement;
@@ -54,6 +55,8 @@ import {createCameraTimeline} from './camera-timeline.js';
   const worlds=createWorlds(works);
   const personalCards=[...track.children];
   const portal=document.getElementById('threshold');
+  const experience=createExperience(portal);
+  const header=document.querySelector('.topbar');
   const specialStory=createSpecialFilm(document.getElementById('yigo'));
   const cameraTimeline=createCameraTimeline();
   const lab=document.getElementById('lab');
@@ -97,6 +100,7 @@ import {createCameraTimeline} from './camera-timeline.js';
     worlds.setEnabled(pinned());
     discoverScene.setEnabled(pinned());
     specialStory.setEnabled(pinned());
+    experience.setEnabled(pinned());
     if(!pinned())cardProgress(0);
     motionButton.setAttribute('aria-pressed',String(paused));motionButton.setAttribute('aria-label',paused?'배경과 스크롤 연출 재생':'배경과 스크롤 연출 일시정지');
     motionButton.querySelector('.motion-icon').textContent=paused?'▷':'Ⅱ';motionButton.querySelector('.motion-label').textContent=paused?'Motion off':'Motion on';
@@ -127,8 +131,7 @@ import {createCameraTimeline} from './camera-timeline.js';
     worlds.update();
     const scene=cameraTimeline.sample(scrollY);
     const {night,blur,wash}=scene;
-    const passageP=localProgress(portal),title=ease((passageP-.45)/.28);
-    portal.style.setProperty('--passage-title',!motionEnabled()?1:title);
+    experience.update();
     root.classList.toggle('dark-chapter',night>.5);
     root.style.setProperty('--scene-dark',night.toFixed(4));
     root.style.setProperty('--scene-blur',motionEnabled()?blur.toFixed(3)+'px':'0px');
@@ -136,14 +139,23 @@ import {createCameraTimeline} from './camera-timeline.js';
     lastScene=scene;
     cosmos?.setScene(lastScene);
     specialStory.update();
-    document.querySelector('.topbar').classList.toggle('is-scrolled',scrollY>45);
+    const footer=document.querySelector('body > footer'),footerRect=footer.getBoundingClientRect();
+    const footerArrival=smooth(clamp((innerHeight-footerRect.top)/Math.max(1,footerRect.height)));
+    const headerProgress=smooth(clamp((innerHeight*.65-pov.getBoundingClientRect().top)/(innerHeight*.55)))*(1-footerArrival);
+    header.style.setProperty('--header-visibility',headerProgress.toFixed(4));
+    header.classList.toggle('is-visible',headerProgress>.05);
+    header.classList.toggle('is-scrolled',headerProgress>.05);
     progressBar.style.transform='scaleX('+clamp(scrollY/Math.max(1,root.scrollHeight-innerHeight))+')';
-    mapLinks.forEach(link=>link.setAttribute('aria-current',String(link.dataset.map===section.id||(section.id==='threshold'&&link.dataset.map==='career')||(section.id==='links'&&link.dataset.map==='about'))));
+    mapLinks.forEach(link=>link.setAttribute('aria-current',String(link.dataset.map===section.id||(['threshold','career-history'].includes(section.id)&&link.dataset.map==='career')||(section.id==='links'&&link.dataset.map==='about'))));
     if(pinned()){
-      const p=localProgress(pov),expand=smooth(clamp((p-.08)/.57));
-      pov.style.setProperty('--pov-inset-y',69*(1-expand)+'%');pov.style.setProperty('--pov-inset-x',34*(1-expand)+'%');
-      pov.style.setProperty('--pov-bottom',9*(1-expand)+'%');pov.style.setProperty('--pov-radius',120*(1-expand)+'px');
-      pov.style.setProperty('--pov-text',String(1-smooth(clamp(p/.26))));pov.style.setProperty('--pov-shift',String(expand));
+      const p=localProgress(pov),expand=smooth(clamp((p-.12)/.58));
+      const diameter=clamp(innerHeight*.12,88,112),centerY=innerHeight*.81;
+      pov.style.setProperty('--pov-inset-y',(centerY-diameter/2)*(1-expand)+'px');
+      pov.style.setProperty('--pov-inset-x',(pov.clientWidth-diameter)/2*(1-expand)+'px');
+      pov.style.setProperty('--pov-bottom',(innerHeight-centerY-diameter/2)*(1-expand)+'px');
+      pov.style.setProperty('--pov-radius',diameter/2*(1-expand)+'px');
+      pov.style.setProperty('--pov-video',String(smooth(clamp((expand-.12)/.42))));
+      pov.style.setProperty('--pov-text',String(1-smooth(clamp((p-.05)/.22))));pov.style.setProperty('--pov-shift',String(expand));
       pov.style.setProperty('--pov-title',String(smooth(clamp((p-.5)/.22))));pov.style.setProperty('--pov-controls',String(expand>.9?1:0));
       document.querySelector('#pov-film .film-toggle').tabIndex=expand>.9?0:-1;
       const d=localProgress(discover),distance=Math.max(0,track.scrollWidth-trackWindow.clientWidth+parseFloat(getComputedStyle(trackWindow).paddingRight)*2);
@@ -159,24 +171,37 @@ import {createCameraTimeline} from './camera-timeline.js';
     if(root.classList.contains('motion-layout')===pinned())lastReading={section,fraction:clamp(-r.top/section.offsetHeight),world:worlds.readingPosition()};
   }
   function navigateHash(hash,behavior='instant'){
+    if(hash==='#project-overview'){
+      const destination=pinned()?works.getBoundingClientRect().top+scrollY+1.8*innerHeight:works.querySelector('.world-tiles').getBoundingClientRect().top+scrollY-90;
+      scrollTo({top:destination,behavior});return true;
+    }
     const match=/^#career-project-(\d+)$/.exec(hash);
-    if(match){worlds.go(Number(match[1])-1,behavior);return true;}
+    if(match){const index=worlds.indexForId(hash);if(index>=0)worlds.go(index,behavior);return index>=0;}
     if(hash==='#marakun-explorer'){revealLinkedDetail();return true;}
     return false;
   }
   document.addEventListener('click',event=>{
     const link=event.target.closest('a[href^="#career-project-"]');if(!link)return;
     event.preventDefault();history.pushState(null,'',link.hash);
-    worlds.go(Number(link.dataset.projectIndex),motionEnabled()?'smooth':'instant',event.detail===0);
+    const index=worlds.indexForId(link.hash);
+    if(index>=0)worlds.go(index,motionEnabled()?'smooth':'instant',event.detail===0&&link.classList.contains('world-tile'));
   });
   addEventListener('hashchange',()=>navigateHash(location.hash));
   addEventListener('popstate',()=>navigateHash(location.hash));
+  function resumeDestination(target){
+    const behavior=reduced.matches?'instant':'smooth';
+    const url=new URL(location.href);url.searchParams.delete('entry');url.hash=target;
+    history.pushState(null,'',url);
+    if(navigateHash('#'+target,behavior))return;
+    document.getElementById(target)?.scrollIntoView({behavior,block:'start'});
+  }
+  addEventListener('resume-navigate',event=>resumeDestination(event.detail));
   function scheduleScroll(){if(scrollPending)return;scrollPending=true;requestAnimationFrame(()=>{scrollPending=false;updateScroll();});}
   addEventListener('scroll',scheduleScroll,{passive:true});
   addEventListener('resize',()=>{scheduleScroll();if(innerWidth>760)closeMenu();},{passive:true});
   document.fonts?.ready.then(scheduleScroll);
   setLayout();updateScroll();
-  requestAnimationFrame(()=>{navigateHash(location.hash);scheduleScroll();});
+  requestAnimationFrame(()=>{const entry=new URLSearchParams(location.search).get('entry');if(['top','yigo','project-overview'].includes(entry))resumeDestination(entry);else navigateHash(location.hash);scheduleScroll();});
   const params=new URLSearchParams(location.search);
   if(params.get('view')==='static'){paused=true;setLayout();root.dataset.renderMode='static';motionButton.hidden=true;return;}
   import('./cosmos.bundle.js').then(module=>{cosmos=module.createCosmos(document.getElementById('cosmos-canvas'),{paused,reducedMotion:reduced.matches});cosmos.setScene(lastScene);}).catch(error=>{console.warn('Living Cosmos uses the static artwork fallback.',error);root.dataset.renderMode='fallback';});

@@ -1,0 +1,188 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Jay. on the art의 타이포그래피, 색, 간격과 워드마크를 정리한 디자인 참조 페이지.">
+  <title>Font — Jay. on the art</title>
+  <link rel="icon" type="image/svg+xml" href="assets/favicon.svg">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="design-tokens.css">
+  <link rel="stylesheet" href="editorial-type.css"><link rel="stylesheet" href="followup-layout.css">
+</head>
+<body class="font-page">
+  <a class="font-skip text-link" href="#main">본문으로 건너뛰기</a>
+  <header class="font-header">
+    <a class="font-brand" href="index.html" aria-label="Jay. on the art 홈">
+      <img src="assets/brand/jay-on-the-art-horizontal-rounded.svg" width="1411" height="302" alt="Jay. on the art">
+    </a>
+    <nav aria-label="페이지 탐색">
+      <a class="text-link" href="index.html">Home ↗</a>
+      <a class="text-link" href="resume.html">Resume ↗</a>
+    </nav>
+  </header>
+
+  <main id="main">
+    <section class="font-intro" aria-labelledby="font-title">
+      <p class="type-meta">FONT / DESIGN REFERENCE</p>
+      <h1 id="font-title">A language<br>for the work.</h1>
+      <p class="type-intro">글자의 크기와 굵기, 여백과 색이 만드는 읽기의 순서.<br>Jay. on the art의 공통 디자인 기준을 모았습니다.</p>
+    </section>
+
+    <section class="font-section" aria-labelledby="families-title">
+      <div class="font-section-heading">
+        <div><p class="type-meta">01 / FONT FAMILY</p><h2 id="families-title">두 글꼴, 하나의 리듬.</h2></div>
+        <p>영문과 숫자는 Manrope, 한글은 Noto Sans KR을 사용합니다. 크기와 굵기로 위계를 만들고, 모든 표기는 기울임 없이 읽습니다.</p>
+      </div>
+      <div class="font-families">
+        <article class="font-family">
+          <h3>Manrope</h3>
+          <p class="alphabet" lang="en">Art. Planning.<br>Development.<br>0123456789</p>
+          <div class="font-weight-row" aria-label="영문 굵기 표본">
+            <span style="font-weight:var(--weight-regular)">Aa<small>400</small></span>
+            <span style="font-weight:var(--weight-reading)">Aa<small>450</small></span>
+            <span style="font-weight:var(--weight-medium)">Aa<small>500</small></span>
+            <span style="font-weight:var(--weight-emphasis)">Aa<small>650</small></span>
+            <span style="font-weight:var(--weight-bold)">Aa<small>700</small></span>
+          </div>
+          <small>영문·숫자 · 가변 굵기 400–800</small>
+        </article>
+        <article class="font-family">
+          <h3>Noto Sans KR</h3>
+          <p class="alphabet">상상에서 경험으로.<br>서로 다른 언어를<br>하나의 흐름으로.</p>
+          <div class="font-weight-row" aria-label="한글 굵기 표본">
+            <span style="font-weight:var(--weight-regular)">가나<small>400</small></span>
+            <span style="font-weight:var(--weight-reading)">가나<small>450</small></span>
+            <span style="font-weight:var(--weight-medium)">가나<small>500</small></span>
+            <span style="font-weight:var(--weight-emphasis)">가나<small>650</small></span>
+            <span style="font-weight:var(--weight-bold)">가나<small>700</small></span>
+          </div>
+          <small>한글 · 가변 굵기 400–900</small>
+        </article>
+      </div>
+      <p class="font-note">공통 글꼴 순서는 Manrope → Noto Sans KR → sans-serif입니다. 웹 폰트가 로드되지 않으면 기기의 산세리프 글꼴로 표시됩니다. 아래 650과 450은 가변 폰트의 중간 굵기입니다.</p>
+    </section>
+
+    <section class="font-section" aria-labelledby="scale-title">
+      <div class="font-section-heading">
+        <div><p class="type-meta">02 / TYPE SCALE</p><h2 id="scale-title">크기보다 먼저, 위계.</h2></div>
+        <p>이름과 핵심 문장을 먼저, 설명을 그다음에. 큰 제목은 크기에 맞춰 조이고, 한글 본문은 −0.012em으로 미세하게 다듬습니다. 작은 영문 메타는 판독성을 위해 제한된 양의 자간을 유지합니다.</p>
+      </div>
+      <table class="font-scale">
+        <caption>모바일 기준: 화면 너비 760px 이하. 크기는 px, 줄높이는 글자 크기의 배수입니다.</caption>
+        <thead><tr><th scope="col">역할 / 토큰</th><th scope="col">데스크톱</th><th scope="col">모바일</th><th scope="col">굵기 · 줄높이 · 자간</th></tr></thead>
+        <tbody>
+          <tr><td>첫 화면 이름<code>--type-hero-name</code></td><td data-label="데스크톱">24px</td><td data-label="모바일">22px</td><td data-label="규칙">650 · 1.55 · −0.04em</td></tr>
+          <tr><td>첫 화면 핵심 문장<code>--type-hero-role</code></td><td data-label="데스크톱">32px</td><td data-label="모바일">28px</td><td data-label="규칙">650 · 1.55 · −0.04em</td></tr>
+          <tr><td>첫 화면 설명<code>--type-hero-description</code></td><td data-label="데스크톱">22px</td><td data-label="모바일">18px</td><td data-label="규칙">450 · 1.8 · −0.012em</td></tr>
+          <tr><td>섹션 제목<code>--type-display</code></td><td data-label="데스크톱">clamp(40px, 4.4vw, 66px)</td><td data-label="모바일">clamp(34px, 8.8vw, 46px)</td><td data-label="규칙">650 · 1.4 · −0.055em</td></tr>
+          <tr><td>소개 문단<code>--type-intro</code></td><td data-label="데스크톱">22px</td><td data-label="모바일">18px</td><td data-label="규칙">450 · 1.8 · −0.012em</td></tr>
+          <tr><td>경력 회사·연도<code>--type-company</code></td><td data-label="데스크톱">19px</td><td data-label="모바일">17px</td><td data-label="규칙">500 · 1.55 · −0.04em</td></tr>
+          <tr><td>경력 역할<code>--type-role</code></td><td data-label="데스크톱">23px</td><td data-label="모바일">21px</td><td data-label="규칙">650 · 1.55 · −0.04em</td></tr>
+          <tr><td>경력 설명<code>--type-career-body</code></td><td data-label="데스크톱">17px</td><td data-label="모바일">15px</td><td data-label="규칙">400 · 1.8 · −0.012em</td></tr>
+          <tr><td>영문 메타<code>--type-meta</code></td><td data-label="데스크톱">12px</td><td data-label="모바일">11px</td><td data-label="규칙">700 · 1.5 · +0.075em</td></tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section class="font-section" aria-labelledby="samples-title">
+      <div class="font-section-heading">
+        <div><p class="type-meta">03 / TYPE IN USE</p><h2 id="samples-title">실제 문장으로 읽기.</h2></div>
+        <p>첫 화면과 소개, 경력의 같은 토큰을 사용한 표본입니다. 화면이 좁아지면 글자 크기와 줄바꿈이 함께 바뀝니다.</p>
+      </div>
+      <div class="font-samples">
+        <article class="font-sample sample-hero" aria-label="첫 화면 위계 표본">
+          <p class="type-meta sample-label">HERO / SIGNATURE → NAME → MESSAGE</p>
+          <img class="sample-hero-mark" src="assets/brand/jay-on-the-art-stacked-rounded.svg" width="992" height="584" alt="Jay. on the art">
+          <p class="type-name">최효재</p>
+          <p class="type-meta">ART · PLANNING · DEVELOPMENT</p>
+          <p class="type-headline">상상한 세계를, 경험할 수 있는 형태로.</p>
+          <p class="type-intro">아트의 의도와 기획의 구조, 기술의 가능성을 하나의 제작 흐름으로 연결합니다.<br>AI와 웹 기술을 활용해 기획부터 구현까지 확장하고 있습니다.</p>
+        </article>
+        <article class="font-sample sample-reading" aria-label="소개와 경력 표본">
+          <p class="type-meta sample-label">NARRATIVE / EXPERIENCE</p>
+          <h3 class="type-display">만들어온 세계,<br>이어지는 이야기.</h3>
+          <p class="type-intro">공간과 비주얼이 만드는 감각, 기획이 정리하는 경험의 구조, 기술이 여는 가능성을 한 방향으로 연결합니다. 서로 다른 전문성이 같은 목표를 향하도록 제작의 흐름을 설계하고 결과물로 이어갑니다.</p>
+          <div class="sample-career">
+            <p class="type-company">MORAI · 2024</p>
+            <h3 class="type-role">3D Environment 파트장</h3>
+            <p class="type-career-body">디지털 트윈과 SimReady 자율주행 시뮬레이션 환경을 디렉팅했습니다.</p>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <section class="font-section" aria-labelledby="colors-title">
+      <div class="font-section-heading">
+        <div><p class="type-meta">04 / COLOR</p><h2 id="colors-title">미색 위의 선명한 문장.</h2></div>
+        <p>읽는 글자는 중립색으로, 코랄은 점과 진행 표시, 링크를 가리키는 순간에 사용합니다. 소개 문단도 제목과 같은 잉크색으로 유지합니다.</p>
+      </div>
+      <div class="font-colors">
+        <article class="font-color"><div class="color-chip" style="background:var(--paper)" aria-hidden="true"></div><h3>Paper</h3><code>#F6F1E8</code><p>--paper / 기본 바탕</p></article>
+        <article class="font-color"><div class="color-chip" style="background:var(--ink)" aria-hidden="true"></div><h3>Ink</h3><code>#182525</code><p>--ink / 제목</p></article>
+        <article class="font-color"><div class="color-chip" style="background:var(--text-strong)" aria-hidden="true"></div><h3>Strong</h3><code>#182525</code><p>--text-strong / 주요 설명</p></article>
+        <article class="font-color"><div class="color-chip" style="background:var(--muted)" aria-hidden="true"></div><h3>Muted</h3><code>#656565</code><p>--muted / 보조 정보</p></article>
+        <article class="font-color"><div class="color-chip" style="background:var(--primary)" aria-hidden="true"></div><h3>Coral</h3><code>#FF616B</code><p>--primary / 그래픽·상호작용</p></article>
+      </div>
+    </section>
+
+    <section class="font-section" aria-labelledby="space-title">
+      <div class="font-section-heading">
+        <div><p class="type-meta">05 / SPACE &amp; READING</p><h2 id="space-title">읽을 만큼, 비워두기.</h2></div>
+        <p>홈의 왼쪽 여백을 유지하고 본문 길이를 제한합니다. 작은 화면에서는 표와 표본을 한 열로 바꿔 가로 이동 없이 읽을 수 있습니다.</p>
+      </div>
+      <dl class="font-values">
+        <div><dt>페이지 여백<code>--pad / --pad-left</code></dt><dd>기본: clamp(24px, 5.5vw, 96px)<br>모바일: 23px<br>왼쪽: 기본 여백 × 2<br>모바일 왼쪽: 46px</dd></div>
+        <div><dt>설명과 본문 폭<code>--measure-hero / --measure-intro / --measure-body</code></dt><dd>첫 화면 설명: 최대 730px / --measure-hero<br>경력 본문: 최대 56ch<br>모바일: 사용 가능한 너비 안으로 줄바꿈</dd></div>
+        <div><dt>참조 문서 콘텐츠 폭<code>--content-max</code></dt><dd>최대 1320px<br>양쪽 페이지 여백은 별도<br>작은 화면에서는 한 열</dd></div>
+        <div><dt>서명과 이름 사이<code>--space-signature</code></dt><dd>데스크톱: 28px<br>모바일: 24px<br>크기를 줄여도 위계는 유지</dd></div>
+        <div><dt>섹션의 여백<code>--space-section</code></dt><dd>참조 문서 섹션 하단: 120px<br>모바일: 80px<br>홈의 스크롤 무대 높이는 장면별 적용</dd></div>
+        <div><dt>프레임과 초점<code>--radius-frame / --radius-focus</code></dt><dd>참조 프레임: 4px<br>초점 윤곽 모서리: 3px<br>초점 선 2px / 바깥 간격 6px</dd></div>
+      </dl>
+      <div class="font-spacing" aria-label="간격 토큰 8, 16, 24, 32, 48, 64px">
+        <div><span style="--sample-space:var(--space-1)"></span><small>8px</small></div>
+        <div><span style="--sample-space:var(--space-2)"></span><small>16px</small></div>
+        <div><span style="--sample-space:var(--space-3)"></span><small>24px</small></div>
+        <div><span style="--sample-space:var(--space-4)"></span><small>32px</small></div>
+        <div><span style="--sample-space:var(--space-5)"></span><small>48px</small></div>
+        <div><span style="--sample-space:var(--space-6)"></span><small>64px</small></div>
+      </div>
+    </section>
+
+    <section class="font-section" aria-labelledby="marks-title">
+      <div class="font-section-heading">
+        <div><p class="type-meta">06 / WORDMARK</p><h2 id="marks-title">가벼운 서명, 같은 정체성.</h2></div>
+        <p>최신 rounded 가로형과 세로형을 원래 비율로 표시합니다. 배경과 글자 안쪽은 투명하며 코랄 닷은 모든 변형에서 같은 색입니다.</p>
+      </div>
+      <div class="font-marks">
+        <figure class="font-mark-card"><div class="font-mark-field"><img src="assets/brand/jay-on-the-art-horizontal-rounded.svg" width="1411" height="302" alt="가로형 워드마크, 잉크색"><img src="assets/brand/jay-on-the-art-stacked-rounded.svg" width="992" height="584" alt="세로형 워드마크, 잉크색"></div><figcaption>미색 바탕 / Ink</figcaption></figure>
+        <figure class="font-mark-card"><div class="font-mark-field checker"><img src="assets/brand/jay-on-the-art-horizontal-rounded.svg" width="1411" height="302" alt="체크무늬 위 투명 가로형 워드마크"><img src="assets/brand/jay-on-the-art-stacked-rounded.svg" width="992" height="584" alt="체크무늬 위 투명 세로형 워드마크"></div><figcaption>체크무늬 / 투명 배경과 카운터</figcaption></figure>
+        <figure class="font-mark-card"><div class="font-mark-field dark-field"><img src="assets/brand/jay-on-the-art-horizontal-rounded-light.svg" width="1411" height="302" alt="어두운 바탕의 밝은 가로형 워드마크"><img src="assets/brand/jay-on-the-art-stacked-rounded-light.svg" width="992" height="584" alt="어두운 바탕의 밝은 세로형 워드마크"></div><figcaption>어두운 바탕 / Light</figcaption></figure>
+      </div>
+      <p class="font-note">홈의 대표 서명 폭은 clamp(150px, 15vw, 225px), 모바일은 145px입니다. 위 비교판은 윤곽을 보기 위한 큰 표본이며, 실제 첫 화면 크기는 03의 표본에서 확인할 수 있습니다. 헤더와 푸터의 워드마크 크기는 별도로 유지합니다.</p>
+    </section>
+
+    <section class="font-section" aria-labelledby="interaction-title">
+      <div class="font-section-heading">
+        <div><p class="type-meta">07 / LINKS &amp; FOCUS</p><h2 id="interaction-title">작은 신호로, 분명하게.</h2></div>
+        <p>일반 링크는 가리키거나 키보드로 선택하면 코랄 글자와 1px 밑줄을 보여줍니다. 키보드 초점에는 별도의 잉크색 윤곽이 있어 위치를 확인할 수 있습니다.</p>
+      </div>
+      <dl class="font-values">
+        <div><dt>기본 상태</dt><dd>주변 텍스트의 색을 따릅니다.<br>밑줄은 투명한 상태로 시작합니다.</dd></div>
+        <div><dt>호버·키보드 초점</dt><dd>글자·밑줄 #FF616B<br>밑줄 두께 1px<br>글자와 밑줄 간격 0.25em</dd></div>
+        <div><dt>키보드와 작은 화면</dt><dd>초점 선 2px / 간격 6px<br>탐색 링크 높이 최소 44px<br>모션 감소 설정에서는 전환 효과 생략</dd></div>
+      </dl>
+      <nav class="font-link-demo" aria-label="링크 표본">
+        <a class="text-link" href="index.html">브랜드 페이지로 돌아가기 ↗</a>
+        <a class="text-link" href="resume.html">Resume 읽기 ↗</a>
+        <a class="text-link" href="#main">페이지 처음으로 ↑</a>
+      </nav>
+    </section>
+  </main>
+  <footer class="font-footer"><span>Jay. on the art / Design reference</span><a class="text-link" href="index.html">Home ↗</a></footer>
+</body>
+</html>
+
+
+

@@ -1,0 +1,63 @@
+/* Final reading scale, earlier project timeline and the film covering the last card. */
+.topbar .brand .logo-horizontal{width:126px}
+.footer-mark .logo-horizontal{width:135px}
+.resume-page .brand .logo-horizontal{width:120px}
+.font-header .font-brand{width:91.2px}
+.hero-description,.pov-description,.journey-intro>p,.tile-wall-heading>p:last-child,
+.discover-heading .discover-subtitle,.career-heading>p,.lab-heading>p,.lab-intro,
+.about-copy>p:not(.eyebrow):not(.profile-affiliation),.project-subtitle,.project-copy,.project-genre,
+.process-list li>p:not(.eyebrow){color:var(--ink)}
+.practice .special-description p:not(.eyebrow){color:#f6f1e8}
+.resume-page{background:#fff}
+.resume-page .resume-document{box-shadow:none;border-color:transparent;margin-bottom:0}
+@media(min-width:761px){
+ .motion-layout #yigo{position:relative;z-index:7;margin-top:-100svh;background:transparent}
+ .motion-layout #yigo .special-description{background:#151c29}
+ .motion-layout .tile-board{max-width:calc(100% - 155px)}
+ .motion-layout .tile-wall-heading{width:calc(100% - 155px);align-items:flex-start}
+ .motion-layout .tile-wall-heading>p:last-child{max-width:42%;flex:0 1 auto;word-break:keep-all}
+}
+@media(min-width:761px) and (max-width:1100px){.topbar .brand .logo-horizontal{width:111px}}
+@media(max-width:760px){
+ .topbar .brand .logo-stacked{width:50.4px}
+ .footer-mark .logo-stacked{width:66px}
+ .resume-page .brand .logo-stacked{width:48px}
+ .font-header .font-brand{width:78px}
+ .hero{min-height:990px}
+}
+@media print{.resume-page .resume-document{border:0;box-shadow:none}}
+
+/* Korean signature and an uninterrupted journey between resume and scenes. */
+.topbar .brand{display:inline-flex;align-items:center;gap:12px;line-height:1.6}
+.topbar .site-wordmark{font-family:'Manrope','Noto Sans KR',sans-serif;font-size:var(--korean-signature-size);font-weight:650;line-height:1.6;letter-spacing:var(--korean-signature-tracking);color:var(--ink);white-space:nowrap}
+.resume-page .resume-topbar{background:#fff;border-bottom-color:#e6e6e6}
+.resume-page .site-wordmark.brand{font-size:18.9px;line-height:1.6;letter-spacing:0;font-weight:650;color:var(--ink);white-space:nowrap}
+.resume-page .resume-document{padding-bottom:100px}
+.resume-modal{width:min(1120px,94vw);height:92svh;max-height:calc(100svh - 24px);max-width:94vw;margin:auto;padding:0;border:0;border-radius:10px;background:white;color:var(--ink);box-shadow:0 20px 90px #0004;overflow:hidden}
+.resume-modal::backdrop{background:#18252580;backdrop-filter:blur(12px)}
+.resume-modal[open]{display:flex;flex-direction:column;animation:resume-appear .24s ease-out}
+.resume-modal-bar{height:44px;min-height:44px;display:flex;justify-content:space-between;align-items:center;padding:0 20px;border-bottom:1px solid #e6e6e6;font-size:12px;background:white}
+.resume-modal-bar button{border:0;background:transparent;padding:9px 8px;font:inherit;color:inherit;cursor:pointer}
+.resume-modal iframe{width:100%;flex:1;min-height:0;border:0;background:white}
+.reading-resume{overflow:hidden}
+@keyframes resume-appear{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}
+@media(max-width:760px){.resume-page .resume-document{padding-bottom:80px}.resume-page .site-wordmark.brand{font-size:16.8px}.resume-modal{width:96vw;max-width:96vw;height:96svh;border-radius:6px}}
+@media(prefers-reduced-motion:reduce){.resume-modal[open]{animation:none}}
+
+:root{--korean-signature-size:16px;--korean-signature-tracking:-.04em}
+.resume-page .site-wordmark.brand{font-family:'Manrope','Noto Sans KR',sans-serif;font-size:var(--korean-signature-size);font-weight:650;line-height:1.6;letter-spacing:var(--korean-signature-tracking)}
+.dark-chapter .topbar .site-wordmark{color:var(--paper)}
+.lab-intro,.about .profile-affiliation,.career-art figcaption span:last-child,#motion-toggle{letter-spacing:var(--tracking-ko-body)}
+.workflow-evidence{letter-spacing:var(--tracking-meta-tight)!important}
+
+/* Separate the Korean signature and the centered English wordmark in the site header. */
+.topbar .brand{position:static;display:block;flex:0 0 0;width:0;height:0;overflow:visible;line-height:0}
+.topbar .brand .logo-horizontal{position:absolute;top:50%;left:50%;display:block;width:126px;transform:translate(-50%,-50%)}
+.topbar .brand .logo-stacked{display:none}
+.topbar .site-wordmark{position:absolute;top:50%;left:var(--pad);transform:translateY(-50%);z-index:1}
+@media(max-width:760px){.topbar .brand .logo-horizontal{width:68px}}
+
+/* Keep both Marakun titles on one line with a subtly lighter suffix. */
+.project-card:nth-child(-n+2) .project-caption h3{white-space:nowrap}
+.project-card:nth-child(-n+2) .project-title-suffix{font-size:.9em;font-weight:600;letter-spacing:-.045em;white-space:nowrap}
+@media(max-width:760px){.project-card:nth-child(-n+2) .project-caption h3{font-size:21px}}

@@ -26,8 +26,8 @@ const ease=value=>{const t=clamp(value);return t*t*(3-2*t);};
 const mix=(a,b,t)=>t===0?a:t===1?b:a+(b-a)*t;
 const vectorMix=(a,b,t)=>a.map((value,index)=>mix(value,b[index],t));
 const phaseRank={intro:0,tile:1,focus:2,cards:3};
-const sceneIds=['top','perspective','works','yigo','discover','threshold','career','lab','about','links'];
-const semanticId=id=>id==='top'?'hero':id==='threshold'?'passage':id;
+const sceneIds=['top','perspective','works','yigo','discover','threshold','career-history','lab','about','links'];
+const semanticId=id=>id==='top'?'hero':id==='threshold'?'passage':id==='career-history'?'career':id;
 
 function frame(name,night=0,blur=0,wash=0){
   const pose=CAMERA_POSES[name];
@@ -138,11 +138,11 @@ export function createCameraTimeline(options={}){
     // Discover's actual release viewport is the approach, not an obsolete intro.
     const passageStart=top('threshold');
     add(passageStart,'nightClose',1,18,0);
-    const careerStart=top('career');
+    const careerStart=top('career-history');
     const passagePinEnd=pinned?release('threshold'):careerStart;
     const passageEnd=passagePinEnd>passageStart?passagePinEnd:careerStart;
     // No initial hold or second zoom-in: zoom-out begins at passage entry.
-    add(mix(passageStart,passageEnd,.72),'career',0,0,.35);
+    add(mix(passageStart,passageEnd,.62),'career',0,0,.35);
     add(careerStart,'career',0,0,.4);
     add(top('lab'),'careerEnd',0,4,.35);
 

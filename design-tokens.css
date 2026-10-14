@@ -1,0 +1,110 @@
+/* Shared source for the homepage and font.html. Load after legacy site styles. */
+@import url('https://fonts.googleapis.com/css2?family=Manrope:wght@400..800&family=Noto+Sans+KR:wght@400..900&display=swap');
+
+:root {
+  --paper: #F6F1E8;
+  --ink: #182525;
+  --text-strong: #182525;
+  --muted: #656565;
+  --primary: #FF616B;
+  --line: rgba(24, 37, 37, .18);
+  --surface: #fffdf8;
+  --sans: 'Manrope', 'Noto Sans KR', sans-serif;
+  --weight-regular: 400;
+  --weight-reading: 450;
+  --weight-medium: 500;
+  --weight-emphasis: 650;
+  --weight-bold: 700;
+  --type-hero-name: 24px;
+  --type-hero-role: 32px;
+  --type-hero-description: 22px;
+  --type-display: clamp(40px, 4.4vw, 66px);
+  --type-intro: 22px;
+  --type-company: 19px;
+  --type-role: 23px;
+  --type-career-body: 17px;
+  --type-meta: 12px;
+  --leading-title: 1.4;
+  --leading-role: 1.55;
+  --leading-reading: 1.8;
+  --leading-meta: 1.5;
+  --tracking-ko-body: -.012em;
+  --tracking-ko-heading: -.04em;
+  --tracking-ko-display: -.055em;
+  --tracking-ko: var(--tracking-ko-body);
+  --tracking-meta: .075em;
+  --tracking-meta-compact: .035em;
+  --tracking-meta-tight: .012em;
+  --hero-mark-width: clamp(150px, 15vw, 225px);
+  --space-signature: 28px;
+  --space-1: 8px;
+  --space-2: 16px;
+  --space-3: 24px;
+  --space-4: 32px;
+  --space-5: 48px;
+  --space-6: 64px;
+  --space-section: 120px;
+  --pad: clamp(24px, 5.5vw, 96px);
+  --pad-left: calc(var(--pad) * 2);
+  --measure-intro: 38ch;
+  --measure-hero: 730px;
+  --measure-body: 56ch;
+  --content-max: 1320px;
+  --radius-frame: 4px;
+  --radius-focus: 3px;
+  --focus-width: 2px;
+  --focus-offset: 6px;
+  --link-underline-offset: .25em;
+}
+
+body { font-family: var(--sans); font-style: normal; letter-spacing: var(--tracking-ko-body); }
+:where(button, input, select, textarea) { font-family: var(--sans); }
+:where(em, i, address) { font-style: normal; }
+:where(a, button, summary):focus-visible {
+  outline: var(--focus-width) solid var(--ink);
+  outline-offset: var(--focus-offset);
+  border-radius: var(--radius-focus);
+}
+.text-link {
+  color: inherit;
+  text-decoration: underline;
+  text-decoration-color: transparent;
+  text-decoration-thickness: 1px;
+  text-underline-offset: var(--link-underline-offset);
+  text-decoration-skip-ink: auto;
+  transition: color .2s, text-decoration-color .2s;
+}
+.text-link:is(:hover, :focus-visible) {
+  color: var(--primary);
+  text-decoration-color: var(--primary);
+}
+.type-display { font-size: var(--type-display); font-weight: var(--weight-emphasis); line-height: var(--leading-title); letter-spacing: var(--tracking-ko-display); }
+.type-name { font-size: var(--type-hero-name); font-weight: var(--weight-emphasis); line-height: var(--leading-role); letter-spacing: var(--tracking-ko-heading); }
+.type-headline { font-size: var(--type-hero-role); font-weight: var(--weight-emphasis); line-height: var(--leading-role); letter-spacing: var(--tracking-ko-heading); }
+.type-intro { font-size: var(--type-intro); font-weight: var(--weight-reading); line-height: var(--leading-reading); letter-spacing: var(--tracking-ko); color: var(--text-strong); }
+.type-company { font-size: var(--type-company); font-weight: var(--weight-medium); line-height: var(--leading-role); letter-spacing: var(--tracking-ko-heading); }
+.type-role { font-size: var(--type-role); font-weight: var(--weight-emphasis); line-height: var(--leading-role); letter-spacing: var(--tracking-ko-heading); }
+.type-career-body { font-size: var(--type-career-body); font-weight: var(--weight-regular); line-height: var(--leading-reading); letter-spacing: var(--tracking-ko); }
+.type-meta { font-size: var(--type-meta); font-weight: var(--weight-bold); line-height: var(--leading-meta); letter-spacing: var(--tracking-meta); }
+
+@media (max-width: 760px) {
+  :root {
+    --type-hero-name: 22px;
+    --type-hero-role: 28px;
+    --type-hero-description: 18px;
+    --type-display: clamp(34px, 8.8vw, 46px);
+    --type-intro: 18px;
+    --type-company: 17px;
+    --type-role: 21px;
+    --type-career-body: 15px;
+    --type-meta: 11px;
+    --hero-mark-width: 145px;
+    --space-signature: 24px;
+    --space-section: 80px;
+    --pad: 23px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .text-link { transition: none; }
+}
