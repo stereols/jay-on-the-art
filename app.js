@@ -170,6 +170,7 @@ import {createExperience} from './experience.js';
       pov.style.setProperty('--pov-title',String(smooth(clamp((p-.37)/.10))));
       pov.style.setProperty('--pov-reflection',String(smooth(clamp((p-.55)/.13))));
       pov.style.setProperty('--pov-dim',String(.18+smooth(clamp((p-.37)/.10))*.37));
+      pov.style.setProperty('--pov-exit-cue',String(smooth(clamp((p-.76)/.10))*(1-smooth(clamp((p-.98)/.02)))));
       pov.style.setProperty('--pov-controls',String(expand>.9?1:0));
       document.querySelector('#pov-film .film-toggle').tabIndex=expand>.9?0:-1;
     }

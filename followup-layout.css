@@ -111,3 +111,9 @@
 .pov-motion #pov-film .film-toggle .film-toggle-label{display:none}
 .pov-motion #pov-film .film-toggle:hover{background:#10182044;color:#fff}
 .pov-motion #pov-film .film-toggle:focus-visible{outline:2px solid #fff;outline-offset:2px}
+.pov-exit-cue{display:none}
+.pov-motion .pov-exit-cue{display:block;position:absolute;left:50%;bottom:36px;z-index:4;transform:translateX(-50%);opacity:var(--pov-exit-cue,0);pointer-events:none;color:#fff}
+.pov-exit-cue i{display:grid;place-items:center;width:42px;height:42px;border:1px solid #ffffff70;border-radius:50%;font-style:normal;font-size:20px;line-height:1;text-shadow:0 1px 12px #0008;animation:pov-scroll-nudge 1.8s ease-in-out infinite}
+@keyframes pov-scroll-nudge{0%,100%{transform:translateY(-2px)}50%{transform:translateY(4px)}}
+@media(max-width:760px){.pov-motion .pov-exit-cue{bottom:24px}.pov-exit-cue i{width:38px;height:38px}}
+@media(prefers-reduced-motion:reduce){.pov-exit-cue i{animation:none}}
