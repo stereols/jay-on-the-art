@@ -63,3 +63,6 @@
 #career-project-1 .career-project-visual{aspect-ratio:16/9}
 #career-project-2 .career-project-visual{aspect-ratio:16/9}
 @media(max-width:760px){.project-card:nth-child(-n+2) .project-caption h3{font-size:21px}}
+
+#career-project-3 .career-project-visual,#career-project-4 .career-project-visual{aspect-ratio:16/9}
+#career-project-3 .career-project-visual img,#career-project-4 .career-project-visual img{transform:none;object-fit:cover;object-position:center}
