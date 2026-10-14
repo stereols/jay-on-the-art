@@ -7,8 +7,8 @@ export function createExperience(section){
   let enabled=false;
   function update(){
     const p=clamp(-section.getBoundingClientRect().top/Math.max(1,section.offsetHeight-innerHeight));
-    const titleAlpha=enabled?ease((p-.08)/.18)*(1-ease((p-.36)/.2)):1;
-    const arrivalAlpha=enabled?ease((p-.43)/.2):1;
+    const titleAlpha=enabled?ease((p-.08)/.18)*(1-ease((p-.44)/.2)):1;
+    const arrivalAlpha=enabled?ease((p-.51)/.2):1;
     section.style.setProperty('--passage-title',titleAlpha.toFixed(4));
     section.style.setProperty('--career-arrival',arrivalAlpha.toFixed(4));
     title.setAttribute('aria-hidden',String(enabled&&titleAlpha<.05));

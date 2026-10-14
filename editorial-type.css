@@ -230,3 +230,8 @@
   .font-mark-field { min-height: 230px; }
   .font-footer { align-items: start; flex-direction: column; }
 }
+
+/* Current copy remains readable within the independent design reference. */
+.font-page .font-current-copy{margin-top:var(--space-3);max-width:var(--measure-body);color:var(--ink);word-break:keep-all;overflow-wrap:break-word}
+.font-page .font-current-copy>p+p{margin-top:var(--space-3)}
+.font-page .sample-hero .type-intro{font-size:var(--type-hero-description);max-width:var(--measure-intro)}

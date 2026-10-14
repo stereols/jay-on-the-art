@@ -33,7 +33,7 @@
 .about-layout{grid-template-columns:minmax(240px,.78fr) minmax(0,1.32fr);align-items:center;gap:clamp(55px,8vw,140px);max-width:1200px;margin:auto}
 .profile-portrait{margin:0;max-width:420px}.profile-portrait img{width:100%;aspect-ratio:4/5;object-fit:cover;object-position:50% 35%;border-radius:10px;box-shadow:0 25px 65px #273e3520}
 .profile-portrait figcaption{font-size:10px;line-height:1.7;color:#65756c;margin-top:14px}
-.about-copy{max-width:650px;padding-top:0;margin-top:0}.about .profile-name{font-size:38px;font-weight:700;letter-spacing:-.05em;margin-top:22px}.profile-affiliation{font-weight:600;letter-spacing:0}
+.about-copy{max-width:650px;padding-top:0;margin-top:0}.about .profile-name{font-size:38px;font-weight:700;letter-spacing:-.05em;margin:22px 0 0}.about-copy>.profile-signature{margin:0;font-size:var(--type-meta);line-height:var(--leading-meta);letter-spacing:var(--tracking-meta)}.profile-affiliation{font-weight:600;letter-spacing:0}
 .about-copy .lead{font-size:clamp(22px,2.3vw,32px);line-height:1.65;letter-spacing:-.04em;margin:27px 0}
 .about-copy>p:not(.eyebrow):not(.lead){font-size:14px;line-height:2}
 .profile-links{display:flex;flex-wrap:wrap;gap:12px 27px;margin-top:22px}.profile-links .underlined-link{margin-top:0}
