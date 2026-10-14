@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="85" height="37" viewBox="588 75 85 37" role="img" aria-labelledby="title">
+  <title id="title">aelin</title>
+  <!-- Temporary source-pixel extraction; replace with the supplied outline SVG later.
+       Loaded as an SVG document via object so the shared local PNG is cached once. -->
+  <defs><filter id="ink" color-interpolation-filters="sRGB"><feColorMatrix type="matrix" values="0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  -.333 -.333 -.333 0 1"/><feComponentTransfer><feFuncA type="linear" slope="1.3" intercept="-.08"/></feComponentTransfer></filter></defs>
+  <image href="product-screens-source.png" width="1672" height="940" filter="url(#ink)"/>
+</svg>

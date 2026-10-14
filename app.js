@@ -1,6 +1,7 @@
 import {createWorlds} from './worlds.js';
 import {createDiscover,discoverFrame} from './discover.js';
 import {createSpecialFilm} from './special-film.js';
+import {createAelinShowcase} from './aelin-showcase.js';
 import {createCameraTimeline} from './camera-timeline.js';
 import {createExperience} from './experience.js';
 (() => {
@@ -58,6 +59,7 @@ import {createExperience} from './experience.js';
   const experience=createExperience(portal);
   const header=document.querySelector('.topbar');
   const specialStory=createSpecialFilm(document.getElementById('yigo'));
+  const aelinShowcase=createAelinShowcase(document.getElementById('aelin-showcase'));
   const cameraTimeline=createCameraTimeline();
   const lab=document.getElementById('lab');
   const stepsUI=[...document.querySelectorAll('.process-list li')];
@@ -100,6 +102,7 @@ import {createExperience} from './experience.js';
     worlds.setEnabled(pinned());
     discoverScene.setEnabled(pinned());
     specialStory.setEnabled(pinned());
+    aelinShowcase.setEnabled(pinned());
     experience.setEnabled(pinned());
     if(!pinned())cardProgress(0);
     motionButton.setAttribute('aria-pressed',String(paused));motionButton.setAttribute('aria-label',paused?'배경과 스크롤 연출 재생':'배경과 스크롤 연출 일시정지');
@@ -124,6 +127,7 @@ import {createExperience} from './experience.js';
   revealLinkedDetail();
 
   function updateScroll(){
+    aelinShowcase.update();
     const marker=innerHeight*.1;
     let section=sections[0];
     for(const s of sections)if(s.getBoundingClientRect().top<=marker)section=s;
