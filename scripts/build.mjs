@@ -1,3 +1,4 @@
+import './sync-wordmarks.mjs';
 import {build} from 'esbuild';
 import path from 'node:path';
 import {fileURLToPath} from 'node:url';
