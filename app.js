@@ -1,7 +1,7 @@
 import {createWorlds} from './worlds.js';
 import {createDiscover,discoverFrame} from './discover.js';
 import {createSpecialFilm} from './special-film.js';
-import {createAelinShowcase} from './aelin-showcase.js';
+import {createAelinShowcase} from './aelin-showcase.js?v=20261015-final-screen';
 import {createCameraTimeline} from './camera-timeline.js?v=20261015-after-morai';
 import {createExperience} from './experience.js';
 import {createExperienceCharacter} from './experience-character.js?v=20261015-career-fade-fast';
@@ -87,7 +87,7 @@ import {createAelinCompanion} from './aelin-companion.js?v=20261015-wide';
   const videos=[...document.querySelectorAll('.film-frame video')];
   const videoState=new Map(videos.map(v=>[v,{visible:false,userPaused:false}]));
   function syncVideoLabel(video){const button=video.parentElement.querySelector('.film-toggle');button.setAttribute('aria-label',video.paused?'영상 재생':'영상 일시정지');button.setAttribute('aria-pressed',String(!video.paused));button.querySelector('span').textContent=video.paused?'▷':'Ⅱ';button.querySelector('.film-toggle-label').textContent=video.paused?'영상 재생':'일시정지';}
-  function loadVideo(video){const source=video.querySelector('source');if(!source.getAttribute('src')&&source.dataset.src){source.src=source.dataset.src;video.load();}}
+  function loadVideo(video){const sources=[...video.querySelectorAll('source[data-src]')];if(sources.some(source=>!source.getAttribute('src'))){sources.forEach(source=>{source.src=source.dataset.src;});video.load();}}
   function syncVideo(video){const state=videoState.get(video);if(state.visible&&motionEnabled()&&!document.hidden&&!state.userPaused){loadVideo(video);video.play().catch(()=>syncVideoLabel(video));}else video.pause();}
   const videoObserver=new IntersectionObserver(entries=>entries.forEach(entry=>{const video=entry.target;videoState.get(video).visible=entry.isIntersecting;syncVideo(video);}),{threshold:.15});
   videos.forEach(video=>{videoObserver.observe(video);video.addEventListener('play',()=>syncVideoLabel(video));video.addEventListener('pause',()=>syncVideoLabel(video));video.parentElement.querySelector('.film-toggle').addEventListener('click',()=>{const state=videoState.get(video);if(video.paused){state.userPaused=false;loadVideo(video);video.play().catch(()=>syncVideoLabel(video));}else{state.userPaused=true;video.pause();}});});
@@ -96,7 +96,7 @@ import {createAelinCompanion} from './aelin-companion.js?v=20261015-wide';
   videos.forEach(video=>video.addEventListener('error',()=>{
     if(video.parentElement.querySelector('.film-error'))return;
     const message=document.createElement('p');message.className='film-error';message.textContent='영상을 불러오지 못했습니다.';
-    const link=document.createElement('a');link.href=video.querySelector('source').dataset.src;link.textContent='영상 직접 열기 ↗';message.append(link);video.parentElement.append(message);
+    const link=document.createElement('a');link.href=video.querySelector('source:last-of-type').dataset.src;link.textContent='영상 직접 열기 ↗';message.append(link);video.parentElement.append(message);
   }));
   let layoutInitialized=false,lastReading=null;
   function setLayout(){

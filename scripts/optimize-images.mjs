@@ -5,7 +5,16 @@ import sharp from 'sharp';
 export async function optimizePageImages(root) {
   const htmlPath=path.join(root,'index.html');
   const original=await fs.readFile(htmlPath,'utf8');
-  let html=original.replace(/<picture class="responsive-media"><source[^>]*>(<img\b[^>]*>)<\/picture>/gi,'$1');
+  // Inline SVG screens do not pass through the ordinary <img> pipeline.
+  // Keep their UI lettering pixel-exact while avoiding the original PNG transfer.
+  const screenSource='assets/aelin/product-screens-source.png';
+  const screenOutput='assets/aelin/product-screens-lossless.webp';
+  const sourceStat=await fs.stat(path.join(root,screenSource));
+  const outputStat=await fs.stat(path.join(root,screenOutput)).catch(()=>null);
+  if(!outputStat||outputStat.mtimeMs<sourceStat.mtimeMs||!outputStat.size){
+    await sharp(path.join(root,screenSource)).webp({lossless:true,effort:6}).toFile(path.join(root,screenOutput));
+  }
+  let html=original.replaceAll(screenSource,screenOutput).replace(/<picture class="responsive-media"><source[^>]*>(<img\b[^>]*>)<\/picture>/gi,'$1');
   const imageTag=/<img\b[^>]*\bsrc="([^"]+\.(?:png|jpe?g|webp))"[^>]*>/gi;
   const sources=[...html.matchAll(imageTag)].filter(match=>!match[0].includes('data-manual-media'));
   const images=new Map();

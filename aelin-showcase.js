@@ -144,9 +144,8 @@ export function createAelinShowcase(section) {
       {at: .135, focus: 0}, {at: .225, focus: 0},
       {at: .345, focus: 1}, {at: .435, focus: 1},
       {at: .555, focus: 2}, {at: .645, focus: 2},
-      {at: .765, focus: 3}, {at: .855, focus: 3},
-      {at: .94, pose: index => groupPose(index, width, deviceWidth)},
-      {at: 1, pose: index => groupPose(index, width, deviceWidth)}
+      {at: .765, focus: 3},
+      {at: 1, focus: 3}
     ];
     let frameIndex = 0;
     while (frameIndex < frames.length - 2 && progress > frames[frameIndex + 1].at) frameIndex++;
