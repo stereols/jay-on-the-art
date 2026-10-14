@@ -38,6 +38,7 @@ import {createExperience} from './experience.js';
   document.addEventListener('click', e => { if (!menu.hidden && !menu.contains(e.target) && !menuButton.contains(e.target)) closeMenu(); });
 
   let cosmos = null;
+  let atmosphereVisibility = 1;
   let paused = reduced.matches;
   let lastScene = {id:"hero",progress:0,night:0};
   const clamp=(n,a=0,b=1)=>Math.max(a,Math.min(b,n));
@@ -159,6 +160,8 @@ import {createExperience} from './experience.js';
     header.classList.toggle('is-scrolled',headerProgress>.05);
     header.inert=filmFocus>.95;
     root.classList.toggle('pov-film-active',filmFocus>.95);
+    atmosphereVisibility=1-Math.max(filmFocus,videoCoverage);
+    cosmos?.setAtmosphere({visibility:atmosphereVisibility});
     if(filmFocus>.1&&!mapPanel.hidden)closeMap();
     if(filmFocus>.1&&!menu.hidden)closeMenu();
     progressBar.style.transform='scaleX('+clamp(scrollY/Math.max(1,root.scrollHeight-innerHeight))+')';
@@ -227,5 +230,5 @@ import {createExperience} from './experience.js';
   requestAnimationFrame(()=>{const entry=new URLSearchParams(location.search).get('entry');if(['top','yigo','project-overview'].includes(entry))resumeDestination(entry);else navigateHash(location.hash);scheduleScroll();});
   const params=new URLSearchParams(location.search);
   if(params.get('view')==='static'){paused=true;setLayout();root.dataset.renderMode='static';motionButton.hidden=true;return;}
-  import('./cosmos.bundle.js').then(module=>{cosmos=module.createCosmos(document.getElementById('cosmos-canvas'),{paused,reducedMotion:reduced.matches});cosmos.setScene(lastScene);}).catch(error=>{console.warn('Living Cosmos uses the static artwork fallback.',error);root.dataset.renderMode='fallback';});
+  import('./cosmos.bundle.js').then(module=>{cosmos=module.createCosmos(document.getElementById('cosmos-canvas'),{paused,reducedMotion:reduced.matches});cosmos.setScene(lastScene);cosmos.setAtmosphere({visibility:atmosphereVisibility});}).catch(error=>{console.warn('Living Cosmos uses the static artwork fallback.',error);root.dataset.renderMode='fallback';});
 })();

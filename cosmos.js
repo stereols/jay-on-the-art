@@ -1,5 +1,6 @@
 import * as THREE from './vendor/three.module.js';
 import {CAMERA_POSES} from './camera-timeline.js';
+import {createCrossflow} from './cosmos-crossflow.js';
 
 // Original procedural scene. No screenshot or generated still is used as 3D geometry.
 // The static concept image is a separate, accessible rendering fallback in CSS.
@@ -17,7 +18,7 @@ export function createCosmos(canvas, options = {}) {
   let seed = 39261;
   const random = () => { seed=(seed*1664525+1013904223)>>>0; return seed/4294967296; };
   const TAU = Math.PI*2;
-  const colors = {teal:0x77aaa5,lilac:0xb9a8cd,coral:0xdca38e,pearl:0xece6d8,gold:0xc6a66c};
+  const colors = {pink:0xff616b,teal:0x77aaa5,lilac:0xb9a8cd,coral:0xdca38e,pearl:0xece6d8,gold:0xc6a66c};
   const environment={uNight:{value:0},uFogColor:{value:new THREE.Color(0xf6f1e8)}};
   const daySky=new THREE.Color(0xf6f1e8),nightSky=new THREE.Color(0x02040d),sky=new THREE.Color();
   scene.fog=new THREE.Fog(daySky,19,60);
@@ -30,8 +31,8 @@ export function createCosmos(canvas, options = {}) {
     float noise3(vec3 x){vec3 i=floor(x),f=fract(x);f=f*f*(3.-2.*f);return mix(mix(mix(hash(i),hash(i+vec3(1,0,0)),f.x),mix(hash(i+vec3(0,1,0)),hash(i+vec3(1,1,0)),f.x),f.y),mix(mix(hash(i+vec3(0,0,1)),hash(i+vec3(1,0,1)),f.x),mix(hash(i+vec3(0,1,1)),hash(i+vec3(1,1,1)),f.x),f.y),f.z);}
     float fbm(vec3 p){float f=0.;float a=.5;for(int i=0;i<4;i++){f+=a*noise3(p);p=p*2.03+vec3(2.7,3.1,1.2);a*=.5;}return f;}
   `;
-  function pearlMaterial(tint,offset,detail=1) {
-    const uniforms={...environment,uTint:{value:new THREE.Color(tint)},uOffset:{value:offset},uDetail:{value:detail}};
+  function pearlMaterial(tint,offset,detail=1,brandPink=false) {
+    const uniforms={...environment,uTint:{value:new THREE.Color(tint)},uOffset:{value:offset},uDetail:{value:detail},uBrandPink:{value:brandPink?1:0}};
     shaderUniforms.push(uniforms);
     return new THREE.ShaderMaterial({uniforms,
       vertexShader:/* glsl */`
@@ -39,7 +40,7 @@ export function createCosmos(canvas, options = {}) {
         void main(){vPosition=position;vNormal=normalize(normalMatrix*normal);vec4 mv=modelViewMatrix*vec4(position,1.);vView=-mv.xyz;gl_Position=projectionMatrix*mv;}
       `,
       fragmentShader:/* glsl */`
-        uniform vec3 uTint,uFogColor;uniform float uNight,uOffset,uDetail;
+        uniform vec3 uTint,uFogColor;uniform float uNight,uOffset,uDetail,uBrandPink;
         varying vec3 vPosition,vNormal,vView;
         ${noise}
         void main(){
@@ -50,10 +51,10 @@ export function createCosmos(canvas, options = {}) {
           float vein=1.-smoothstep(.005,.027,abs(cells-.46));
           float micro=fbm(p*65.0+q*5.);
           float striation=.5+.5*sin(terrain*48.+p.y*11.+q.x*6.);
-          vec3 cream=vec3(.88,.86,.78);
+          vec3 cream=mix(vec3(.88,.86,.78),vec3(1.,.75,.73),uBrandPink);
           vec3 mineral=mix(uTint*.52,uTint*1.2,smoothstep(.25,.66,terrain));
           vec3 base=mix(mineral,cream,smoothstep(.51,.73,terrain));
-          base=mix(base,vec3(.77,.60,.33),vein*.27*uDetail);
+          base=mix(base,mix(vec3(.77,.60,.33),vec3(.92,.36,.40),uBrandPink),vein*.27*uDetail);
           base*=.87+micro*.19+striation*.07;
           vec3 N=normalize(vNormal);vec3 V=normalize(vView);vec3 L=normalize(vec3(-.7,1.1,1.6));
           float diffuse=max(dot(N,L),0.);
@@ -62,18 +63,19 @@ export function createCosmos(canvas, options = {}) {
           float broad=pow(max(dot(N,normalize(L+V)),0.),6.);
           vec3 iridescent=.5+.5*cos(vec3(0.,2.1,4.2)+dot(N,V)*8.+terrain*4.);
           vec3 color=base*(.27+diffuse*.81)+vec3(1.,.96,.84)*sheen*.65+vec3(.22,.24,.22)*broad;
-          color=mix(color,vec3(.91,.94,.90),fresnel*.58);
-          color+=iridescent*fresnel*.09;
+          color=mix(color,mix(vec3(.91,.94,.90),vec3(1.,.79,.82),uBrandPink),fresnel*.58);
+          color+=mix(iridescent,vec3(.96,.27,.39),uBrandPink)*fresnel*.09;
           color+=vein*vec3(.18,.12,.035)*max(diffuse,.1)*uDetail;
           // The nocturnal view relights the actual relief rather than covering it.
           vec3 nightLight=normalize(vec3(-.86,.42,.13));
           float nightDiffuse=max(dot(N,nightLight),0.);
           float nightSpecular=pow(max(dot(reflect(-nightLight,N),V),0.),28.);
           vec3 midnight=mix(vec3(.018,.033,.084),vec3(.084,.045,.17),terrain);
+          midnight=mix(midnight,mix(vec3(.06,.008,.025),vec3(.24,.025,.075),terrain),uBrandPink);
           vec3 nightColor=midnight*(.5+nightDiffuse*2.8)+uTint*nightDiffuse*.12;
-          nightColor+=vec3(.10,.48,.56)*fresnel*.72;
-          nightColor+=vec3(.46,.28,.69)*nightSpecular*.7;
-          nightColor+=vein*vec3(.025,.14,.20)*(.4+nightDiffuse)*uDetail;
+          nightColor+=mix(vec3(.10,.48,.56),vec3(.85,.12,.25),uBrandPink)*fresnel*.72;
+          nightColor+=mix(vec3(.46,.28,.69),vec3(.94,.35,.48),uBrandPink)*nightSpecular*.7;
+          nightColor+=vein*mix(vec3(.025,.14,.20),vec3(.29,.025,.07),uBrandPink)*(.4+nightDiffuse)*uDetail;
           color=mix(color,nightColor*.62,uNight);
           float fog=smoothstep(17.,52.,length(vView))*uNight*.88;
           color=mix(color,uFogColor,fog);
@@ -85,14 +87,14 @@ export function createCosmos(canvas, options = {}) {
   }
   const sphereGeometry=new THREE.SphereGeometry(1,96,64);
   const smallGeometry=new THREE.SphereGeometry(1,40,28);
-  function makePlanet(position,radius,tint,offset,detail=1) {
+  function makePlanet(position,radius,tint,offset,detail=1,brandPink=false) {
     const group=new THREE.Group();group.position.set(...position);
-    const surface=new THREE.Mesh(radius>.9?sphereGeometry:smallGeometry,pearlMaterial(tint,offset,detail));
+    const surface=new THREE.Mesh(radius>.9?sphereGeometry:smallGeometry,pearlMaterial(tint,offset,detail,brandPink));
     surface.scale.setScalar(radius);group.add(surface);
     universe.add(group);planets.push({group,surface,baseY:position[1],radius});
     return group;
   }
-  const main=makePlanet([2.35,.14,0],1.66,colors.teal,1.8,1);
+  const main=makePlanet([2.35,.14,0],1.66,colors.pink,1.8,1,true);
   makePlanet([-.2,1.7,-3.8],.59,colors.lilac,4.1,.5);
   makePlanet([4.9,2.6,-3.3],.63,colors.pearl,8.1,.7);
   makePlanet([.1,-2.55,-1.1],.63,colors.coral,11.1,.8);
@@ -123,7 +125,7 @@ export function createCosmos(canvas, options = {}) {
   shellGeo.computeVertexNormals();
   const shell=new THREE.Mesh(shellGeo,new THREE.ShaderMaterial({transparent:true,depthWrite:false,side:THREE.FrontSide,uniforms:{...environment},
     vertexShader:`varying vec3 vNormal;varying vec3 vView;varying vec3 vP;void main(){vP=position;vNormal=normalize(normalMatrix*normal);vec4 mv=modelViewMatrix*vec4(position,1.);vView=-mv.xyz;gl_Position=projectionMatrix*mv;}`,
-    fragmentShader:`uniform float uNight;varying vec3 vNormal,vView,vP;void main(){float f=pow(1.-abs(dot(normalize(vNormal),normalize(vView))),3.);float t=.5+.5*sin(vP.y*4.+vP.x*2.);vec3 c=mix(vec3(.70,.83,.82),vec3(.92,.79,.63),t);c=mix(c,mix(vec3(.12,.46,.56),vec3(.39,.20,.59),t),uNight);gl_FragColor=vec4(c,.04+f*.43);#include <colorspace_fragment>}`.replace(';#include',';\n#include')
+    fragmentShader:`uniform float uNight;varying vec3 vNormal,vView,vP;void main(){float f=pow(1.-abs(dot(normalize(vNormal),normalize(vView))),3.);float t=.5+.5*sin(vP.y*4.+vP.x*2.);vec3 c=mix(vec3(.94,.39,.47),vec3(1.,.77,.73),t);c=mix(c,mix(vec3(.65,.09,.23),vec3(.43,.10,.25),t),uNight);gl_FragColor=vec4(c,.04+f*.43);#include <colorspace_fragment>}`.replace(';#include',';\n#include')
   }));main.add(shell);
 
   // Raised crystal membranes share a radial origin, like an asymmetrical living seed.
@@ -131,7 +133,7 @@ export function createCosmos(canvas, options = {}) {
   const corolla=new THREE.Group();corolla.rotation.set(.82,.30,-.48);main.add(corolla);
   const membraneMaterial=new THREE.ShaderMaterial({transparent:true,depthWrite:false,side:THREE.DoubleSide,uniforms:{...environment},
     vertexShader:`varying vec2 vUv;varying vec3 vN,vV;void main(){vUv=uv;vN=normalize(normalMatrix*normal);vec4 mv=modelViewMatrix*vec4(position,1.);vV=-mv.xyz;gl_Position=projectionMatrix*mv;}`,
-    fragmentShader:`uniform float uNight;varying vec2 vUv;varying vec3 vN,vV;void main(){float f=pow(1.-abs(dot(normalize(vN),normalize(vV))),2.5);float edge=pow(abs(vUv.y*2.-1.),12.);float rib=pow(.5+.5*cos(vUv.y*23.+vUv.x*13.),20.);vec3 pearl=mix(vec3(.65,.80,.79),vec3(.87,.75,.69),vUv.x);pearl=mix(pearl,vec3(.96,.94,.83),edge*.7+f*.3);pearl=mix(pearl,vec3(.10,.27,.43)+vec3(.08,.24,.28)*(edge+f),uNight);gl_FragColor=vec4(pearl,.07+f*.35+edge*.39+rib*.025);#include <colorspace_fragment>}`.replace(';#include',';\n#include')
+    fragmentShader:`uniform float uNight;varying vec2 vUv;varying vec3 vN,vV;void main(){float f=pow(1.-abs(dot(normalize(vN),normalize(vV))),2.5);float edge=pow(abs(vUv.y*2.-1.),12.);float rib=pow(.5+.5*cos(vUv.y*23.+vUv.x*13.),20.);vec3 pearl=mix(vec3(.95,.37,.44),vec3(1.,.74,.72),vUv.x);pearl=mix(pearl,vec3(.96,.94,.83),edge*.7+f*.3);pearl=mix(pearl,vec3(.32,.04,.13)+vec3(.40,.10,.16)*(edge+f),uNight);gl_FragColor=vec4(pearl,.07+f*.35+edge*.39+rib*.025);#include <colorspace_fragment>}`.replace(';#include',';\n#include')
   });
   const membraneLines=[];
   function petalPoint(u,v,angle,width){
@@ -160,7 +162,7 @@ export function createCosmos(canvas, options = {}) {
     }
   }
   const membraneLineGeo=new THREE.BufferGeometry();membraneLineGeo.setAttribute('position',new THREE.Float32BufferAttribute(membraneLines,3));
-  corolla.add(new THREE.LineSegments(membraneLineGeo,new THREE.LineBasicMaterial({color:0xd6c09a,transparent:true,opacity:.57,depthWrite:false})));
+  corolla.add(new THREE.LineSegments(membraneLineGeo,new THREE.LineBasicMaterial({color:0xf2b5ad,transparent:true,opacity:.48,depthWrite:false})));
 
   function lineGeometry(segments) {
     const geometry=new THREE.BufferGeometry();
@@ -185,10 +187,10 @@ export function createCosmos(canvas, options = {}) {
       previous=point;
     }
   }
-  main.add(new THREE.LineSegments(lineGeometry(filaments),new THREE.LineBasicMaterial({color:0xc7b386,transparent:true,opacity:.34,depthWrite:false})));
+  main.add(new THREE.LineSegments(lineGeometry(filaments),new THREE.LineBasicMaterial({color:0xe7a09d,transparent:true,opacity:.32,depthWrite:false})));
 
   const seedGeo=new THREE.SphereGeometry(1,8,6);
-  const beadMaterial=new THREE.MeshBasicMaterial({color:0xe4c794,transparent:true,opacity:.78});
+  const beadMaterial=new THREE.MeshBasicMaterial({color:0xffc6ba,transparent:true,opacity:.74});
   const beads=new THREE.InstancedMesh(seedGeo,beadMaterial,380);
   const dummy=new THREE.Object3D();
   for(let i=0;i<380;i++){
@@ -210,14 +212,14 @@ export function createCosmos(canvas, options = {}) {
       if(previous)addSegment(ringSegments,previous,point);previous=point;
     }
   }
-  ringSystem.add(new THREE.LineSegments(lineGeometry(ringSegments),new THREE.LineBasicMaterial({color:0xbaa578,transparent:true,opacity:.38,depthWrite:false})));
+  ringSystem.add(new THREE.LineSegments(lineGeometry(ringSegments),new THREE.LineBasicMaterial({color:0xc98c93,transparent:true,opacity:.32,depthWrite:false})));
   const orbitalParticles=[];
   for(let i=0;i<220;i++){
     const t=random()*TAU,r=2.20+random()*.24;
     orbitalParticles.push(Math.cos(t)*r,Math.sin(t)*r*.49,Math.sin(t)*.13+(random()-.5)*.035);
   }
   const ringDots=new THREE.BufferGeometry();ringDots.setAttribute('position',new THREE.Float32BufferAttribute(orbitalParticles,3));
-  ringSystem.add(new THREE.Points(ringDots,new THREE.PointsMaterial({color:0xd3bc8c,size:.018,transparent:true,opacity:.8,depthWrite:false})));
+  ringSystem.add(new THREE.Points(ringDots,new THREE.PointsMaterial({color:0xf0b8ae,size:.018,transparent:true,opacity:.8,depthWrite:false})));
   for(let i=0;i<3;i++){
     const dot=new THREE.Mesh(new THREE.SphereGeometry(.035+i*.009,16,12),pearlMaterial(i===1?colors.coral:colors.pearl,i*3,.2));
     ringSystem.add(dot);orbiters.push({mesh:dot,phase:i*2.1,radius:2.24+i*.055});
@@ -267,17 +269,10 @@ export function createCosmos(canvas, options = {}) {
   });
   const stars=new THREE.Points(starGeo,starMat);universe.add(stars);
 
-  const longLines=[];
-  for(let j=0;j<16;j++){
-    let previous=null;
-    for(let i=0;i<=200;i++){
-      const t=i/200*TAU;
-      const r=4.2+j*.023;
-      const point=new THREE.Vector3(1.7+Math.cos(t)*r,Math.sin(t)*r*.38+Math.cos(t)*1.32+j*.012,-2.6+Math.sin(t)*2.3);
-      if(previous)addSegment(longLines,previous,point);previous=point;
-    }
-  }
-  universe.add(new THREE.LineSegments(lineGeometry(longLines),new THREE.LineBasicMaterial({color:0xc7c8b4,transparent:true,opacity:.18,depthWrite:false})));
+  // Crossed chapter ribbons replace the old concentric background line stack.
+  const crossflow=createCrossflow(scene);
+  let atmosphereVisibility=1;
+  main.traverse(object=>{if(object.material)object.material.userData.brandPink=true;});
 
   // Legacy stage coordinates remain available for older app.js callers.
   const frames=[
@@ -325,7 +320,7 @@ export function createCosmos(canvas, options = {}) {
   scene.traverse(object=>{
     const material=object.material;
     if(material?.isLineBasicMaterial||material?.isPointsMaterial||material?.isMeshBasicMaterial){
-      environmentMaterials.push({material,day:material.color.clone(),night:new THREE.Color(material.isLineBasicMaterial?0x659bad:0x9c9eda),opacity:material.opacity});
+      environmentMaterials.push({material,day:material.color.clone(),night:new THREE.Color(material.userData.brandPink?0xe97791:material.isLineBasicMaterial?0x659bad:0x9c9eda),opacity:material.opacity});
     }
   });
   function onPointer(e){if(!paused&&!reducedMotion){pointer.set(e.clientX/innerWidth-.5,e.clientY/innerHeight-.5);dirty=true;}}
@@ -414,6 +409,8 @@ export function createCosmos(canvas, options = {}) {
     shell.rotation.y=-orbitPhase*.08;
     planets.forEach((planet,i)=>{if(i>0){planet.surface.rotation.y=orbitPhase*.1*(i%2?1:-1);planet.group.position.y=planet.baseY+Math.sin(orbitPhase*.7+i)*.035;}});
     orbiters.forEach(o=>{const t=o.phase+orbitPhase*.22;o.mesh.position.set(Math.cos(t)*o.radius,Math.sin(t)*o.radius*.49,Math.sin(t)*.13);});
+    crossflow.update({camera,orbit:orbitPhase,night:environment.uNight.value,
+      visibility:atmosphereVisibility,mobile:mobile(),reducedMotion:reducedMotion||paused});
     renderer.render(scene,camera);
     canvas.dataset.scene=legacyMode?String(progress.toFixed(3)):sceneState.id;
     canvas.dataset.progress=String((legacyMode?progress:sceneState.progress).toFixed(4));
@@ -423,6 +420,7 @@ export function createCosmos(canvas, options = {}) {
     canvas.dataset.target=target.toArray().map(value=>value.toFixed(3)).join(',');
     canvas.dataset.orbit=orbitPhase.toFixed(5);
     canvas.dataset.timeline=String(!!sceneState.pose&&!legacyMode);
+    canvas.dataset.atmosphere=atmosphereVisibility.toFixed(4);
     canvas.dataset.frame=String(++drawCount);
   }
   function tick(now){
@@ -476,9 +474,15 @@ export function createCosmos(canvas, options = {}) {
         sceneState={id,progress:p,night,worldPhase:phase,pose};legacyMode=false;dirty=true;
       }
     },
+    // Film coverage is supplied by app.js so ornamental lines leave the stage
+    // with the video instead of waiting for a chapter's semantic boundary.
+    setAtmosphere(value={}){
+      const visibility=Number.isFinite(value.visibility)?clamp01(value.visibility):1;
+      if(visibility!==atmosphereVisibility){atmosphereVisibility=visibility;dirty=true;}
+    },
     setProgress(value){const next=THREE.MathUtils.clamp(Number.isFinite(value)?value:0,0,frames.length-1);if(!legacyMode||next!==progress){legacyMode=true;progress=next;dirty=true;}},
     setPaused(value){paused=!!value;pointer.set(0,0);softPointer.set(0,0);if(!paused)poseReady=false;dirty=true;canvas.dataset.motion=paused?'paused':'playing';},
     setReducedMotion(value){reducedMotion=!!value;pointer.set(0,0);softPointer.set(0,0);poseReady=false;dirty=true;},
-    dispose(){disposed=true;cancelAnimationFrame(raf);removeEventListener('pointermove',onPointer);removeEventListener('resize',resize);document.removeEventListener('pointerleave',onPointerLeave);canvas.removeEventListener('webglcontextlost',onLost);canvas.removeEventListener('webglcontextrestored',onRestored);scene.traverse(o=>{o.geometry?.dispose();if(o.material){(Array.isArray(o.material)?o.material:[o.material]).forEach(m=>m.dispose());}});renderer.dispose();}
+    dispose(){disposed=true;cancelAnimationFrame(raf);crossflow.dispose();removeEventListener('pointermove',onPointer);removeEventListener('resize',resize);document.removeEventListener('pointerleave',onPointerLeave);canvas.removeEventListener('webglcontextlost',onLost);canvas.removeEventListener('webglcontextrestored',onRestored);scene.traverse(o=>{o.geometry?.dispose();if(o.material){(Array.isArray(o.material)?o.material:[o.material]).forEach(m=>m.dispose());}});renderer.dispose();}
   };
 }

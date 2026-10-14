@@ -1,0 +1,22 @@
+/* Pink mineral world when WebGL is unavailable. Keep the original hero layout. */
+.cosmos .cosmos-fallback {
+  inset:0;
+  background-image:radial-gradient(ellipse at 75% 38%,#ffe0dc60,transparent 55%);
+  background-position:center;
+  background-size:cover;
+  opacity:1;
+}
+.cosmos-fallback:before {
+  content:''; position:absolute; width:min(46vw,690px); aspect-ratio:1; top:22%; right:-8%; border-radius:50%;
+  background:radial-gradient(circle at 30% 22%,#fff0e7 0,#ffb0ad 14%,#ff616b 43%,#ac3c5b 78%,#5b263d 100%);
+  box-shadow:inset -22px -12px 48px #46243c44,inset 8px 4px 18px #fff3d7a8,0 0 65px #ff616b15;
+}
+.cosmos-fallback:after {
+  content:''; position:absolute; width:140%; height:40%; top:25%; left:-15%;
+  border-top:1px solid #ff616b40; border-bottom:1px solid #ba777327;
+  border-radius:50%; transform:rotate(-28deg);
+}
+.webgl-ready .cosmos .cosmos-fallback { opacity:0; }
+@media(max-width:760px) {
+  .cosmos-fallback:before { width:64vw; top:17%; right:-18%; }
+}
