@@ -104,3 +104,10 @@
  .pov-motion .pov-film-reflection{font-size:clamp(15px,3.7vw,19px);line-height:1.85;margin-top:26px}
 }
 @media print{.pov-motion .perspective{height:auto}.pov-motion .pov-pin{position:relative;height:auto}.pov-film-story{position:static!important;color:#000!important}.pov-film-story>*{opacity:1!important;transform:none!important;color:#000!important}}
+/* Keep only the video pause/play glyph during the immersive film moment. */
+.pov-film-active .world-map,.pov-film-active .scene-controls{opacity:0;visibility:hidden;pointer-events:none;transition:opacity .35s ease,visibility .35s ease}
+.pov-motion #pov-film .film-toggle{top:28px;right:var(--pad);bottom:auto;border:0;background:transparent;backdrop-filter:none;box-shadow:none;padding:10px;width:44px;height:44px;min-height:44px;justify-content:center;font-size:0}
+.pov-motion #pov-film .film-toggle>span:first-child{font-size:24px;line-height:1;color:#fff;text-shadow:0 1px 10px #0008}
+.pov-motion #pov-film .film-toggle .film-toggle-label{display:none}
+.pov-motion #pov-film .film-toggle:hover{background:#10182044;color:#fff}
+.pov-motion #pov-film .film-toggle:focus-visible{outline:2px solid #fff;outline-offset:2px}

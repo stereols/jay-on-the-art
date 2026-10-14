@@ -152,6 +152,8 @@ import {createExperience} from './experience.js';
     header.classList.toggle('is-visible',headerProgress>.05);
     header.classList.toggle('is-scrolled',headerProgress>.05);
     header.inert=filmFocus>.95;
+    root.classList.toggle('pov-film-active',filmFocus>.95);
+    if(filmFocus>.1&&!mapPanel.hidden)closeMap();
     if(filmFocus>.1&&!menu.hidden)closeMenu();
     progressBar.style.transform='scaleX('+clamp(scrollY/Math.max(1,root.scrollHeight-innerHeight))+')';
     mapLinks.forEach(link=>link.setAttribute('aria-current',String(link.dataset.map===section.id||(['threshold','career-history'].includes(section.id)&&link.dataset.map==='career')||(section.id==='links'&&link.dataset.map==='about'))));
