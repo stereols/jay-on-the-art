@@ -98,7 +98,7 @@ import {createExperience} from './experience.js';
     const reading=anchor===works?lastReading.world:null;
     const wasPinned=root.classList.contains('motion-layout');
     trackWindow.scrollLeft=0;layoutInitialized=true;
-    root.classList.toggle('motion-layout',pinned());root.classList.toggle('no-motion',!motionEnabled());
+    root.classList.toggle('pov-motion',motionEnabled());root.classList.toggle('motion-layout',pinned());root.classList.toggle('no-motion',!motionEnabled());
     worlds.setEnabled(pinned());
     discoverScene.setEnabled(pinned());
     specialStory.setEnabled(pinned());
@@ -145,23 +145,33 @@ import {createExperience} from './experience.js';
     specialStory.update();
     const footer=document.querySelector('body > footer'),footerRect=footer.getBoundingClientRect();
     const footerArrival=smooth(clamp((innerHeight-footerRect.top)/Math.max(1,footerRect.height)));
-    const headerProgress=smooth(clamp((innerHeight*.65-pov.getBoundingClientRect().top)/(innerHeight*.55)))*(1-footerArrival);
+    const povProgress=localProgress(pov);
+    const filmFocus=motionEnabled()?smooth(clamp((povProgress-.24)/.13))*smooth(clamp((pov.getBoundingClientRect().bottom-innerHeight*.2)/(innerHeight*.6))):0;
+    const headerProgress=(1-filmFocus)*smooth(clamp((innerHeight*.65-pov.getBoundingClientRect().top)/(innerHeight*.55)))*(1-footerArrival);
     header.style.setProperty('--header-visibility',headerProgress.toFixed(4));
     header.classList.toggle('is-visible',headerProgress>.05);
     header.classList.toggle('is-scrolled',headerProgress>.05);
+    header.inert=filmFocus>.95;
+    if(filmFocus>.1&&!menu.hidden)closeMenu();
     progressBar.style.transform='scaleX('+clamp(scrollY/Math.max(1,root.scrollHeight-innerHeight))+')';
     mapLinks.forEach(link=>link.setAttribute('aria-current',String(link.dataset.map===section.id||(['threshold','career-history'].includes(section.id)&&link.dataset.map==='career')||(section.id==='links'&&link.dataset.map==='about'))));
-    if(pinned()){
-      const p=localProgress(pov),expand=smooth(clamp((p-.12)/.58));
+    if(motionEnabled()){
+      const p=povProgress,expand=smooth(clamp((p-.06)/.29));
       const diameter=clamp(innerHeight*.12,88,112),centerY=innerHeight*.81;
       pov.style.setProperty('--pov-inset-y',(centerY-diameter/2)*(1-expand)+'px');
       pov.style.setProperty('--pov-inset-x',(pov.clientWidth-diameter)/2*(1-expand)+'px');
       pov.style.setProperty('--pov-bottom',(innerHeight-centerY-diameter/2)*(1-expand)+'px');
       pov.style.setProperty('--pov-radius',diameter/2*(1-expand)+'px');
       pov.style.setProperty('--pov-video',String(smooth(clamp((expand-.12)/.42))));
-      pov.style.setProperty('--pov-text',String(1-smooth(clamp((p-.05)/.22))));pov.style.setProperty('--pov-shift',String(expand));
-      pov.style.setProperty('--pov-title',String(smooth(clamp((p-.5)/.22))));pov.style.setProperty('--pov-controls',String(expand>.9?1:0));
+      pov.style.setProperty('--pov-text',String(1-smooth(clamp((p-.02)/.16))));
+      pov.style.setProperty('--pov-shift',String(expand));
+      pov.style.setProperty('--pov-title',String(smooth(clamp((p-.37)/.10))));
+      pov.style.setProperty('--pov-reflection',String(smooth(clamp((p-.55)/.13))));
+      pov.style.setProperty('--pov-dim',String(.18+smooth(clamp((p-.37)/.10))*.37));
+      pov.style.setProperty('--pov-controls',String(expand>.9?1:0));
       document.querySelector('#pov-film .film-toggle').tabIndex=expand>.9?0:-1;
+    }
+    if(pinned()){
       const d=localProgress(discover),distance=Math.max(0,track.scrollWidth-trackWindow.clientWidth+parseFloat(getComputedStyle(trackWindow).paddingRight)*2);
       const rail=discoverFrame(d).rail;
       discover.style.setProperty('--track-x',-distance*rail+'px');discoverScene.update(d);cardProgress(rail);
