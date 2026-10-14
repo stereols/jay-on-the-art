@@ -1,0 +1,69 @@
+/* The smaller portrait belongs only to the career arrival's right column. */
+.career-arrival-layout .experience-character {
+  position:relative;
+  justify-self:center;
+  width:min(100%,364px,calc((100svh - 240px) * .666667));
+  min-width:0;
+  aspect-ratio:2/3;
+  margin:0;
+  isolation:isolate;
+}
+.experience-character-float {
+  position:absolute;
+  inset:0;
+  translate:0 calc((1 - var(--experience-character-entry,1)) * 28px - var(--experience-character-exit,0) * 24px);
+  scale:calc(.96 + var(--experience-character-entry,1) * .04 - var(--experience-character-exit,0) * .055);
+  transform-origin:50% 65%;
+  animation:experience-person-float 7.8s ease-in-out infinite;
+  animation-play-state:paused;
+}
+.experience-character-active .experience-character-float {animation-play-state:running}
+.experience-character .experience-person {
+  display:block;
+  width:100%;
+  height:100%;
+  object-fit:contain;
+  pointer-events:none;
+  user-select:none;
+  filter:drop-shadow(5px 14px 12px #5c33451b);
+}
+.experience-character .experience-pet {
+  position:absolute;
+  left:78%;
+  top:18%;
+  z-index:2;
+  width:101px;
+  height:101px;
+  min-width:44px;
+  min-height:44px;
+  padding:0;
+  margin:0;
+  border:0;
+  border-radius:50%;
+  background:transparent;
+  touch-action:pan-y;
+  cursor:pointer;
+  line-height:1;
+  transform:translate(-50%,-50%);
+  opacity:0;
+}
+.experience-pet[hidden] {display:none!important}
+.experience-pet:disabled {pointer-events:none}
+.experience-pet-art {position:absolute;inset:0;display:block;perspective:300px;transform-origin:50% 56%;pointer-events:none;filter:drop-shadow(0 5px 6px #17272220)}
+.experience-character .experience-pet-art img {position:absolute;inset:0;width:100%;height:100%;display:block;object-fit:contain;pointer-events:none;user-select:none;transform-origin:50% 56%;backface-visibility:hidden}
+.experience-pet-body {z-index:2}
+.experience-pet:focus-visible {outline:1.5px solid var(--primary,#FF616B);outline-offset:2px}
+.experience-pet[data-state="react"] .experience-pet-art {filter:drop-shadow(0 3px 10px #ff616b40)}
+.experience-pet[data-state="flyout"] {pointer-events:none}
+.no-motion .experience-character-float {translate:none;scale:1}
+.no-motion .experience-pet,.reading-resume .experience-pet {display:none!important}
+@keyframes experience-person-float {0%,100%{transform:translateY(5px) rotate(-.35deg)}50%{transform:translateY(-5px) rotate(.35deg)}}
+@media(max-width:760px) {
+  .career-arrival-layout .experience-character {width:min(100%,210px);margin:35px auto 0;}
+  .experience-character .experience-pet {width:78px;height:78px;left:79%;top:18%;}
+}
+@media(prefers-reduced-motion:reduce) {
+  .experience-character-float {animation:none;translate:none;scale:1}
+  .experience-pet {display:none!important}
+}
+@media print {.career-arrival-layout .experience-character {display:none}}

@@ -2,8 +2,10 @@ import {createWorlds} from './worlds.js';
 import {createDiscover,discoverFrame} from './discover.js';
 import {createSpecialFilm} from './special-film.js';
 import {createAelinShowcase} from './aelin-showcase.js';
-import {createCameraTimeline} from './camera-timeline.js';
+import {createCameraTimeline} from './camera-timeline.js?v=20261015-experience';
 import {createExperience} from './experience.js';
+import {createExperienceCharacter} from './experience-character.js';
+import {createCrossflowOverlay} from './crossflow-overlay.js';
 (() => {
   'use strict';
   const root = document.documentElement;
@@ -39,6 +41,8 @@ import {createExperience} from './experience.js';
 
   let cosmos = null;
   let atmosphereVisibility = 1;
+  let worldRibbonVisibility = 1;
+  let flourish = {energy:0,progress:0};
   let paused = reduced.matches;
   let lastScene = {id:"hero",progress:0,night:0};
   const clamp=(n,a=0,b=1)=>Math.max(a,Math.min(b,n));
@@ -58,6 +62,8 @@ import {createExperience} from './experience.js';
   const personalCards=[...track.children];
   const portal=document.getElementById('threshold');
   const experience=createExperience(portal);
+  const experienceCharacter=createExperienceCharacter(portal);
+  const crossflowOverlay=createCrossflowOverlay();
   const header=document.querySelector('.topbar');
   const specialFilmSection=document.querySelector('#yigo .special-story');
   const specialStory=createSpecialFilm(document.getElementById('yigo'));
@@ -138,6 +144,7 @@ import {createExperience} from './experience.js';
     const scene=cameraTimeline.sample(scrollY);
     const {night,blur,wash}=scene;
     experience.update();
+    flourish=experienceCharacter.update(scene,{motionEnabled:motionEnabled()});
     root.classList.toggle('dark-chapter',night>.5);
     root.style.setProperty('--scene-dark',night.toFixed(4));
     root.style.setProperty('--scene-blur',motionEnabled()?blur.toFixed(3)+'px':'0px');
@@ -161,7 +168,8 @@ import {createExperience} from './experience.js';
     header.inert=filmFocus>.95;
     root.classList.toggle('pov-film-active',filmFocus>.95);
     atmosphereVisibility=1-Math.max(filmFocus,videoCoverage);
-    cosmos?.setAtmosphere({visibility:atmosphereVisibility});
+    worldRibbonVisibility=atmosphereVisibility*(1-smooth(clamp((scene.orbit-.10)/.55)));
+    cosmos?.setAtmosphere({visibility:worldRibbonVisibility,experienceEnergy:flourish.energy,experienceProgress:flourish.progress});
     if(filmFocus>.1&&!mapPanel.hidden)closeMap();
     if(filmFocus>.1&&!menu.hidden)closeMenu();
     progressBar.style.transform='scaleX('+clamp(scrollY/Math.max(1,root.scrollHeight-innerHeight))+')';
@@ -194,6 +202,7 @@ import {createExperience} from './experience.js';
       document.querySelector('#pov-film .film-toggle').tabIndex=0;
       stepsUI.forEach(step=>{step.style.setProperty('--step-opacity','1');step.style.setProperty('--step-offset','0px');});lab.style.setProperty('--workflow-progress','1');
     }
+    crossflowOverlay.update(scene,{visibility:atmosphereVisibility,motionEnabled:motionEnabled(),emphasis:flourish.energy,experienceProgress:flourish.progress});
     if(root.classList.contains('motion-layout')===pinned())lastReading={section,fraction:clamp(-r.top/section.offsetHeight),world:worlds.readingPosition()};
   }
   function navigateHash(hash,behavior='instant'){
@@ -230,5 +239,5 @@ import {createExperience} from './experience.js';
   requestAnimationFrame(()=>{const entry=new URLSearchParams(location.search).get('entry');if(['top','yigo','project-overview'].includes(entry))resumeDestination(entry);else navigateHash(location.hash);scheduleScroll();});
   const params=new URLSearchParams(location.search);
   if(params.get('view')==='static'){paused=true;setLayout();root.dataset.renderMode='static';motionButton.hidden=true;return;}
-  import('./cosmos.bundle.js?v=20261015-atmosphere').then(module=>{cosmos=module.createCosmos(document.getElementById('cosmos-canvas'),{paused,reducedMotion:reduced.matches});cosmos.setScene(lastScene);cosmos.setAtmosphere({visibility:atmosphereVisibility});}).catch(error=>{console.warn('Living Cosmos uses the static artwork fallback.',error);root.dataset.renderMode='fallback';});
+  import('./cosmos.bundle.js?v=20261015-experience').then(module=>{cosmos=module.createCosmos(document.getElementById('cosmos-canvas'),{paused,reducedMotion:reduced.matches});cosmos.setScene(lastScene);cosmos.setAtmosphere({visibility:worldRibbonVisibility,experienceEnergy:flourish.energy,experienceProgress:flourish.progress});}).catch(error=>{console.warn('Living Cosmos uses the static artwork fallback.',error);root.dataset.renderMode='fallback';});
 })();

@@ -1,0 +1,4 @@
+/* Continue the same ribbons above opaque chapter surfaces, only in their gaps. */
+.crossflow-overlay{position:fixed;inset:0;z-index:8;display:block;width:100%;height:100%;overflow:hidden;pointer-events:none;opacity:0;contain:layout style;mask-image:radial-gradient(ellipse at 50% 50%,rgb(0 0 0 / var(--crossflow-center,.48)) 0%,rgb(0 0 0 / var(--crossflow-center,.48)) 18%,#000 74%);-webkit-mask-image:radial-gradient(ellipse at 50% 50%,rgb(0 0 0 / var(--crossflow-center,.48)) 0%,rgb(0 0 0 / var(--crossflow-center,.48)) 18%,#000 74%)}
+.reading-resume .crossflow-overlay,.pov-film-active .crossflow-overlay{visibility:hidden!important}
+@media print{.crossflow-overlay{display:none!important}}

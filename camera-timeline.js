@@ -15,6 +15,9 @@ export const CAMERA_POSES={
   nightClose:{c:[8.8,-5.9,1.15],t:[7.1,-6.1,-2.8],o:2.7},
   emerge:{c:[-1.3,-5.1,13.6],t:[-3.2,-5.5,-2.8],o:3.25},
   career:{c:[-3.1,-5.3,15.2],t:[-4,-5.5,-2.9],o:3.4},
+  careerReveal:{c:[-3.8,-4.6,14.1],t:[-5.6,-5.4,-3.1],o:3.413},
+  careerRelease:{c:[-2.4,-5.6,16.3],t:[-4.8,-5.6,-2.9],o:3.424},
+  careerSettled:{c:[-3.1,-5.3,15.2],t:[-4,-5.5,-2.9],o:3.425},
   careerEnd:{c:[-3,-5.4,15.4],t:[-4,-5.5,-2.9],o:3.43},
   lab:{c:[-3.1,-11,12.4],t:[-4,-10.6,-2.8],o:3.85},
   about:{c:[6,-11.3,15.8],t:[5,-10.8,-2.6],o:4.3},
@@ -31,7 +34,7 @@ const semanticId=id=>id==='top'?'hero':id==='threshold'?'passage':id==='career-h
 
 function frame(name,night=0,blur=0,wash=0){
   const pose=CAMERA_POSES[name];
-  const reading=['cards','career','careerEnd','about','links'].includes(name);
+    const reading=['cards','career','careerReveal','careerRelease','careerSettled','careerEnd','about','links'].includes(name);
   return {
     position:pose.c.slice(),target:pose.t.slice(),orbit:pose.o,
     night,blur,wash,pointerStrength:reading?.22:name==='focus'?.4:1,
@@ -91,9 +94,10 @@ export function createCameraTimeline(options={}){
     const byId=Object.fromEntries(measured.map(item=>[item.id,item]));
     const pinned=!!isPinned();
     const yigoStory=measure(doc.querySelector('#aelin-story, #yigo .special-story'));
+    const careerArrival=measure(doc.querySelector('.career-arrival'));
     worldCount=byId.works?.element.querySelectorAll('.career-project').length||1;
     totalWorldUnits=worldLength(worldCount);
-    const nextSignature=JSON.stringify([viewport,maxScroll,pinned,worldCount,totalWorldUnits,...measured.flatMap(item=>[item.id,item.top,item.height]),yigoStory?.top,yigoStory?.height]);
+    const nextSignature=JSON.stringify([viewport,maxScroll,pinned,worldCount,totalWorldUnits,...measured.flatMap(item=>[item.id,item.top,item.height]),yigoStory?.top,yigoStory?.height,careerArrival?.top]);
     if(signature===nextSignature)return;
     signature=nextSignature;
     const top=(id,fallback=maxScroll)=>clamp(byId[id]?.top??fallback,0,maxScroll);
@@ -136,14 +140,19 @@ export function createCameraTimeline(options={}){
     add(discoverRelease,'discover',0,1,.12);
 
     // Discover's actual release viewport is the approach, not an obsolete intro.
-    const passageStart=top('threshold');
+    const passageStart=pinned?top('threshold'):Math.max(discoverRelease+1,top('threshold')-viewport*.35);
     add(passageStart,'nightClose',1,18,0);
     const careerStart=top('career-history');
     const passagePinEnd=pinned?release('threshold'):careerStart;
     const passageEnd=passagePinEnd>passageStart?passagePinEnd:careerStart;
     // No initial hold or second zoom-in: zoom-out begins at passage entry.
-    add(mix(passageStart,passageEnd,.62),'career',0,0,.35);
-    add(careerStart,'career',0,0,.4);
+    const careerRevealAt=pinned?mix(passageStart,passageEnd,.62):Math.max(passageStart+1,Math.min(careerStart,(careerArrival?.top??careerStart)-viewport*.25));
+    add(careerRevealAt,'career',0,0,.35);
+    if(pinned){
+      add(mix(passageStart,passageEnd,.80),'careerReveal',0,0,.26);
+      add(passageEnd,'careerRelease',0,0,.32);
+      add(careerStart,'careerSettled',0,0,.4);
+    }else add(careerStart,'career',0,0,.4);
     add(top('lab'),'careerEnd',0,4,.35);
 
     // The short footer gets a measured portion of the actual remaining scroll.

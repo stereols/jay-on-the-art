@@ -7,7 +7,7 @@ export async function optimizePageImages(root) {
   const original=await fs.readFile(htmlPath,'utf8');
   let html=original.replace(/<picture class="responsive-media"><source[^>]*>(<img\b[^>]*>)<\/picture>/gi,'$1');
   const imageTag=/<img\b[^>]*\bsrc="([^"]+\.(?:png|jpe?g|webp))"[^>]*>/gi;
-  const sources=[...html.matchAll(imageTag)];
+  const sources=[...html.matchAll(imageTag)].filter(match=>!match[0].includes('data-manual-media'));
   const images=new Map();
   for(const match of sources){
     const url=match[1];
@@ -27,6 +27,7 @@ export async function optimizePageImages(root) {
     variants.set(url,{widths,isWebp});
   }
   html=html.replace(imageTag,(tag,url,offset)=>{
+    if(tag.includes('data-manual-media'))return tag;
     const before=html.slice(0,offset),context=before.slice(-1800);
     const targets=['tile-image','career-project-visual','project-image','career-art'];
     let chosen='',position=-1;
