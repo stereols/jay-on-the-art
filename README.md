@@ -151,9 +151,9 @@ WebGL 정적 대체 화면, 시스템의 모션 감소 설정, 배경 일시정�
 
 ## 영상 슬롯
 
-`assets/video/experience-into.mp4`는 사용자가 전달한 `movie01.mp4`입니다. 이 영상은 00 / POINT OF VIEW의 ‘경험 속으로.’ 장면에서 화면이 보일 때 불러와 재생합니다. 기존 게임플레이 포스터는 새 영상과 일치하지 않아 연결하지 않았습니다.
+00 / POINT OF VIEW의 ‘경험 속으로.’에는 사용자가 전달한 `movie01.mp4`를 웹용으로 최적화한 `assets/video/experience-into.mp4`를 사용합니다. 원본 1920 × 1080, 29.97fps, H.264 Main, 약 14.97Mbps를 그대로 1080p/29.97fps로 유지하고, H.264 High CRF 19·slow preset·yuv420p·faststart로 다시 인코딩했습니다. 오디오 트랙은 없었습니다. 58,256,159바이트에서 43,720,503바이트로 약 25% 줄였고, 원본 대비 SSIM은 0.9897입니다. 포스터는 영상의 5초 프레임에서 만든 1600 × 900 WebP입니다. 원본 `G:/movie01.mp4`는 그대로 보존되어 있습니다.
 
-02 / BUILDING WHAT'S NEXT는 `assets/video/aelin-how-it-works-bg-h264.mp4`를 별도로 사용합니다. 기존 `gameplay-preview-720p.mp4`와 포스터 파일은 보존되어 있습니다.
+영상은 화면 근처에 도달했을 때 불러오며, 영상이 재생되기 전에는 새 포스터를 표시합니다. 02 / BUILDING WHAT'S NEXT는 `assets/video/aelin-how-it-works-bg-h264.mp4`를 별도로 사용합니다. 기존 `gameplay-preview-720p.mp4`와 이전 포스터 파일은 보존되어 있습니다.
 
 영상은 처음부터 전체를 불러오는 대신 장면과 사용자 조작에 맞춰 사용하도록 구성했습니다. 영상 로딩·재생·탐색의 브라우저 확인은 이번 통합 검수 범위에 포함됩니다.
 
