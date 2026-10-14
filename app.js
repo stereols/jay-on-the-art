@@ -230,5 +230,5 @@ import {createExperience} from './experience.js';
   requestAnimationFrame(()=>{const entry=new URLSearchParams(location.search).get('entry');if(['top','yigo','project-overview'].includes(entry))resumeDestination(entry);else navigateHash(location.hash);scheduleScroll();});
   const params=new URLSearchParams(location.search);
   if(params.get('view')==='static'){paused=true;setLayout();root.dataset.renderMode='static';motionButton.hidden=true;return;}
-  import('./cosmos.bundle.js').then(module=>{cosmos=module.createCosmos(document.getElementById('cosmos-canvas'),{paused,reducedMotion:reduced.matches});cosmos.setScene(lastScene);cosmos.setAtmosphere({visibility:atmosphereVisibility});}).catch(error=>{console.warn('Living Cosmos uses the static artwork fallback.',error);root.dataset.renderMode='fallback';});
+  import('./cosmos.bundle.js?v=20261015-atmosphere').then(module=>{cosmos=module.createCosmos(document.getElementById('cosmos-canvas'),{paused,reducedMotion:reduced.matches});cosmos.setScene(lastScene);cosmos.setAtmosphere({visibility:atmosphereVisibility});}).catch(error=>{console.warn('Living Cosmos uses the static artwork fallback.',error);root.dataset.renderMode='fallback';});
 })();
