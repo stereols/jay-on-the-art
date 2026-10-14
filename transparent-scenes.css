@@ -1,0 +1,11 @@
+/* Type lives directly over the shared cosmos. No rectangular reading masks. */
+body:not(.resume-page) :is(.journey-intro,.career-journey,.world-tiles,.worlds-pin,
+  .discover,.project-card,.project-caption,.career,.lab,.about,.closing,
+  .aelin-showcase,.practice,.career-arrival,.career-heading){background:transparent;}
+body:not(.resume-page) .career-project-copy{background:transparent;border-color:transparent;
+  box-shadow:none;backdrop-filter:none;-webkit-backdrop-filter:none;}
+.aelin-pin::before{display:none;}
+.project-card{box-shadow:none;}
+.cosmos-composited #cosmos-canvas{filter:none;}
+/* Navigation and actual media retain their own surfaces; prose has no matte. */
+@media print{body:not(.resume-page) .scene-section{background:white;}}

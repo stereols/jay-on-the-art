@@ -1,6 +1,8 @@
 import * as THREE from './vendor/three.module.js';
 import {CAMERA_POSES} from './camera-timeline.js';
-import {createCrossflow} from './cosmos-crossflow.js';
+import {createLuminousTrail} from './cosmos-trail.js';
+import {createExperienceVisual} from './experience-visual.js';
+import {createCosmosCompositor} from './cosmos-compositor.js';
 
 // Original procedural scene. No screenshot or generated still is used as 3D geometry.
 // The static concept image is a separate, accessible rendering fallback in CSS.
@@ -10,6 +12,7 @@ export function createCosmos(canvas, options = {}) {
   renderer.outputColorSpace = THREE.SRGBColorSpace;
   renderer.toneMapping = THREE.ACESFilmicToneMapping;
   renderer.toneMappingExposure = 1.12;
+  const compositor=createCosmosCompositor(renderer);
   const scene = new THREE.Scene();
   const camera = new THREE.PerspectiveCamera(38,1,.1,90);
   const universe = new THREE.Group();
@@ -104,40 +107,12 @@ export function createCosmos(canvas, options = {}) {
   makePlanet([7.4,.2,-2.8],1.16,colors.coral,17.2,.8);
   const nightWorld=makePlanet([7.1,-6.1,-2.8],1.7,0x8899bd,23.7,1);
   makePlanet([4.3,-4.7,-4.9],.41,colors.gold,21.2,.5);
-  const careerWorld=makePlanet([-4.5,-5.2,-3.1],1.52,colors.teal,13.7,1);
+  makePlanet([-4.5,-5.2,-3.1],1.52,colors.teal,13.7,1);
   makePlanet([-4.2,-11.4,-2.8],1.35,colors.lilac,28.3,.8);
   makePlanet([5.9,-11.4,-2.6],1.6,colors.pearl,32.8,1);
   const nightRing=new THREE.Mesh(new THREE.TorusGeometry(2.15,.008,8,220),new THREE.MeshBasicMaterial({color:0xbcb1ce,transparent:true,opacity:.7}));
   const nightRingDay=new THREE.Color(0xbcb1ce),nightRingGlow=new THREE.Color(0x73bacb);
   nightRing.rotation.set(.8,.2,-.5);nightWorld.add(nightRing);
-
-  // Open, inclined arcs frame the Experience arrival without drawing a target
-  // through the planet. The surface itself keeps its original mineral palette.
-  const experienceAccent=new THREE.Group();
-  experienceAccent.visible=false;
-  careerWorld.add(experienceAccent);
-  const experienceArcs=[];
-  const accentSpecs=[
-    {radius:1.94,arc:Math.PI*1.18,tilt:[.92,.28,.34],tint:0xff616b,alpha:.68,direction:1},
-    {radius:2.13,arc:Math.PI*.92,tilt:[1.13,-.32,2.32],tint:0xf9e5d5,alpha:.57,direction:-1},
-    {radius:2.31,arc:Math.PI*.71,tilt:[.69,.47,-.88],tint:0xf7a6b0,alpha:.4,direction:1}
-  ];
-  accentSpecs.forEach((spec,index)=>{
-    const plane=new THREE.Group();
-    plane.rotation.set(...spec.tilt);
-    experienceAccent.add(plane);
-    const material=new THREE.MeshBasicMaterial({color:spec.tint,transparent:true,
-      opacity:0,depthWrite:false,toneMapped:false,fog:false});
-    material.userData.atmosphereAccent=true;
-    const arc=new THREE.Mesh(new THREE.TorusGeometry(spec.radius,index===0?.006:.0045,6,144,spec.arc),material);
-    plane.add(arc);
-    const sparkMaterial=new THREE.MeshBasicMaterial({color:index===0?0xffccd1:0xfff6e9,
-      transparent:true,opacity:0,depthWrite:false,toneMapped:false,fog:false});
-    sparkMaterial.userData.atmosphereAccent=true;
-    const spark=new THREE.Mesh(new THREE.SphereGeometry(index===0?.027:.021,16,12),sparkMaterial);
-    plane.add(spark);
-    experienceArcs.push({plane,material,spark,sparkMaterial,...spec});
-  });
 
   // A transparent, asymmetrically ribbed crystal envelope around the hero world.
   const shellGeo=new THREE.SphereGeometry(1,128,80);
@@ -297,9 +272,12 @@ export function createCosmos(canvas, options = {}) {
   });
   const stars=new THREE.Points(starGeo,starMat);universe.add(stars);
 
-  // Crossed chapter ribbons replace the old concentric background line stack.
-  const crossflow=createCrossflow(scene);
-  let atmosphereVisibility=1,experienceEnergy=0,experienceProgress=0;
+  const trail=createLuminousTrail(scene);
+  trail.group.traverse(object=>object.layers.set(1));
+  const experienceVisual=createExperienceVisual(scene,()=>{
+    document.documentElement.classList.add('experience-portrait-ready');dirty=true;
+  });
+  let atmosphereVisibility=1,atmosphereBlur=0,experienceState={},animationActive=true;
   main.traverse(object=>{if(object.material)object.material.userData.brandPink=true;});
 
   // Legacy stage coordinates remain available for older app.js callers.
@@ -356,6 +334,7 @@ export function createCosmos(canvas, options = {}) {
   function resize(){
     const ratio=Math.min(devicePixelRatio||1,mobile()?1.4:1.6);
     renderer.setPixelRatio(ratio);renderer.setSize(innerWidth,innerHeight,false);
+    compositor.resize(innerWidth,innerHeight,ratio);
     camera.aspect=innerWidth/innerHeight;camera.updateProjectionMatrix();
     galaxyMat.uniforms.uPixelRatio.value=ratio;
     starMat.uniforms.uPixelRatio.value=ratio;
@@ -428,7 +407,7 @@ export function createCosmos(canvas, options = {}) {
     camera.lookAt(target);
     universe.position.set(0,0,0);universe.rotation.set(0,0,0);
   }
-  function renderFrame(){
+  function renderFrame(dt=0,time=performance.now()/1000){
     if(disposed||contextLost)return;
     updateCamera();
     updateEnvironment();
@@ -437,22 +416,15 @@ export function createCosmos(canvas, options = {}) {
     shell.rotation.y=-orbitPhase*.08;
     planets.forEach((planet,i)=>{if(i>0){planet.surface.rotation.y=orbitPhase*.1*(i%2?1:-1);planet.group.position.y=planet.baseY+Math.sin(orbitPhase*.7+i)*.035;}});
     orbiters.forEach(o=>{const t=o.phase+orbitPhase*.22;o.mesh.position.set(Math.cos(t)*o.radius,Math.sin(t)*o.radius*.49,Math.sin(t)*.13);});
-    const accentEnergy=paused||reducedMotion?0:experienceEnergy;
-    experienceAccent.visible=accentEnergy>.002;
-    if(experienceAccent.visible){
-      experienceAccent.scale.setScalar(.92+accentEnergy*.08);
-      experienceArcs.forEach((arc,index)=>{
-        arc.plane.rotation.z=arc.tilt[2]+experienceProgress*arc.direction*(.74+index*.16);
-        arc.material.opacity=accentEnergy*arc.alpha*(mobile()?.72:1);
-        arc.sparkMaterial.opacity=accentEnergy*.88;
-        const angle=arc.arc*(.2+experienceProgress*.6);
-        arc.spark.position.set(Math.cos(angle)*arc.radius,Math.sin(angle)*arc.radius,0);
-        arc.spark.scale.setScalar(.72+accentEnergy*.28);
-      });
-    }
-    crossflow.update({camera,orbit:orbitPhase,night:environment.uNight.value,
-      visibility:atmosphereVisibility,mobile:mobile(),reducedMotion:reducedMotion||paused});
-    renderer.render(scene,camera);
+    camera.updateMatrixWorld();
+    const moving=!paused&&!reducedMotion;
+    const trailActive=trail.update({camera,dt,
+      visibility:atmosphereVisibility*(1-THREE.MathUtils.smoothstep(orbitPhase,2.60,2.7)),
+      night:environment.uNight.value,mobile:mobile(),paused:!moving,pointer:softPointer});
+    const portraitActive=experienceVisual.update({camera,experience:experienceState,time,
+      paused:!moving,visibility:atmosphereVisibility,mobile:mobile()});
+    animationActive=trailActive||portraitActive;
+    compositor.render(scene,camera,{blur:moving?atmosphereBlur:0});
     canvas.dataset.scene=legacyMode?String(progress.toFixed(3)):sceneState.id;
     canvas.dataset.progress=String((legacyMode?progress:sceneState.progress).toFixed(4));
     canvas.dataset.worldPhase=sceneState.worldPhase;
@@ -462,8 +434,8 @@ export function createCosmos(canvas, options = {}) {
     canvas.dataset.orbit=orbitPhase.toFixed(5);
     canvas.dataset.timeline=String(!!sceneState.pose&&!legacyMode);
     canvas.dataset.atmosphere=atmosphereVisibility.toFixed(4);
-    canvas.dataset.experienceEnergy=accentEnergy.toFixed(4);
-    canvas.dataset.experienceProgress=experienceProgress.toFixed(4);
+    canvas.dataset.experienceEnergy=(experienceState.energy||0).toFixed(4);
+    canvas.dataset.experienceProgress=(experienceState.progress||0).toFixed(4);
     canvas.dataset.frame=String(++drawCount);
   }
   function tick(now){
@@ -475,7 +447,7 @@ export function createCosmos(canvas, options = {}) {
     if(!paused&&!reducedMotion&&softPointer.distanceToSquared(pointer)>.0000001){
       softPointer.lerp(pointer,1-Math.exp(-5.5*dt));dirty=true;
     }
-    if(dirty){renderFrame();dirty=false;}
+    if(dirty||animationActive){renderFrame(dt,now/1000);dirty=false;}
   }
   const onLost = event => {
     event.preventDefault();contextLost=true;cancelAnimationFrame(raf);
@@ -491,6 +463,7 @@ export function createCosmos(canvas, options = {}) {
   addEventListener('resize',resize,{passive:true});
   resize();
   document.documentElement.classList.add('webgl-ready');
+  document.documentElement.classList.add('cosmos-composited');
   document.documentElement.dataset.renderMode='webgl';
   raf=requestAnimationFrame(tick);
   return {
@@ -498,6 +471,7 @@ export function createCosmos(canvas, options = {}) {
     setScene(value={}){
       const id=validSceneIds.has(value.id)?value.id:'hero';
       const p=clamp01(value.progress);
+      const nextScroll=Number.isFinite(value.scroll)?value.scroll:scrollY;
       const phase=Object.hasOwn(worldRoutes,value.worldPhase)?value.worldPhase:'intro';
       const automaticNight=id==='passage'?1-smooth(.2,.8,p):id==='discover'?smooth(.93,1,p):0;
       const night=Number.isFinite(value.night)?clamp01(value.night):automaticNight;
@@ -513,23 +487,27 @@ export function createCosmos(canvas, options = {}) {
         pose.position.some((v,i)=>v!==previous.position[i])||pose.target.some((v,i)=>v!==previous.target[i])||
         pose.orbit!==previous.orbit||pose.mobileZ!==previous.mobileZ||pose.pointerStrength!==previous.pointerStrength||
         pose.mobileTarget.some((v,i)=>v!==previous.mobileTarget[i])));
-      if(legacyMode||id!==sceneState.id||p!==sceneState.progress||night!==sceneState.night||phase!==sceneState.worldPhase||poseChanged){
-        sceneState={id,progress:p,night,worldPhase:phase,pose};legacyMode=false;dirty=true;
+      if(legacyMode||id!==sceneState.id||p!==sceneState.progress||night!==sceneState.night||phase!==sceneState.worldPhase||poseChanged||nextScroll!==sceneState.scroll){
+        sceneState={id,progress:p,night,worldPhase:phase,pose,scroll:nextScroll};legacyMode=false;dirty=true;
       }
     },
     // Film coverage is supplied by app.js so ornamental lines leave the stage
     // with the video instead of waiting for a chapter's semantic boundary.
     setAtmosphere(value={}){
       const visibility=Number.isFinite(value.visibility)?clamp01(value.visibility):atmosphereVisibility;
-      const energy=Number.isFinite(value.experienceEnergy)?clamp01(value.experienceEnergy):experienceEnergy;
-      const phase=Number.isFinite(value.experienceProgress)?clamp01(value.experienceProgress):experienceProgress;
-      if(visibility!==atmosphereVisibility||energy!==experienceEnergy||phase!==experienceProgress){
-        atmosphereVisibility=visibility;experienceEnergy=energy;experienceProgress=phase;dirty=true;
+      const blur=Number.isFinite(value.blur)?Math.max(0,Math.min(24,value.blur)):atmosphereBlur;
+      if(visibility!==atmosphereVisibility||blur!==atmosphereBlur||value.experience){
+        atmosphereVisibility=visibility;
+        atmosphereBlur=blur;
+        if(value.experience){
+          experienceState=value.experience;
+        }
+        dirty=true;
       }
     },
     setProgress(value){const next=THREE.MathUtils.clamp(Number.isFinite(value)?value:0,0,frames.length-1);if(!legacyMode||next!==progress){legacyMode=true;progress=next;dirty=true;}},
     setPaused(value){paused=!!value;pointer.set(0,0);softPointer.set(0,0);if(!paused)poseReady=false;dirty=true;canvas.dataset.motion=paused?'paused':'playing';},
     setReducedMotion(value){reducedMotion=!!value;pointer.set(0,0);softPointer.set(0,0);poseReady=false;dirty=true;},
-    dispose(){disposed=true;cancelAnimationFrame(raf);crossflow.dispose();removeEventListener('pointermove',onPointer);removeEventListener('resize',resize);document.removeEventListener('pointerleave',onPointerLeave);canvas.removeEventListener('webglcontextlost',onLost);canvas.removeEventListener('webglcontextrestored',onRestored);scene.traverse(o=>{o.geometry?.dispose();if(o.material){(Array.isArray(o.material)?o.material:[o.material]).forEach(m=>m.dispose());}});renderer.dispose();}
+    dispose(){disposed=true;cancelAnimationFrame(raf);trail.dispose();experienceVisual.dispose();compositor.dispose();removeEventListener('pointermove',onPointer);removeEventListener('resize',resize);document.removeEventListener('pointerleave',onPointerLeave);canvas.removeEventListener('webglcontextlost',onLost);canvas.removeEventListener('webglcontextrestored',onRestored);scene.traverse(o=>{o.geometry?.dispose();if(o.material){(Array.isArray(o.material)?o.material:[o.material]).forEach(m=>m.dispose());}});renderer.dispose();}
   };
 }

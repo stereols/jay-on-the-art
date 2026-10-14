@@ -2,10 +2,10 @@ import {createWorlds} from './worlds.js';
 import {createDiscover,discoverFrame} from './discover.js';
 import {createSpecialFilm} from './special-film.js';
 import {createAelinShowcase} from './aelin-showcase.js';
-import {createCameraTimeline} from './camera-timeline.js?v=20261015-experience';
+import {createCameraTimeline} from './camera-timeline.js?v=20261015-after-morai';
 import {createExperience} from './experience.js';
-import {createExperienceCharacter} from './experience-character.js';
-import {createCrossflowOverlay} from './crossflow-overlay.js';
+import {createExperienceCharacter} from './experience-character.js?v=20261015-career-fade-fast';
+import {createAelinCompanion} from './aelin-companion.js?v=20261015-wide';
 (() => {
   'use strict';
   const root = document.documentElement;
@@ -41,7 +41,6 @@ import {createCrossflowOverlay} from './crossflow-overlay.js';
 
   let cosmos = null;
   let atmosphereVisibility = 1;
-  let worldRibbonVisibility = 1;
   let flourish = {energy:0,progress:0};
   let paused = reduced.matches;
   let lastScene = {id:"hero",progress:0,night:0};
@@ -63,11 +62,11 @@ import {createCrossflowOverlay} from './crossflow-overlay.js';
   const portal=document.getElementById('threshold');
   const experience=createExperience(portal);
   const experienceCharacter=createExperienceCharacter(portal);
-  const crossflowOverlay=createCrossflowOverlay();
   const header=document.querySelector('.topbar');
   const specialFilmSection=document.querySelector('#yigo .special-story');
   const specialStory=createSpecialFilm(document.getElementById('yigo'));
   const aelinShowcase=createAelinShowcase(document.getElementById('aelin-showcase'));
+  const aelinCompanion=createAelinCompanion(document.getElementById('aelin-showcase'));
   const cameraTimeline=createCameraTimeline();
   const lab=document.getElementById('lab');
   const stepsUI=[...document.querySelectorAll('.process-list li')];
@@ -136,25 +135,30 @@ import {createCrossflowOverlay} from './crossflow-overlay.js';
 
   function updateScroll(){
     aelinShowcase.update();
+    aelinCompanion.update({motionEnabled:motionEnabled()});
     const marker=innerHeight*.1;
     let section=sections[0];
     for(const s of sections)if(s.getBoundingClientRect().top<=marker)section=s;
     const r=section.getBoundingClientRect();
     worlds.update();
-    const scene=cameraTimeline.sample(scrollY);
+    const sampledScene=cameraTimeline.sample(scrollY);
+    const specialRect=specialFilmSection.getBoundingClientRect();
+    // Hold the chapter lighting until MORAI has released, then fade in only
+    // as the fullscreen film begins to take over the viewport.
+    const filmEntry=smooth(clamp(-specialRect.top/(innerHeight*.16)));
+    const videoCoverage=filmEntry*smooth(clamp(specialRect.bottom/innerHeight));
+    const scene={...sampledScene,night:sampledScene.id==='works'?0:sampledScene.id==='yigo'?sampledScene.night*videoCoverage:sampledScene.night};
     const {night,blur,wash}=scene;
     experience.update();
     flourish=experienceCharacter.update(scene,{motionEnabled:motionEnabled()});
     root.classList.toggle('dark-chapter',night>.5);
     root.style.setProperty('--scene-dark',night.toFixed(4));
     root.style.setProperty('--scene-blur',motionEnabled()?blur.toFixed(3)+'px':'0px');
-    root.style.setProperty('--scene-wash',wash.toFixed(4));
+    root.style.setProperty('--scene-wash',(wash*(1-(flourish.visible?flourish.arrival:0))).toFixed(4));
     lastScene=scene;
     cosmos?.setScene(lastScene);
     specialStory.update();
     // Header tone follows the incoming video, independently of the cosmos camera.
-    const specialRect=specialFilmSection.getBoundingClientRect();
-    const videoCoverage=smooth(clamp((innerHeight-specialRect.top)/innerHeight))*smooth(clamp(specialRect.bottom/innerHeight));
     const headerDark=specialRect.bottom>0?videoCoverage:night;
     header.style.setProperty('--header-dark',(headerDark*100).toFixed(3)+'%');
     const footer=document.querySelector('body > footer'),footerRect=footer.getBoundingClientRect();
@@ -168,8 +172,7 @@ import {createCrossflowOverlay} from './crossflow-overlay.js';
     header.inert=filmFocus>.95;
     root.classList.toggle('pov-film-active',filmFocus>.95);
     atmosphereVisibility=1-Math.max(filmFocus,videoCoverage);
-    worldRibbonVisibility=atmosphereVisibility*(1-smooth(clamp((scene.orbit-.10)/.55)));
-    cosmos?.setAtmosphere({visibility:worldRibbonVisibility,experienceEnergy:flourish.energy,experienceProgress:flourish.progress});
+    cosmos?.setAtmosphere({visibility:atmosphereVisibility,experience:flourish,blur:motionEnabled()?blur:0});
     if(filmFocus>.1&&!mapPanel.hidden)closeMap();
     if(filmFocus>.1&&!menu.hidden)closeMenu();
     progressBar.style.transform='scaleX('+clamp(scrollY/Math.max(1,root.scrollHeight-innerHeight))+')';
@@ -202,7 +205,6 @@ import {createCrossflowOverlay} from './crossflow-overlay.js';
       document.querySelector('#pov-film .film-toggle').tabIndex=0;
       stepsUI.forEach(step=>{step.style.setProperty('--step-opacity','1');step.style.setProperty('--step-offset','0px');});lab.style.setProperty('--workflow-progress','1');
     }
-    crossflowOverlay.update(scene,{visibility:atmosphereVisibility,motionEnabled:motionEnabled(),emphasis:flourish.energy,experienceProgress:flourish.progress});
     if(root.classList.contains('motion-layout')===pinned())lastReading={section,fraction:clamp(-r.top/section.offsetHeight),world:worlds.readingPosition()};
   }
   function navigateHash(hash,behavior='instant'){
@@ -239,5 +241,5 @@ import {createCrossflowOverlay} from './crossflow-overlay.js';
   requestAnimationFrame(()=>{const entry=new URLSearchParams(location.search).get('entry');if(['top','yigo','project-overview'].includes(entry))resumeDestination(entry);else navigateHash(location.hash);scheduleScroll();});
   const params=new URLSearchParams(location.search);
   if(params.get('view')==='static'){paused=true;setLayout();root.dataset.renderMode='static';motionButton.hidden=true;return;}
-  import('./cosmos.bundle.js?v=20261015-experience').then(module=>{cosmos=module.createCosmos(document.getElementById('cosmos-canvas'),{paused,reducedMotion:reduced.matches});cosmos.setScene(lastScene);cosmos.setAtmosphere({visibility:worldRibbonVisibility,experienceEnergy:flourish.energy,experienceProgress:flourish.progress});}).catch(error=>{console.warn('Living Cosmos uses the static artwork fallback.',error);root.dataset.renderMode='fallback';});
+  import('./cosmos.bundle.js?v=20261015-career-fade-fast').then(module=>{cosmos=module.createCosmos(document.getElementById('cosmos-canvas'),{paused,reducedMotion:reduced.matches});cosmos.setScene(lastScene);cosmos.setAtmosphere({visibility:atmosphereVisibility,experience:flourish,blur:motionEnabled()?(lastScene.blur||0):0});}).catch(error=>{console.warn('Living Cosmos uses the static artwork fallback.',error);root.dataset.renderMode='fallback';});
 })();

@@ -1,23 +1,63 @@
-/* The smaller portrait belongs only to the career arrival's right column. */
+/* One centered editorial composition, with a transparent portrait in the shared scene. */
+.career-arrival {
+  padding-inline:clamp(28px,6vw,96px);
+  background:transparent;
+  box-shadow:none;
+}
+.career-arrival-layout {
+  display:grid;
+  grid-template-columns:minmax(0,520px) minmax(0,364px);
+  align-items:center;
+  justify-content:center;
+  gap:clamp(36px,5.5vw,80px);
+  width:min(100%,1020px);
+  margin-inline:auto;
+  background:transparent;
+}
+.career-arrival .section-top {
+  width:min(100%,1020px);
+  margin-inline:auto;
+  background:transparent;
+}
+.career-arrival .career-heading {
+  position:relative;
+  z-index:1;
+  max-width:540px;
+  padding:0;
+  background:transparent;
+  box-shadow:none;
+}
+.career-arrival .career-heading h2,
+.career-arrival .career-heading p {background:transparent;box-shadow:none}
 .career-arrival-layout .experience-character {
   position:relative;
   justify-self:center;
-  width:min(100%,364px,calc((100svh - 240px) * .666667));
+  width:min(100%,364px,calc((100svh - 235px) * .666667));
   min-width:0;
   aspect-ratio:2/3;
   margin:0;
+  background:transparent;
   isolation:isolate;
 }
 .experience-character-float {
   position:absolute;
   inset:0;
-  translate:0 calc((1 - var(--experience-character-entry,1)) * 28px - var(--experience-character-exit,0) * 24px);
-  scale:calc(.96 + var(--experience-character-entry,1) * .04 - var(--experience-character-exit,0) * .055);
+  translate:0 calc((1 - var(--experience-character-entry,1)) * 28px - var(--experience-character-exit,0) * 24px + var(--experience-character-drift,0px));
+  scale:calc(.96 + var(--experience-character-entry,1) * .04 - var(--experience-character-exit,0) * .035);
   transform-origin:50% 65%;
-  animation:experience-person-float 7.8s ease-in-out infinite;
-  animation-play-state:paused;
+  background:transparent;
 }
-.experience-character-active .experience-character-float {animation-play-state:running}
+.experience-character picture {display:block;width:100%;height:100%;background:transparent}
+.experience-character-stage {position:fixed;z-index:2;pointer-events:none;background:transparent;isolation:isolate;transition:opacity .12s linear}
+.experience-character-stage[hidden] {display:none}
+@media(min-width:761px) {
+  .motion-layout #career-history .career-list {
+    width:min(100%,1020px);
+    margin-inline:auto;
+    padding-right:clamp(260px,calc(100vw * .36),444px);
+    box-sizing:border-box;
+  }
+}
 .experience-character .experience-person {
   display:block;
   width:100%;
@@ -25,45 +65,30 @@
   object-fit:contain;
   pointer-events:none;
   user-select:none;
-  filter:drop-shadow(5px 14px 12px #5c33451b);
-}
-.experience-character .experience-pet {
-  position:absolute;
-  left:78%;
-  top:18%;
-  z-index:2;
-  width:101px;
-  height:101px;
-  min-width:44px;
-  min-height:44px;
-  padding:0;
-  margin:0;
-  border:0;
-  border-radius:50%;
   background:transparent;
-  touch-action:pan-y;
-  cursor:pointer;
-  line-height:1;
-  transform:translate(-50%,-50%);
-  opacity:0;
 }
-.experience-pet[hidden] {display:none!important}
-.experience-pet:disabled {pointer-events:none}
-.experience-pet-art {position:absolute;inset:0;display:block;perspective:300px;transform-origin:50% 56%;pointer-events:none;filter:drop-shadow(0 5px 6px #17272220)}
-.experience-character .experience-pet-art img {position:absolute;inset:0;width:100%;height:100%;display:block;object-fit:contain;pointer-events:none;user-select:none;transform-origin:50% 56%;backface-visibility:hidden}
-.experience-pet-body {z-index:2}
-.experience-pet:focus-visible {outline:1.5px solid var(--primary,#FF616B);outline-offset:2px}
-.experience-pet[data-state="react"] .experience-pet-art {filter:drop-shadow(0 3px 10px #ff616b40)}
-.experience-pet[data-state="flyout"] {pointer-events:none}
+/* Keep the measurable fallback image in layout while Three renders the same alpha artwork. */
+.webgl-ready.experience-portrait-ready:not(.no-motion) .experience-person {opacity:0}
 .no-motion .experience-character-float {translate:none;scale:1}
-.no-motion .experience-pet,.reading-resume .experience-pet {display:none!important}
-@keyframes experience-person-float {0%,100%{transform:translateY(5px) rotate(-.35deg)}50%{transform:translateY(-5px) rotate(.35deg)}}
+@media(min-width:761px) and (max-height:780px) {
+  .motion-layout .career-arrival {padding-top:90px;padding-bottom:55px}
+  .motion-layout .career-arrival .section-top {margin-bottom:22px}
+  .career-arrival-layout .experience-character {width:min(100%,300px,calc((100svh - 190px) * .666667))}
+}
+@media(max-width:960px) and (min-width:761px) {
+  .career-arrival {padding-inline:40px}
+  .career-arrival-layout {grid-template-columns:minmax(0,1fr) minmax(0,.68fr);gap:28px}
+  .career-arrival .career-heading>p {font-size:18px}
+}
 @media(max-width:760px) {
-  .career-arrival-layout .experience-character {width:min(100%,210px);margin:35px auto 0;}
-  .experience-character .experience-pet {width:78px;height:78px;left:79%;top:18%;}
+  .career-arrival {padding-inline:28px;padding-top:48px;padding-bottom:55px}
+  .career-arrival-layout {grid-template-columns:minmax(0,1fr);gap:30px;width:min(100%,540px)}
+  .career-arrival .career-heading {text-align:center;justify-self:center}
+  .career-arrival .career-heading>p {margin-top:22px;text-wrap:pretty}
+  .career-arrival-layout .experience-character {width:min(100%,235px);margin:0 auto}
 }
 @media(prefers-reduced-motion:reduce) {
-  .experience-character-float {animation:none;translate:none;scale:1}
-  .experience-pet {display:none!important}
+  .experience-character-float {translate:none;scale:1}
+  .experience-character .experience-person {opacity:1!important}
 }
 @media print {.career-arrival-layout .experience-character {display:none}}

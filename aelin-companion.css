@@ -1,0 +1,60 @@
+/* A transparent companion layer confined to the Aelin section by its controller. */
+.aelin-companion-layer {
+  position:fixed;
+  inset:0;
+  z-index:18;
+  pointer-events:none;
+  overflow:hidden;
+  opacity:0;
+  visibility:hidden;
+  background:none;
+  transition:opacity .24s ease,visibility .24s;
+}
+.aelin-companion-layer .aelin-companion {
+  position:absolute;
+  left:0;
+  top:0;
+  width:61px;
+  height:61px;
+  min-width:44px;
+  min-height:44px;
+  border:0;
+  border-radius:0;
+  padding:0;
+  margin:0;
+  background:none;
+  box-shadow:none;
+  pointer-events:auto;
+  cursor:pointer;
+  touch-action:pan-y;
+  -webkit-tap-highlight-color:transparent;
+  will-change:transform;
+}
+.aelin-companion-layer .aelin-companion:disabled {pointer-events:none}
+.aelin-companion-art {
+  display:block;
+  position:absolute;
+  inset:0;
+  perspective:250px;
+  transform-origin:50% 56%;
+  pointer-events:none;
+  filter:drop-shadow(0 3px 3px #152b2526);
+}
+.aelin-companion-art img {
+  position:absolute;
+  display:block;
+  inset:0;
+  width:100%;
+  height:100%;
+  object-fit:contain;
+  user-select:none;
+  pointer-events:none;
+  transform-origin:50% 56%;
+  backface-visibility:hidden;
+}
+.aelin-companion-body {z-index:2}
+.aelin-companion-layer .aelin-companion:focus-visible {outline:1.5px solid var(--primary,#FF616B);outline-offset:3px;border-radius:50%}
+.aelin-companion-layer .aelin-companion::before,.aelin-companion-layer .aelin-companion::after {content:none}
+@media(max-width:760px) {.aelin-companion-layer .aelin-companion {width:47px;height:47px}}
+@media(prefers-reduced-motion:reduce) {.aelin-companion-layer {transition:none}}
+@media print {.aelin-companion-layer {display:none}}

@@ -57,7 +57,7 @@ AI 에이전트를 활용한 새로운 서비스를 구현하고 개선합니다
 
 YIGO. · 현재  
 Creative Leader  
-Aelin의 서비스 기획과 제품 개발을 리드합니다.
+멀티미디어 SNS 플랫폼 에일린의 서비스 기획과 제품 개발을 리드합니다.
 
 MORAI · 2024  
 3D Environment 파트장  

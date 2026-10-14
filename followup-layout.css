@@ -121,8 +121,8 @@
 .responsive-media{display:contents}
 
 /* Blend the header with the visible film rather than the camera's early night cue. */
-.topbar{--header-ink:color-mix(in srgb,var(--ink),var(--paper) var(--header-dark,0%));--header-surface:color-mix(in srgb,rgba(246,241,232,.92),rgba(15,21,38,.76) var(--header-dark,0%))}
-.topbar,.topbar.is-scrolled,.dark-chapter .topbar,.dark-chapter .topbar.is-scrolled{color:var(--header-ink);background:var(--header-surface)}
+.topbar{--header-ink:color-mix(in srgb,var(--ink),var(--paper) var(--header-dark,0%));--header-surface:color-mix(in srgb,rgba(246,241,232,.38),rgba(15,21,38,.30) var(--header-dark,0%))}
+.topbar,.topbar.is-scrolled,.dark-chapter .topbar,.dark-chapter .topbar.is-scrolled{color:var(--header-ink);background:var(--header-surface);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px)}
 .topbar .brand,.dark-chapter .topbar .brand,.topbar .site-wordmark,.dark-chapter .topbar .site-wordmark,.topbar .desktop-nav,.dark-chapter .topbar .desktop-nav{color:var(--header-ink)}
 .topbar .resume-link,.dark-chapter .topbar .resume-link{background:color-mix(in srgb,rgba(246,241,232,.5),#ffffff08 var(--header-dark,0%));border-color:color-mix(in srgb,var(--line),#ffffff33 var(--header-dark,0%))}
 .topbar .resume-link:hover,.dark-chapter .topbar .resume-link:hover{background:var(--header-ink);color:color-mix(in srgb,var(--paper),var(--ink) var(--header-dark,0%))}
