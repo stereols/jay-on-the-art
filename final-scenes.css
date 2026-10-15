@@ -31,6 +31,6 @@
  .special-pin .film-caption{top:auto;bottom:22px}
  .motion-layout .discover{height:auto}
 }
-#special-film .aelin-film-caption{top:auto;right:auto;bottom:clamp(96px,13svh,136px);left:34px;display:block;max-width:calc(100% - 68px);margin:0;padding:0;border:0;border-radius:0;background:none;color:#fff;font-size:clamp(7px,1.7vw,14px);font-weight:500;line-height:1.5;white-space:nowrap;text-shadow:0 1px 4px #000,0 1px 12px #0009;pointer-events:none;z-index:4}
-@media(max-width:760px){#special-film .aelin-film-caption{left:16px;bottom:60px;max-width:calc(100% - 32px)}}
+#special-film .aelin-film-caption,#pov-film .realtime-film-caption{top:auto;right:auto;bottom:clamp(96px,13svh,136px);left:34px;display:block;max-width:calc(100% - 68px);margin:0;padding:0;border:0;border-radius:0;background:none;color:#fff;font-size:clamp(7px,1.7vw,14px);font-weight:500;line-height:1.5;white-space:nowrap;text-shadow:0 1px 4px #000,0 1px 12px #0009;pointer-events:none;z-index:4}
+@media(max-width:760px){#special-film .aelin-film-caption,#pov-film .realtime-film-caption{left:16px;bottom:60px;max-width:calc(100% - 32px)}}
 @media print{.special-story,.special-pin{height:auto!important;position:relative!important}.special-headline{opacity:1!important;transform:none!important;position:relative!important}}
