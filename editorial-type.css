@@ -8,8 +8,10 @@
   letter-spacing: 0;
 }
 .hero-brand :is(.logo-stacked, img) { display: block; width: 100%; height: auto; }
+.hero-signature { display: grid; width: max-content; max-width: 100%; }
+.hero-signature .hero-kicker { white-space: nowrap; }
 .hero .hero-name {
-  width: var(--hero-mark-width);
+  width: 100%;
   max-width: 100%;
   text-align: right;
   margin: var(--space-signature) 0 0;
@@ -19,7 +21,7 @@
   line-height: var(--leading-role);
   letter-spacing: var(--tracking-ko-heading);
 }
-.hero-copy > .eyebrow {
+.hero-copy > .eyebrow, .hero-signature > .eyebrow {
   margin: var(--space-3) 0 0;
   color: var(--muted);
   font-size: var(--type-meta);
