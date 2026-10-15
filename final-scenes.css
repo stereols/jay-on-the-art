@@ -35,4 +35,4 @@
 @media(max-width:760px){#special-film .aelin-film-caption,#pov-film .realtime-film-caption{left:16px;bottom:60px;max-width:calc(100% - 32px)}}
 @media print{.special-story,.special-pin{height:auto!important;position:relative!important}.special-headline{opacity:1!important;transform:none!important;position:relative!important}}
 
-#pov-film .realtime-film-caption{left:var(--pad-left);max-width:calc(100% - var(--pad-left) - var(--pad))}
+#pov-film .realtime-film-caption,#special-film .aelin-film-caption{left:var(--pad-left);max-width:calc(100% - var(--pad-left) - var(--pad))}
