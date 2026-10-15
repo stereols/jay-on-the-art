@@ -27,6 +27,20 @@ export function createAelinShowcase(section) {
   let targetX = 0;
   let targetY = 0;
 
+  function prepareVideo(video) {
+    if (video.dataset.poster) {
+      video.poster = video.dataset.poster;
+      delete video.dataset.poster;
+    }
+    const sources = [...video.querySelectorAll('source[data-src]')];
+    if (!sources.length) return;
+    sources.forEach(source => {
+      source.src = source.dataset.src;
+      source.removeAttribute('data-src');
+    });
+    video.load();
+  }
+
   function syncVideos() {
     const candidates = videos.filter(video => {
       const highlighted = !animated || Number(video.closest('[data-screen]').dataset.screen) === active;
@@ -39,6 +53,7 @@ export function createAelinShowcase(section) {
       if (video !== next) video.pause();
     });
     if (next) {
+      prepareVideo(next);
       next.muted = true;
       next.play().catch(() => { if (playingVideo === next) playingVideo = null; });
     }
@@ -200,6 +215,8 @@ export function createAelinShowcase(section) {
     visible = bounds.bottom > 0 && bounds.top < innerHeight;
     if (!visible) {
       resetPointer();
+      syncVideos();
+      return;
     }
     syncVideos();
     if (!animated) return;
@@ -227,7 +244,15 @@ export function createAelinShowcase(section) {
     entries.forEach(entry => videoVisibility.set(entry.target, entry.intersectionRatio));
     syncVideos();
   }, {threshold: [0, .25, .5, .75, 1]});
+  const warmupObserver = new IntersectionObserver(entries => {
+    entries.forEach(entry => {
+      if (!entry.isIntersecting) return;
+      prepareVideo(entry.target);
+      warmupObserver.unobserve(entry.target);
+    });
+  }, {rootMargin: '800px 0px'});
   videos.forEach(video => {
+    warmupObserver.observe(video);
     video.muted = true;
     video.loop = true;
     videoObserver.observe(video);

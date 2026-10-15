@@ -1,9 +1,26 @@
 import './sync-wordmarks.mjs';
-import {build} from 'esbuild';
+import {build,transform} from 'esbuild';
+import fs from 'node:fs/promises';
+import {createHash} from 'node:crypto';
 import path from 'node:path';
 import {fileURLToPath} from 'node:url';
 import {optimizePageImages} from './optimize-images.mjs';
 const root=path.resolve(path.dirname(fileURLToPath(import.meta.url)),'..');
 await build({entryPoints:[path.join(root,'cosmos.js')],outfile:path.join(root,'cosmos.bundle.js'),bundle:true,minify:true,format:'esm',target:'es2022',legalComments:'eof'});
 await optimizePageImages(root);
+// Preserve stylesheet order and selectors; only remove formatting whitespace.
+const fontURL='https://fonts.googleapis.com/css2?family=Manrope:wght@400..800&family=Noto+Sans+KR:wght@400..900&display=swap';
+const cssFiles=['styles.css','renewal.css','renewal-three.css','refinement.css','final-scenes.css','brand-system.css','design-tokens.css','editorial-type.css','year-timeline.css','editorial-scenes.css','followup-layout.css','aelin-showcase.css','cosmos-atmosphere.css','transparent-scenes.css','experience-character.css','aelin-companion.css'];
+const css=(await Promise.all(cssFiles.map(file=>fs.readFile(path.join(root,file),'utf8')))).join('\n').replace(/@import url\('https:\/\/fonts\.googleapis\.com[^']+'\);/g,'');
+const compact=await transform(css,{loader:'css',minifyWhitespace:true,minifySyntax:false,minifyIdentifiers:false,legalComments:'none'});
+await fs.writeFile(path.join(root,'site.bundle.css'),compact.code);
+const digest=data=>createHash('sha256').update(data).digest('hex').slice(0,12);
+const cosmosHash=digest(await fs.readFile(path.join(root,'cosmos.bundle.js')));
+await build({entryPoints:[path.join(root,'app.js')],outfile:path.join(root,'app.bundle.js'),bundle:true,minify:true,format:'esm',target:'es2022',legalComments:'eof',plugins:[{name:'deferred-cosmos',setup(builder){builder.onResolve({filter:/^\.\/cosmos\.bundle\.js/},()=>({path:'./cosmos.bundle.js?v='+cosmosHash,external:true}));}}]});
+let html=await fs.readFile(path.join(root,'index.html'),'utf8');
+html=html.replace(/<link rel="stylesheet" href="[^"]+">/g,'');
+html=html.replace(/<script src="(?:app|app\.bundle)\.js[^\"]*" type="module"><\/script>/,'<script src="app.bundle.js?v='+digest(await fs.readFile(path.join(root,'app.bundle.js')))+'" type="module"></script>');
+html=html.replace('</head>','  <link rel="stylesheet" href="'+fontURL.replaceAll('&','&amp;')+'">\n  <link rel="stylesheet" href="site.bundle.css?v='+digest(compact.code)+'">\n</head>');
+await fs.writeFile(path.join(root,'index.html'),html);
+console.log('Bundled 16 stylesheets and application modules without changing media or rendering quality.');
 console.log('Built local WebGL module and responsive high-quality image variants. Original artwork files retained.');
