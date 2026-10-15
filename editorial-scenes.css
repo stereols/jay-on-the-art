@@ -64,3 +64,14 @@
  .process-list h3{font-size:22px}.process-list li>p:not(.eyebrow){font-size:15px}
 }
 @media print{.experience-passage{display:block!important}.experience-passage .passage-heading{display:none}.career-arrival{opacity:1!important;transform:none!important}.career-art{display:none}}
+
+/* One compact identity block under the wordmark. */
+.hero .hero-signature{display:flex;align-items:center;gap:22px;width:fit-content;max-width:100%;margin:28px 0 32px}
+.hero .hero-signature .hero-name{width:auto;max-width:none;flex:none;margin:0;text-align:left;font-size:24px;line-height:1.5;letter-spacing:var(--tracking-ko-heading)}
+.hero .hero-signature .hero-kicker{margin:0;padding:1px 0 1px 22px;border-left:1px solid var(--line);font-size:11px;font-weight:600;line-height:1.7;letter-spacing:.08em;white-space:nowrap;color:var(--muted)}
+.hero .hero-signature + .hero-role{margin-top:0}
+@media(max-width:760px){
+ .hero .hero-signature{gap:18px;margin-top:24px;margin-bottom:28px}
+ .hero .hero-signature .hero-name{font-size:22px}
+ .hero .hero-signature .hero-kicker{padding-left:18px;font-size:10px}
+}
