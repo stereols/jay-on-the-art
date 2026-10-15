@@ -113,7 +113,7 @@ import {createAelinCompanion} from './aelin-companion.js?v=20261015-wide';
     experience.setEnabled(pinned());
     if(!pinned())cardProgress(0);
     motionButton.setAttribute('aria-pressed',String(paused));motionButton.setAttribute('aria-label',paused?'배경과 스크롤 연출 재생':'배경과 스크롤 연출 일시정지');
-    motionButton.querySelector('.motion-icon').textContent=paused?'▷':'Ⅱ';motionButton.querySelector('.motion-label').textContent=paused?'Motion off':'Motion on';
+    motionButton.querySelector('.motion-icon').textContent=paused?'▷':'Ⅱ';motionButton.querySelector('.motion-label').textContent=paused?'Motion on':'Motion off';
     videos.forEach(syncVideo);
     if(reading&&wasPinned!==pinned()&&reading.phase==='cards')worlds.go(reading.index,'instant');
     else if(anchor&&scrollY>0)scrollTo({top:anchor.getBoundingClientRect().top+scrollY+fraction*anchor.offsetHeight,behavior:'instant'});
