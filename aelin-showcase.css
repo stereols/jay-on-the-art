@@ -14,6 +14,8 @@
 .aelin-device{margin:0;min-width:0}
 .aelin-device-surface{width:min(100%,330px);margin-inline:auto;aspect-ratio:391/903;border-radius:6% / 2.6%;background:#faf6ef;overflow:hidden;box-shadow:0 22px 45px -23px #263b3638,0 0 0 1px #263b3612}
 .aelin-screen{display:block;width:100%;height:100%}
+.aelin-device-video .aelin-device-surface{background:#101820;aspect-ratio:var(--video-ratio,9/16)}
+.aelin-device-video video.aelin-screen{object-fit:contain}
 .aelin-device figcaption{max-width:330px;margin:24px auto 0}
 .aelin-device figcaption small,.aelin-detail-kicker{display:block;font-size:10px;font-weight:650;letter-spacing:var(--tracking-meta);margin-bottom:10px}
 .aelin-device figcaption h3{font-size:25px;line-height:1.4;letter-spacing:var(--tracking-ko-heading)}
@@ -25,7 +27,7 @@
 .aelin-production p{font-size:15px;line-height:1.85;max-width:68ch;word-break:keep-all;letter-spacing:var(--tracking-ko-body)}
 
 /* Only enabled by the shared motion controller on roomy desktop viewports. */
-.aelin-showcase.is-animated{height:410svh}
+.aelin-showcase.is-animated{height:610svh}
 .aelin-showcase.is-animated .aelin-pin{position:sticky;top:0;height:100svh;padding:100px var(--pad) 100px var(--pad-left);display:grid;grid-template-columns:minmax(300px,.78fr) minmax(0,1.22fr);grid-template-rows:1fr auto;column-gap:3vw}
 .aelin-showcase.is-animated .aelin-introduction{grid-column:1;grid-row:1;align-self:center;position:relative;z-index:5;max-width:460px;padding-bottom:10px}
 .aelin-showcase.is-animated .aelin-introduction h2{font-size:clamp(30px,2.9vw,46px)}
@@ -38,12 +40,15 @@
 .aelin-showcase.is-animated .aelin-stage{grid-column:2;grid-row:1;margin:0;display:block;min-width:0;perspective:1600px;--phone-height:min(61svh,580px);align-self:stretch}
 .aelin-showcase.is-animated .aelin-stage::before{content:"";position:absolute;inset:12% -8%;border:1px solid #6b7d7012;border-radius:50%;transform:rotate(-22deg);pointer-events:none}
 .aelin-showcase.is-animated .aelin-device{position:absolute;left:50%;top:50%;width:calc(var(--phone-height) * 391 / 903);height:var(--phone-height);transform:translate3d(calc(-50% + var(--device-x,0px)),calc(-50% + var(--device-y,0px)),0) rotateY(var(--device-yaw,0deg)) rotate(var(--device-rotate,0deg)) scale(var(--device-scale,1));opacity:var(--device-alpha,1);will-change:transform,opacity;transform-origin:center}
+.aelin-showcase.is-animated .aelin-device-video{width:calc(var(--phone-height) * var(--video-width-ratio,.5625))}
 .aelin-showcase.is-animated .aelin-device-surface{width:100%;height:100%;transform:translate3d(calc(var(--pointer-x) * 1px),calc(var(--pointer-y) * 1px),0) rotateX(calc(var(--pointer-y) * -.3deg)) rotateY(calc(var(--pointer-x) * .4deg));box-shadow:0 28px 55px -22px #263b3645,0 0 0 1px #263b3617;backface-visibility:hidden}
 .aelin-showcase.is-animated .aelin-device figcaption{display:none}
 .aelin-showcase.is-animated .aelin-device:not(.is-active) .aelin-device-surface{filter:saturate(.8) brightness(.97)}
 .aelin-showcase.is-animated .aelin-screen-nav{display:flex;align-items:center;gap:17px;margin-top:24px}
 .aelin-progress-number{font-size:10px;font-weight:650;letter-spacing:var(--tracking-meta-compact);min-width:43px;font-variant-numeric:tabular-nums}
 .aelin-step-list{display:flex;align-items:center;gap:4px}
+.aelin-showcase.is-animated .aelin-screen-nav{flex-wrap:wrap;gap:8px 12px}
+.aelin-step-list{flex-wrap:wrap}
 .aelin-step-list button{position:relative;min-width:45px;min-height:44px;padding:10px 8px;font-size:12px;font-weight:550;color:var(--ink)}
 .aelin-step-list button::after{content:"";position:absolute;left:8px;right:8px;bottom:4px;height:2px;background:var(--primary);transform:scaleX(0);transform-origin:left;transition:transform .22s ease}
 .aelin-step-list button[aria-current="step"]::after,.aelin-step-list button:hover::after{transform:scaleX(1)}
@@ -71,6 +76,7 @@
  .aelin-introduction h2{font-size:32px}.aelin-introduction>p{font-size:15px;margin-top:20px}
  .aelin-stage{grid-template-columns:1fr;gap:56px;margin-top:40px}
  .aelin-device-surface{width:min(100%,330px,calc((100svh - 145px) * .433))}
+ .aelin-device-video .aelin-device-surface{width:min(100%,330px,calc((100svh - 145px) * var(--video-width-ratio,.5625)))}
  .aelin-device figcaption h3{font-size:24px}
  .aelin-production{grid-template-columns:1fr;gap:16px;margin-top:55px;padding-top:24px}
  .aelin-production p{font-size:14px}

@@ -1,7 +1,6 @@
 const clamp = (value, min = 0, max = 1) => Math.max(min, Math.min(max, value));
 const mix = (from, to, amount) => from + (to - from) * amount;
 const ease = value => value * value * (3 - 2 * value);
-const focusStops = [.18, .39, .60, .81];
 
 /** A scroll scene with a readable, ordinary document layout as its fallback. */
 export function createAelinShowcase(section) {
@@ -9,6 +8,10 @@ export function createAelinShowcase(section) {
 
   const stage = section.querySelector('.aelin-stage');
   const devices = [...section.querySelectorAll('.aelin-device[data-screen]')];
+  const focusStops = devices.map((_, index) => .16 + index * .70 / Math.max(1, devices.length - 1));
+  const videos = [...section.querySelectorAll('.aelin-device video')];
+  const videoVisibility = new Map();
+  let playingVideo = null;
   const details = [...section.querySelectorAll('.aelin-detail[data-detail]')];
   const buttons = [...section.querySelectorAll('button[data-aelin-step]')];
   const counter = section.querySelector('.aelin-progress-number');
@@ -23,6 +26,23 @@ export function createAelinShowcase(section) {
   let pointerY = 0;
   let targetX = 0;
   let targetY = 0;
+
+  function syncVideos() {
+    const candidates = videos.filter(video => {
+      const highlighted = !animated || Number(video.closest('[data-screen]').dataset.screen) === active;
+      return !document.hidden && highlighted && (videoVisibility.get(video) || 0) >= .25;
+    });
+    const next = candidates.sort((a, b) => videoVisibility.get(b) - videoVisibility.get(a))[0] || null;
+    if (next === playingVideo) return;
+    playingVideo = next;
+    videos.forEach(video => {
+      if (video !== next) video.pause();
+    });
+    if (next) {
+      next.muted = true;
+      next.play().catch(() => { if (playingVideo === next) playingVideo = null; });
+    }
+  }
 
   function resetPointer() {
     if (pointerFrame) cancelAnimationFrame(pointerFrame);
@@ -67,7 +87,12 @@ export function createAelinShowcase(section) {
     if (active === index && !force) return;
     active = index;
     section.dataset.activeScreen = String(index);
-    devices.forEach(device => device.classList.toggle('is-active', Number(device.dataset.screen) === index));
+    devices.forEach(device => {
+      const current = Number(device.dataset.screen) === index;
+      device.classList.toggle('is-active', current);
+      device.inert = animated && !current;
+      if (!current) device.querySelector('video')?.pause();
+    });
     details.forEach(detail => {
       const current = Number(detail.dataset.detail) === index;
       const concealed = animated && !current;
@@ -83,7 +108,8 @@ export function createAelinShowcase(section) {
       if (current) button.setAttribute('aria-current', 'step');
       else button.removeAttribute('aria-current');
     });
-    if (counter) counter.textContent = `${String(index + 1).padStart(2, '0')} / 04`;
+    if (counter) counter.textContent = `${String(index + 1).padStart(2, '0')} / ${String(devices.length).padStart(2, '0')}`;
+    syncVideos();
   }
 
   function reconcileLayout() {
@@ -122,9 +148,9 @@ export function createAelinShowcase(section) {
   }
 
   function groupPose(index, width, deviceWidth, opening = false) {
-    const scale = Math.min(.70, Math.max(.49, (width - 50) / Math.max(1, deviceWidth * 4.5)));
-    const spacing = Math.min(width / 4.15, deviceWidth * scale * 1.08);
-    const offset = index - 1.5;
+    const scale = Math.min(.70, Math.max(.32, (width - 50) / Math.max(1, deviceWidth * (devices.length + .5))));
+    const spacing = Math.min(width / (devices.length + .15), deviceWidth * scale * 1.08);
+    const offset = index - (devices.length - 1) / 2;
     return {
       x: offset * spacing,
       y: opening ? 50 + Math.abs(offset) * 15 : Math.abs(offset) * 8,
@@ -137,15 +163,12 @@ export function createAelinShowcase(section) {
 
   function render(progress) {
     const width = stage.clientWidth;
-    const deviceWidth = devices[0]?.offsetWidth || Math.min(innerHeight * .61, 580) * 390 / 902;
+    const deviceWidth = Math.min(...devices.map(device => device.offsetWidth)) || Math.min(innerHeight * .61, 580) * 390 / 902;
     const frames = [
-      {at: 0, pose: index => ({x: (index - 1.5) * 12, y: 130 + index * 12, scale: .58, rotate: 0, yaw: 0, alpha: 0})},
+      {at: 0, pose: index => ({x: (index - (devices.length - 1) / 2) * 12, y: 130 + index * 12, scale: .58, rotate: 0, yaw: 0, alpha: 0})},
       {at: .07, pose: index => groupPose(index, width, deviceWidth, true)},
-      {at: .135, focus: 0}, {at: .225, focus: 0},
-      {at: .345, focus: 1}, {at: .435, focus: 1},
-      {at: .555, focus: 2}, {at: .645, focus: 2},
-      {at: .765, focus: 3},
-      {at: 1, focus: 3}
+      ...focusStops.flatMap((stop, index) => [{at: stop - .04, focus: index}, {at: stop + .04, focus: index}]),
+      {at: 1, focus: devices.length - 1}
     ];
     let frameIndex = 0;
     while (frameIndex < frames.length - 2 && progress > frames[frameIndex + 1].at) frameIndex++;
@@ -175,7 +198,10 @@ export function createAelinShowcase(section) {
     reconcileLayout();
     const bounds = section.getBoundingClientRect();
     visible = bounds.bottom > 0 && bounds.top < innerHeight;
-    if (!visible) resetPointer();
+    if (!visible) {
+      resetPointer();
+    }
+    syncVideos();
     if (!animated) return;
     const distance = Math.max(1, section.offsetHeight - innerHeight);
     render(clamp(-bounds.top / distance));
@@ -194,6 +220,19 @@ export function createAelinShowcase(section) {
     }
   }));
 
+  videos.forEach(video => video.addEventListener('play', () => {
+    videos.forEach(other => { if (other !== video) other.pause(); });
+  }));
+  const videoObserver = new IntersectionObserver(entries => {
+    entries.forEach(entry => videoVisibility.set(entry.target, entry.intersectionRatio));
+    syncVideos();
+  }, {threshold: [0, .25, .5, .75, 1]});
+  videos.forEach(video => {
+    video.muted = true;
+    video.loop = true;
+    videoObserver.observe(video);
+  });
+  document.addEventListener('visibilitychange', syncVideos);
   select(0, true);
   return {
     setEnabled(value) {

@@ -1,4 +1,4 @@
-/* Canonical Jay. SVGs and the reference's display / section / body hierarchy. */
+/* Canonical Jay on Art SVGs and the reference's display / section / body hierarchy. */
 :root{--paper:#F6F1E8;--ink:#182525;--muted:#656565;--body:#515151;--primary:#FF616B;--primary-ink:var(--ink);--primary-soft:#fff0f1;--teal:var(--ink);--pad-left:calc(var(--pad,5.5vw) * 2);--type-display:clamp(40px,4.4vw,66px);--type-section:clamp(28px,2.6vw,38px);--type-card:clamp(22px,2vw,30px);--type-body:15px;--type-intro:22px}
 ::selection{background:#ffd7dc;color:#182525}
 .brand{display:block;flex:none;padding:0;border-radius:0;line-height:0}
@@ -81,7 +81,7 @@ footer{padding-left:var(--pad-left)}
 
 /* Warm daylight surfaces; dark passages and video surfaces keep their own paint. */
 body,.cosmos{background:var(--paper)}
-.cosmos-fallback{background-image:linear-gradient(90deg,rgba(246,241,232,.98) 2%,rgba(246,241,232,.1) 70%),url('assets/aj-living-cosmos-keyframe-temp.webp')}
+.cosmos-fallback{background-image:linear-gradient(90deg,rgba(246,241,232,.98) 2%,rgba(246,241,232,.1) 70%),url('assets/jay-on-art-living-cosmos-keyframe-temp.webp')}
 .cosmos-wash{background:rgba(246,241,232,calc(1 - var(--scene-dark,0)))}
 .topbar.is-scrolled,.resume-topbar{background:rgba(246,241,232,.92)}
 .dark-chapter .topbar,.dark-chapter .topbar.is-scrolled{background:rgba(15,21,38,.76);color:var(--paper)}
@@ -117,7 +117,7 @@ html:not(.js-enabled) .experience-passage{background:var(--paper)}
  .worlds-navigation button{background:#F6F1E8dd}
 }
 @media(max-width:760px){
- .cosmos-fallback{background-image:linear-gradient(180deg,#F6F1E8d9 10%,#F6F1E85e 65%),url('assets/aj-living-cosmos-keyframe-temp.webp')}
+ .cosmos-fallback{background-image:linear-gradient(180deg,#F6F1E8d9 10%,#F6F1E85e 65%),url('assets/jay-on-art-living-cosmos-keyframe-temp.webp')}
 }
 
 /* Neutral reading colors; the accent belongs to dots, progress and interaction. */
