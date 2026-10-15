@@ -50,4 +50,4 @@ const server=http.createServer(async(req,res)=>{
     res.writeHead(404);res.end('Not found');
   }
 });
-server.listen(port,'127.0.0.1',()=>console.log(`Artweaver Jay: http://127.0.0.1:${server.address().port}/`));
+server.listen(port,'127.0.0.1',()=>console.log(`Jay on Art: http://127.0.0.1:${server.address().port}/`));

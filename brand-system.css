@@ -31,7 +31,7 @@
 .lab-heading h2,.career-heading h2{letter-spacing:-.055em}
 .about .profile-name{font-size:32px;font-weight:750}.about-copy .lead{font-size:clamp(22px,2.1vw,30px);line-height:1.75}
 .read-progress span,.discover-progress span,.workflow-path span{background:var(--primary)}
-.process-list li.is-reached .workflow-node{background:var(--primary);color:#182525!important;box-shadow:0 0 0 5px #ff616b1c}
+.process-list li.is-reached .workflow-node{background:var(--primary);color:#fff!important;box-shadow:0 0 0 5px #ff616b1c}
 .map-grid a[aria-current=true]{font-weight:800}
 .hotspot.is-active{background:var(--primary);color:#182525;box-shadow:0 0 0 5px #ff616b33}.step-nav button.is-active{color:var(--primary-ink);border-bottom-color:var(--primary)}
 a:focus-visible,button:focus-visible,summary:focus-visible{outline-color:var(--ink)}
@@ -150,12 +150,15 @@ html:not(.js-enabled) .experience-passage{background:var(--paper)}
 /* Text links share a hover underline. Logos, artwork links and header Resume are exceptions. */
 body a:not(.brand):not(.footer-mark):not(.project-image):not(.world-tile):not(.resume-link){
  background:transparent;border:0;border-radius:0;box-shadow:none;color:inherit;
- text-decoration-line:underline;text-decoration-color:transparent;text-decoration-thickness:1px;
+ text-decoration-line:none;text-decoration-color:transparent;text-decoration-thickness:1px;
  text-underline-offset:.25em;text-decoration-skip-ink:auto;
  transition:color .2s,text-decoration-color .2s;
 }
 body a:not(.brand):not(.footer-mark):not(.project-image):not(.world-tile):not(.resume-link):is(:hover,:focus-visible){color:var(--primary);text-decoration-color:var(--primary)}
-body a:not(.brand):not(.footer-mark):not(.project-image):not(.world-tile):not(.resume-link)>:is(span,small){text-decoration:inherit}
+body a:not(.brand):not(.footer-mark):not(.project-image):not(.world-tile):not(.resume-link)>:is(span,small):not(.link-label){text-decoration:none}
+body a .link-label{font-size:inherit;font-weight:inherit;line-height:inherit;letter-spacing:inherit;vertical-align:baseline;margin:0;opacity:1;align-self:auto;text-decoration-line:underline;text-decoration-color:transparent;text-decoration-thickness:1px;text-underline-offset:.25em;text-decoration-skip-ink:auto;transition:text-decoration-color .2s}
+body a:is(:hover,:focus-visible) .link-label{ text-decoration-color:currentColor }
+body a>.link-label{ text-decoration-line:underline }
 body a:not(.brand):not(.footer-mark):not(.project-image):not(.world-tile):not(.resume-link):is(:hover,:focus-visible) :is(span,small,i){color:inherit}
 .desktop-nav a::after{content:none}
 .hero-actions .pill-link{padding:10px 0;gap:12px;transform:none}

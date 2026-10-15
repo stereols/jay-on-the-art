@@ -7,6 +7,7 @@ export function createAelinShowcase(section) {
   if (!section) return {setEnabled() {}, update() {}};
 
   const stage = section.querySelector('.aelin-stage');
+  const scholar = section.querySelector('.aelin-scholar');
   const devices = [...section.querySelectorAll('.aelin-device[data-screen]')];
   const focusStops = devices.map((_, index) => .16 + index * .70 / Math.max(1, devices.length - 1));
   const videos = [...section.querySelectorAll('.aelin-device video')];
@@ -26,6 +27,24 @@ export function createAelinShowcase(section) {
   let pointerY = 0;
   let targetX = 0;
   let targetY = 0;
+  if (scholar && 'IntersectionObserver' in window) {
+    section.classList.add('has-scholar-motion');
+    const scholarObserver = new IntersectionObserver(entries => {
+      entries.forEach(entry => scholar.classList.toggle('is-scholar-visible', entry.isIntersecting));
+    }, {threshold: 0});
+    scholarObserver.observe(scholar);
+  }
+
+  function updateScholar(bounds) {
+    if (!scholar) return;
+    const rect = scholar.getBoundingClientRect();
+    // Match the career portrait's reversible smoothstep fade over .42 viewport.
+    const exit = animated
+      ? ease(clamp((innerHeight * .95 - bounds.bottom) / (innerHeight * .42)))
+      : ease(clamp((innerHeight * .16 - rect.bottom) / Math.max(1, rect.height * .6)));
+    scholar.style.setProperty('--scholar-exit', exit.toFixed(4));
+    scholar.classList.toggle('is-scholar-exiting', exit > 0);
+  }
 
   function prepareVideo(video) {
     if (video.dataset.poster) {
@@ -212,6 +231,7 @@ export function createAelinShowcase(section) {
   function update() {
     reconcileLayout();
     const bounds = section.getBoundingClientRect();
+    updateScholar(bounds);
     visible = bounds.bottom > 0 && bounds.top < innerHeight;
     if (!visible) {
       resetPointer();

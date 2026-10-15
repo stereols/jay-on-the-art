@@ -1,5 +1,5 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1300 1080" role="img" aria-labelledby="title desc">
-  <title id="title">Jay. 브랜드 페이지 리뉴얼 2열 페이지맵</title>
+  <title id="title">Jay on Art 브랜드 페이지 리뉴얼 2열 페이지맵</title>
   <desc id="desc">첫 화면에서 00 Point of View로 진입한 뒤 오른쪽 01 Personal Worlds, 아래 02 Building What's Next, 왼쪽 03 Experience, 아래 04 AI in Practice, 오른쪽 05 About으로 이동하는 카메라 경로.</desc>
   <defs>
     <linearGradient id="paper" x2="1" y2="1"><stop stop-color="#faf9f6"/><stop offset="1" stop-color="#ebefeb"/></linearGradient>
@@ -11,12 +11,12 @@
   </defs>
   <rect width="1300" height="1080" fill="url(#paper)"/>
   <rect width="1300" height="1080" fill="url(#grid)"/>
-  <text x="64" y="73" fill="#192b2a" font-family="Manrope,Noto Sans KR,sans-serif" font-size="42" font-weight="700" letter-spacing="-2">Jay.</text>
+  <text x="64" y="73" fill="#192b2a" font-family="Manrope,Noto Sans KR,sans-serif" font-size="42" font-weight="700" letter-spacing="-2">Jay on Art</text>
   <text x="65" y="103" fill="#58706d" font-family="Manrope,Noto Sans KR,sans-serif" font-size="15" font-weight="600" letter-spacing=".12em">RENEWAL CAMERA MAP / 2026.10</text>
   <text x="1200" y="69" text-anchor="end" fill="#345f5c" font-family="Manrope,Noto Sans KR,sans-serif" font-size="13" letter-spacing=".1em">SCROLL → CAMERA X + Y + Z</text>
 
   <rect x="505" y="124" width="290" height="44" rx="22" fill="#1d3432"/>
-  <text x="650" y="152" text-anchor="middle" fill="#f8faf7" font-family="Manrope,Noto Sans KR,sans-serif" font-size="14" font-weight="700" letter-spacing=".08em">ENTRY · Jay. / 최효재</text>
+  <text x="650" y="152" text-anchor="middle" fill="#f8faf7" font-family="Manrope,Noto Sans KR,sans-serif" font-size="14" font-weight="700" letter-spacing=".08em">ENTRY · Jay on Art / 최효재</text>
   <path d="M650 168V194H326V219" fill="none" stroke="#417e79" stroke-width="3" marker-end="url(#arrow)"/>
 
   <path d="M551 314H747" fill="none" stroke="#417e79" stroke-width="4" stroke-linecap="round" marker-end="url(#arrow)"/>
@@ -49,7 +49,7 @@
     <text x="98" y="923" font-size="15" fill="#506e67">Source → Narrative → Build → Review</text>
     <text x="779" y="826" font-size="13" font-weight="800" letter-spacing=".12em" fill="#417e79">05 / ABOUT + LINKS</text>
     <text x="779" y="883" font-size="36" font-weight="600" letter-spacing="-1.5">열린 우주</text>
-    <text x="779" y="923" font-size="15" fill="#617672">Jay. · LinkedIn · ArtStation · Resume</text>
+    <text x="779" y="923" font-size="15" fill="#617672">Jay on Art · LinkedIn · ArtStation · Resume</text>
   </g>
   <g font-family="Manrope,Noto Sans KR,sans-serif" fill="#faf8fb">
     <text x="779" y="541" font-size="13" font-weight="800" letter-spacing=".12em" fill="#d7b6d0">02 / BUILDING WHAT’S NEXT</text>

@@ -87,17 +87,17 @@ import {createPixelIntro} from './pixel-intro.js';
 
   const videos=[...document.querySelectorAll('.film-frame video')];
   const videoState=new Map(videos.map(v=>[v,{visible:false,userPaused:false}]));
-  function syncVideoLabel(video){const button=video.parentElement.querySelector('.film-toggle');button.setAttribute('aria-label',video.paused?'영상 재생':'영상 일시정지');button.setAttribute('aria-pressed',String(!video.paused));button.querySelector('span').textContent=video.paused?'▷':'Ⅱ';button.querySelector('.film-toggle-label').textContent=video.paused?'영상 재생':'일시정지';}
+  function syncVideoLabel(video){const button=video.parentElement.querySelector('.film-toggle');button.setAttribute('aria-label',video.paused?'영상 재생':'영상 일시정지');button.setAttribute('aria-pressed',String(!video.paused));button.querySelector('span').innerHTML='<svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path fill="currentColor" d="'+(video.paused?'M8 4.5v15l12-7.5z':'M5 4h5v16H5zM14 4h5v16h-5z')+'"/></svg>';button.querySelector('.film-toggle-label').textContent=video.paused?'영상 재생':'일시정지';}
   function loadVideo(video){const sources=[...video.querySelectorAll('source[data-src]')];if(sources.some(source=>!source.getAttribute('src'))){sources.forEach(source=>{source.src=source.dataset.src;});video.load();}}
   function syncVideo(video){const state=videoState.get(video);if(state.visible&&motionEnabled()&&!document.hidden&&!state.userPaused){loadVideo(video);video.play().catch(()=>syncVideoLabel(video));}else video.pause();}
   const videoObserver=new IntersectionObserver(entries=>entries.forEach(entry=>{const video=entry.target;videoState.get(video).visible=entry.isIntersecting;syncVideo(video);}),{threshold:.15});
-  videos.forEach(video=>{videoObserver.observe(video);video.addEventListener('play',()=>syncVideoLabel(video));video.addEventListener('pause',()=>syncVideoLabel(video));video.parentElement.querySelector('.film-toggle').addEventListener('click',()=>{const state=videoState.get(video);if(video.paused){state.userPaused=false;loadVideo(video);video.play().catch(()=>syncVideoLabel(video));}else{state.userPaused=true;video.pause();}});});
+  videos.forEach(video=>{syncVideoLabel(video);videoObserver.observe(video);video.addEventListener('play',()=>syncVideoLabel(video));video.addEventListener('pause',()=>syncVideoLabel(video));video.parentElement.querySelector('.film-toggle').addEventListener('click',()=>{const state=videoState.get(video);if(video.paused){state.userPaused=false;loadVideo(video);video.play().catch(()=>syncVideoLabel(video));}else{state.userPaused=true;video.pause();}});});
   document.addEventListener('visibilitychange',()=>videos.forEach(syncVideo));
 
   videos.forEach(video=>video.addEventListener('error',()=>{
     if(video.parentElement.querySelector('.film-error'))return;
     const message=document.createElement('p');message.className='film-error';message.textContent='영상을 불러오지 못했습니다.';
-    const link=document.createElement('a');link.href=video.querySelector('source:last-of-type').dataset.src;link.textContent='영상 직접 열기 ↗';message.append(link);video.parentElement.append(message);
+    const link=document.createElement('a');link.href=video.querySelector('source:last-of-type').dataset.src;link.innerHTML='<span class="link-label">영상 직접 열기</span> <span aria-hidden="true">↗</span>';message.append(link);video.parentElement.append(message);
   }));
   let layoutInitialized=false,lastReading=null;
   function setLayout(){

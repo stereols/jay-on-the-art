@@ -1,4 +1,4 @@
-# Artweaver Jay 사이트 콘텐츠·제작 기준서
+# Jay on Art 사이트 콘텐츠·제작 기준서
 
 > 현재 상태 갱신 · 2026-10-13: 메인 페이지, Three.js 기반 연속 WebGL 배경·스크롤 연출, 실제 작품 탐색과 별도 Resume의 로컬 구현이 있습니다. 브라우저 검수는 진행 중이며 아직 완료로 기록하지 않습니다. 현재 파일·실행 방법·자산 상태는 [README](README.md)를 참고하세요. 아래 본문은 구현 전 준비 기록을 보존한 것으로, 당시의 미착수·다음 단계 표기는 현재 구현 상태를 뜻하지 않습니다.
 
@@ -7,7 +7,7 @@
 
 ## 이 문서의 역할
 
-이 문서를 Artweaver Jay / AJ 브랜드 페이지의 기준 문서로 사용한다. 이후 자료 추가, 디자인, 인터랙션 구현, 검수, 배포 단계에서 이 문서의 사실성·목표·품질 기준을 유지한다. `SYNFORM`은 기존 파일·폴더명에만 남은 레거시 표기다.
+이 문서를 Jay on Art 브랜드 페이지의 기준 문서로 사용한다. 이후 자료 추가, 디자인, 인터랙션 구현, 검수, 배포 단계에서 이 문서의 사실성·목표·품질 기준을 유지한다. `SYNFORM`은 기존 파일·폴더명에만 남은 레거시 표기다.
 
 현재 정적 페이지는 콘텐츠 구조를 잇는 로컬 프로토타입이다. 실제 개인 작품 이미지, Marakun 이미지 기반 조립 단계 탐색, 경력 텍스트, 별도 Resume 페이지가 있다. 3D Web Lab의 배경-스크롤-하단 카드 흐름은 아직 구현·시각 검증되지 않았다. `previews/`에는 과거 브랜드/레이아웃 캡처가 있으므로 최신 화면의 증거로 사용하지 않는다.
 
@@ -34,7 +34,7 @@ OpenAI의 [프런트엔드 프롬프트 지침](https://developers.openai.com/ap
 
 ## 브랜드 및 공개 상태
 
-- 공식 개인 브랜드: Artweaver Jay, 짧은 표기는 AJ.
+- 공식 개인 브랜드: Jay on Art.
 - 소유자 이름: 최효재.
 - 현재 직책: 와이고 대표이사 재직 중이라는 사실을 유지한다.
 - Aelin: 기획·개발 진행 중인 프로젝트라고 표현한다. 완성된 서비스·검증된 성과로 소개하지 않는다.
@@ -45,12 +45,12 @@ OpenAI의 [프런트엔드 프롬프트 지침](https://developers.openai.com/ap
 
 | 프로젝트 | ArtStation 원본 | 확인 가능한 소개 |
 | --- | --- | --- |
-| Marakun — Interactive Journey Level | https://stereols.artstation.com/projects/qJww4P | 오픈월드 어드벤처 시리즈의 인터랙티브 디자인. Unreal Engine 5.5 BiomeCore 기반 랜드스케이프 구성. 탐험 지형과 이동수단을 다룸. 원본 설명에 UE 5.6 기반 PCG BiomeCore 필드·던전 구성을 진행 중이라고 적혀 있으나 현재 상태는 별도 확인 필요. |
-| Marakun — Modular Village Level | https://stereols.artstation.com/projects/2BK65y | UE5 게임 디자인 프로젝트. 지중해풍 마을, 모듈형 구조, 절차적 생성 확장 고려, 퀘스트 시퀀스. Vertex Paint와 Substrate 기반 머티리얼 시스템 및 Motion Matching 설명이 있음. |
-| To The Brink | https://stereols.artstation.com/projects/1xzqkK | Unreal Engine 5.3 PCG 기반 정글 환경. 수직형 탐험 구조. Megascans 및 Epic Games 리소스와 자체 모델링을 사용했다고 설명. |
-| Mansion : 3F | https://stereols.artstation.com/projects/DvPDzn | Unreal Engine 5 클래식 실내 환경. 건축 요소·가구 자체 모델링, PBR 텍스처링. 일부 소품에 Quixel Megascans 사용. |
-| #SketchingIdeas 01 | https://stereols.artstation.com/projects/ob36zm | SketchingIdeas 연작의 환경 이미지 묶음. 상세한 작업 설명은 원본에서 확인되지 않음. |
-| #SketchingIdeas 03 | https://stereols.artstation.com/projects/0lBqn8 | 2주 일정으로 PUBG Karakin에서 착안한 게임 레벨 디자인 및 비주얼 작업. Unreal Engine 5.4 Motion Matching으로 플레이 가능한 레벨 경험을 구성했다고 설명. |
+| Marakun — Interactive Journey Level | https://www.artstation.com/artwork/qJww4P | 오픈월드 어드벤처 시리즈의 인터랙티브 디자인. Unreal Engine 5.5 BiomeCore 기반 랜드스케이프 구성. 탐험 지형과 이동수단을 다룸. 원본 설명에 UE 5.6 기반 PCG BiomeCore 필드·던전 구성을 진행 중이라고 적혀 있으나 현재 상태는 별도 확인 필요. |
+| Marakun — Modular Village Level | https://www.artstation.com/artwork/2BK65y | UE5 게임 디자인 프로젝트. 지중해풍 마을, 모듈형 구조, 절차적 생성 확장 고려, 퀘스트 시퀀스. Vertex Paint와 Substrate 기반 머티리얼 시스템 및 Motion Matching 설명이 있음. |
+| To The Brink | https://www.artstation.com/artwork/1xzqkK | Unreal Engine 5.3 PCG 기반 정글 환경. 수직형 탐험 구조. Megascans 및 Epic Games 리소스와 자체 모델링을 사용했다고 설명. |
+| Mansion : 3F | https://www.artstation.com/artwork/DvPDzn | Unreal Engine 5 클래식 실내 환경. 건축 요소·가구 자체 모델링, PBR 텍스처링. 일부 소품에 Quixel Megascans 사용. |
+| #SketchingIdeas 01 | https://www.artstation.com/artwork/ob36zm | SketchingIdeas 연작의 환경 이미지 묶음. 상세한 작업 설명은 원본에서 확인되지 않음. |
+| #SketchingIdeas 03 | https://www.artstation.com/artwork/0lBqn8 | 2주 일정으로 PUBG Karakin에서 착안한 게임 레벨 디자인 및 비주얼 작업. Unreal Engine 5.4 Motion Matching으로 플레이 가능한 레벨 경험을 구성했다고 설명. |
 
 ArtStation 원본의 프로젝트별 역할·팀 규모·정확한 제작 기간·상업/회사 프로젝트 여부는 이 표에서 확인되지 않았다. 추측해서 추가하지 않는다.
 ### 기존 포트폴리오 PDF에서 추가 확인한 내용
@@ -66,7 +66,7 @@ ArtStation 원본의 프로젝트별 역할·팀 규모·정확한 제작 기간
 
 ## 현재 페이지 구성 초안
 
-- Hero: Artweaver Jay 브랜드, 아트·기획·개발을 잇는 포지셔닝, 실제 작품 이미지
+- Hero: Jay on Art 브랜드, 아트·기획·개발을 잇는 포지셔닝, 실제 작품 이미지
 - 01 Personal Unreal environments: Marakun — Modular Village를 먼저 탐색하고, 나머지 개인 작품은 Discover 카드와 전체 작품 링크로 유지
 - 02 YIGO / Aelin: 대표이사 재직 사실과 개발 중 제품 방향
 - 03 Career: MORAI부터 시작하는 연혁과 상용/종료/계약 상태
@@ -89,7 +89,7 @@ ArtStation 원본의 프로젝트별 역할·팀 규모·정확한 제작 기간
 2. 프로젝트별 본인 역할, 기간, 사용 기술, 제작 범위, 공개 가능한 결과를 이력서·작업 파일 등 근거와 대조한다.
 3. 이미지와 프로젝트의 공개·재사용 권리, 제3자 에셋 표기 조건을 확인한다. Marakun 페이지에는 Epic Games 무료 Paragon 에셋 기반 캐릭터를 포트폴리오 목적으로 사용했다는 고지가 있다.
 4. Aelin에서 공개 가능한 기능·화면·기술·개발 상태를 확인한다.
-5. 페이지의 한국어/영어 비율, 실제 공개 연락처, 도메인을 정한다. 브랜드명 Artweaver Jay / AJ는 확정되어 있다.
+5. 페이지의 한국어/영어 비율, 실제 공개 연락처, 도메인을 정한다. 브랜드명 Jay on Art는 확정되어 있다.
 
 ## 최종 제작 게이트
 
@@ -117,12 +117,12 @@ ArtStation 원본의 프로젝트별 역할·팀 규모·정확한 제작 기간
 
 - [x] ArtStation 프로필 페이지 접속 확인
 - [x] 6개 ArtStation 프로젝트 설명·대표 이미지 확인
-- [x] 로컬 Artweaver Jay 콘텐츠 프로토타입 반영
+- [x] 로컬 Jay on Art 콘텐츠 프로토타입 반영
 - [x] 제작 기준 및 검토 게이트 문서화
 - [x] 게임잡 경력에서 공개용 경력 문안 재구성
 - [x] 개인 작품은 사용자가 직접 설계했다는 확인 반영
 - [x] 개인 작품 여섯 개의 초안 노출 순서 정리
-- [x] 인터랙티브 레퍼런스 조사 및 Artweaver Jay 적용 아이디어 정리
+- [x] 인터랙티브 레퍼런스 조사 및 Jay on Art 적용 아이디어 정리
 - [x] 페이지 흐름과 1차 인터랙션 초안 작성
 - [x] 실제 작품 이미지와 Marakun 이미지 기반 네 단계 선택 탐색 구현
 - [x] Vue·Three.js 코드 생성 블록아웃 제거
@@ -134,7 +134,7 @@ ArtStation 원본의 프로젝트별 역할·팀 규모·정확한 제작 기간
 - [ ] 회사 프로젝트 이미지의 공개 권리와 비공개 자료 확인
 - [ ] 최종 개인 작품 대표 노출 순위 확정
 - [ ] Aelin 공개 가능 화면·기능과 개발 상태 확인
-- [x] 브랜드명 Artweaver Jay / AJ 확정 및 페이지 반영
+- [x] 브랜드명 Jay on Art 확정 및 페이지 반영
 - [ ] 공개 연락처·도메인 결정
 - [ ] 히어로의 브랜드 신호 및 반응형 텍스트 최종 확인
 - [ ] 최종 시각 방향·무드보드·전체 인터랙션 명세 확정

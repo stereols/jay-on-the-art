@@ -14,6 +14,12 @@
 .aelin-device{margin:0;min-width:0}
 .aelin-scholar{position:absolute;left:8%;top:20px;width:clamp(110px,17vw,230px);height:auto;transform:translate(-50%,-18%);z-index:0;pointer-events:none;user-select:none}
 .aelin-stage>.aelin-device{position:relative;z-index:1}
+.has-scholar-motion .aelin-scholar{opacity:0;transition:opacity .95s cubic-bezier(.22,.61,.36,1);animation:aelin-scholar-float 7s ease-in-out infinite;animation-play-state:paused;scale:calc(1 - var(--scholar-exit,0) * .035)}
+.has-scholar-motion .aelin-scholar.is-scholar-visible{opacity:calc(1 - var(--scholar-exit,0));animation-play-state:running}
+.has-scholar-motion .aelin-scholar.is-scholar-exiting{transition:opacity .1s linear}
+@keyframes aelin-scholar-float{0%,100%{translate:0 calc(var(--scholar-exit,0) * -24px);rotate:-.6deg}50%{translate:5px calc(-9px + var(--scholar-exit,0) * -24px);rotate:.6deg}}
+.no-motion .aelin-scholar{animation:none;translate:none;rotate:none;scale:1}
+@media(prefers-reduced-motion:reduce){.has-scholar-motion .aelin-scholar{animation:none;transition:none;translate:none;rotate:none;scale:1;opacity:1}}
 .aelin-device-surface{width:min(100%,330px);margin-inline:auto;aspect-ratio:391/903;border-radius:6% / 2.6%;background:#faf6ef;overflow:hidden;box-shadow:0 22px 45px -23px #263b3638,0 0 0 1px #263b3612}
 .aelin-screen{display:block;width:100%;height:100%}
 .aelin-device-video .aelin-device-surface{background:#101820;aspect-ratio:var(--video-ratio,9/16)}
@@ -41,7 +47,7 @@
 .aelin-detail p:last-child{font-size:14px;line-height:1.85;letter-spacing:var(--tracking-ko-body);max-width:34ch;word-break:keep-all;margin-top:12px}
 .aelin-showcase.is-animated .aelin-stage{grid-column:2;grid-row:1;margin:0;display:block;min-width:0;perspective:1600px;--phone-height:min(61svh,580px);align-self:stretch}
 .aelin-showcase.is-animated .aelin-stage::before{content:"";position:absolute;inset:12% -8%;border:1px solid #6b7d7012;border-radius:50%;transform:rotate(-22deg);pointer-events:none}
-.aelin-showcase.is-animated .aelin-scholar{left:clamp(-64px,-3vw,-30px);top:53%;width:auto;height:min(46svh,26vw,410px);max-width:34vw;object-fit:contain;transform:translate(-50%,-50%)}
+.aelin-showcase.is-animated .aelin-scholar{left:clamp(-130px,-6vw,-45px);top:53%;width:auto;height:min(69svh,39vw,615px);max-width:45vw;object-fit:contain;transform:translate(-50%,-50%)}
 .aelin-showcase.is-animated .aelin-device{position:absolute;left:50%;top:50%;width:calc(var(--phone-height) * 391 / 903);height:var(--phone-height);transform:translate3d(calc(-50% + var(--device-x,0px)),calc(-50% + var(--device-y,0px)),0) rotateY(var(--device-yaw,0deg)) rotate(var(--device-rotate,0deg)) scale(var(--device-scale,1));opacity:var(--device-alpha,1);will-change:transform,opacity;transform-origin:center}
 .aelin-showcase.is-animated .aelin-device-video{width:calc(var(--phone-height) * var(--video-width-ratio,.5625))}
 .aelin-showcase.is-animated .aelin-device-surface{width:100%;height:100%;transform:translate3d(calc(var(--pointer-x) * 1px),calc(var(--pointer-y) * 1px),0) rotateX(calc(var(--pointer-y) * -.3deg)) rotateY(calc(var(--pointer-x) * .4deg));box-shadow:0 28px 55px -22px #263b3645,0 0 0 1px #263b3617;backface-visibility:hidden}
