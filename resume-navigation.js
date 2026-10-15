@@ -1,5 +1,6 @@
 // In-page navigation keeps the URL used to open this document unchanged.
 document.addEventListener('click',event=>{
+  if(!document.body.classList.contains('resume-page'))return;
   const link=event.target.closest('a[href^="#"]');
   if(!link||event.defaultPrevented||event.button!==0||event.metaKey||event.ctrlKey||event.shiftKey||event.altKey||link.target==='_blank'||!link.hash)return;
   const target=document.getElementById(decodeURIComponent(link.hash.slice(1)));
