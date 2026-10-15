@@ -9,6 +9,9 @@
 }
 .hero-brand :is(.logo-stacked, img) { display: block; width: 100%; height: auto; }
 .hero .hero-name {
+  width: var(--hero-mark-width);
+  max-width: 100%;
+  text-align: right;
   margin: var(--space-signature) 0 0;
   color: var(--ink);
   font-size: var(--type-hero-name);
