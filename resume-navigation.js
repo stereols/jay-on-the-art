@@ -1,3 +1,13 @@
+// In-page navigation keeps the URL used to open this document unchanged.
+document.addEventListener('click',event=>{
+  const link=event.target.closest('a[href^="#"]');
+  if(!link||event.defaultPrevented||event.button!==0||event.metaKey||event.ctrlKey||event.shiftKey||event.altKey||link.target==='_blank'||!link.hash)return;
+  const target=document.getElementById(decodeURIComponent(link.hash.slice(1)));
+  if(!target)return;
+  event.preventDefault();
+  target.scrollIntoView({behavior:matchMedia('(prefers-reduced-motion: reduce)').matches?'instant':'smooth',block:'start'});
+  if(event.detail===0){if(!target.hasAttribute('tabindex'))target.tabIndex=-1;target.focus({preventScroll:true});}
+});
 // One document retains the scroll scene while its resume is read in a dialog.
 const isResume=document.body.classList.contains('resume-page');
 if(isResume){

@@ -218,17 +218,24 @@ import {createAelinCompanion} from './aelin-companion.js?v=20261015-wide';
     return false;
   }
   document.addEventListener('click',event=>{
-    const link=event.target.closest('a[href^="#career-project-"]');if(!link)return;
-    event.preventDefault();history.pushState(null,'',link.hash);
-    const index=worlds.indexForId(link.hash);
-    if(index>=0)worlds.go(index,motionEnabled()?'smooth':'instant',event.detail===0&&link.classList.contains('world-tile'));
+    const link=event.target.closest('a[href^="#"]');
+    if(!link||event.defaultPrevented||event.button!==0||event.metaKey||event.ctrlKey||event.shiftKey||event.altKey||link.target==='_blank'||!link.hash)return;
+    const target=document.getElementById(decodeURIComponent(link.hash.slice(1)));
+    if(!target)return;
+    event.preventDefault();
+    const behavior=motionEnabled()?'smooth':'instant';
+    if(link.hash.startsWith('#career-project-')){
+      const index=worlds.indexForId(link.hash);
+      if(index>=0)worlds.go(index,behavior,event.detail===0&&link.classList.contains('world-tile'));
+    }else if(!navigateHash(link.hash,behavior)){
+      target.scrollIntoView({behavior,block:'start'});
+      if(event.detail===0){if(!target.hasAttribute('tabindex'))target.tabIndex=-1;target.focus({preventScroll:true});}
+    }
   });
   addEventListener('hashchange',()=>navigateHash(location.hash));
   addEventListener('popstate',()=>navigateHash(location.hash));
   function resumeDestination(target){
     const behavior=reduced.matches?'instant':'smooth';
-    const url=new URL(location.href);url.searchParams.delete('entry');url.hash=target;
-    history.pushState(null,'',url);
     if(navigateHash('#'+target,behavior))return;
     document.getElementById(target)?.scrollIntoView({behavior,block:'start'});
   }
