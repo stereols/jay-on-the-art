@@ -11,6 +11,7 @@ await optimizePageImages(root);
 // Preserve stylesheet order and selectors; only remove formatting whitespace.
 const fontURL='https://fonts.googleapis.com/css2?family=Manrope:wght@400..800&family=Noto+Sans+KR:wght@400..900&display=swap';
 const cssFiles=['styles.css','renewal.css','renewal-three.css','refinement.css','final-scenes.css','brand-system.css','design-tokens.css','editorial-type.css','year-timeline.css','editorial-scenes.css','followup-layout.css','aelin-showcase.css','cosmos-atmosphere.css','transparent-scenes.css','experience-character.css','aelin-companion.css'];
+cssFiles.push('pixel-intro.css');
 const css=(await Promise.all(cssFiles.map(file=>fs.readFile(path.join(root,file),'utf8')))).join('\n').replace(/@import url\('https:\/\/fonts\.googleapis\.com[^']+'\);/g,'');
 const compact=await transform(css,{loader:'css',minifyWhitespace:true,minifySyntax:false,minifyIdentifiers:false,legalComments:'none'});
 await fs.writeFile(path.join(root,'site.bundle.css'),compact.code);
@@ -21,6 +22,7 @@ let html=await fs.readFile(path.join(root,'index.html'),'utf8');
 html=html.replace(/<link rel="stylesheet" href="[^"]+">/g,'');
 html=html.replace(/<script src="(?:app|app\.bundle)\.js[^\"]*" type="module"><\/script>/,'<script src="app.bundle.js?v='+digest(await fs.readFile(path.join(root,'app.bundle.js')))+'" type="module"></script>');
 html=html.replace('</head>','  <link rel="stylesheet" href="'+fontURL.replaceAll('&','&amp;')+'">\n  <link rel="stylesheet" href="site.bundle.css?v='+digest(compact.code)+'">\n</head>');
+html=html.replace(/^[\t ]+$/gm,'');
 await fs.writeFile(path.join(root,'index.html'),html);
-console.log('Bundled 16 stylesheets and application modules without changing media or rendering quality.');
+console.log(`Bundled ${cssFiles.length} stylesheets and application modules without changing media or rendering quality.`);
 console.log('Built local WebGL module and responsive high-quality image variants. Original artwork files retained.');

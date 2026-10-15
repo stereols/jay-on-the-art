@@ -482,6 +482,8 @@ export function createCosmos(canvas, options = {}) {
   document.documentElement.dataset.renderMode='webgl';
   raf=requestAnimationFrame(tick);
   return {
+    // Used once by the intro, before the browser clears the WebGL buffer.
+    captureFrame(callback){if(disposed||contextLost)throw new Error('Cosmos frame unavailable');renderFrame();callback(canvas);},
     // Absolute timeline samples take priority over the legacy section routes.
     setScene(value={}){
       const id=validSceneIds.has(value.id)?value.id:'hero';

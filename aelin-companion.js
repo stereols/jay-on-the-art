@@ -8,8 +8,8 @@ const cubic = (a, b, c, d, t) => {
     y: s * s * s * a.y + 3 * s * s * t * b.y + 3 * s * t * t * c.y + t * t * t * d.y};
 };
 
-/** A persistent, small butterfly companion, visible only inside the Aelin story. */
-export function createAelinCompanion(section = document.querySelector('#aelin-showcase')) {
+/** A small butterfly companion, clipped to the home section. */
+export function createAelinCompanion(section = document.querySelector('#top')) {
   if (!section) return {update() {}, dispose() {}};
   const layer = document.createElement('div');
   layer.className = 'aelin-companion-layer';
@@ -21,7 +21,7 @@ export function createAelinCompanion(section = document.querySelector('#aelin-sh
       <img class="aelin-companion-body" src="assets/characters/pet-body.webp" width="512" height="512" alt="" draggable="false">
     </span>
   </button>`;
-  // Fixed positioning lets the same companion stay with the long, unpinned mobile story.
+  // Fixed positioning keeps the flight path stable within the visible home area.
   // Clipping below confines all pixels and hit targets to the section's visible part.
   document.body.append(layer);
   const button = layer.querySelector('button');
@@ -31,14 +31,15 @@ export function createAelinCompanion(section = document.querySelector('#aelin-sh
   const reduced = matchMedia('(prefers-reduced-motion: reduce)');
   let ready = false, disposed = false, motionEnabled = true, shown = false, moving = false;
   let raf = 0, previousTime = 0, clock = 0, deadline = 0, visit = 0, flight = null;
-  let state = 'perched', pose = null, angle = 0, lastLayout = 0;
+  let state = 'perched', pose = null, angle = 0, facing = 1, lastLayout = 0;
   let bounds = {left: 40, right: innerWidth - 40, top: 120, bottom: innerHeight - 80};
-  let candidates = [], size = 61;
+  let candidates = [], exclusions = [], size = 61;
 
   const overlayOpen = () => !!document.querySelector('dialog[open],#mobile-nav:not([hidden]),#map-panel:not([hidden])') ||
     document.body.classList.contains('reading-resume');
   const inside = point => point.x >= bounds.left && point.x <= bounds.right && point.y >= bounds.top && point.y <= bounds.bottom;
-  const usable = point => inside(point);
+  const usable = point => inside(point) && !exclusions.some(rect =>
+    point.x > rect.left && point.x < rect.right && point.y > rect.top && point.y < rect.bottom);
   const confined = point => ({x: clamp(point.x, bounds.left, bounds.right), y: clamp(point.y, bounds.top, bounds.bottom)});
 
   function refreshLayout(now) {
@@ -50,6 +51,10 @@ export function createAelinCompanion(section = document.querySelector('#aelin-sh
     const top = Math.max(88, rect.top);
     const bottom = Math.min(height - 62, rect.bottom);
     bounds = {left: radius + 12, right: innerWidth - radius - 12, top: top + radius + 8, bottom: bottom - radius - 8};
+    exclusions = [...section.querySelectorAll('.hero-brand,.hero-signature,.hero-role,.hero-description')].map(element => {
+      const box = element.getBoundingClientRect(), gap = radius + 8;
+      return {left: box.left-gap, right: box.right+gap, top: box.top-gap, bottom: box.bottom+gap};
+    });
     layer.style.clipPath = `inset(${Math.max(0, rect.top).toFixed(1)}px 0 ${Math.max(0, height - rect.bottom).toFixed(1)}px 0)`;
     candidates = [];
     if (bounds.bottom <= bounds.top || bounds.right <= bounds.left) return 0;
@@ -96,7 +101,7 @@ export function createAelinCompanion(section = document.querySelector('#aelin-sh
       Math.abs(distance(pose, point) - ideal) * .18 + Math.abs(point.x - destinationX) +
       Math.abs(point.y - destinationY) * .7 +
       20 * Math.sin(index * 2.4 + visit * 1.7)}))
-      .filter(({point}) => Math.abs(point.x - pose.x) > span * .42)
+      .filter(({point}) => distance(point, pose) > size * 1.5)
       .sort((a, b) => a.score - b.score);
     for (const {point} of choices) {
       const sign = visit % 2 ? -1 : 1;
@@ -123,7 +128,8 @@ export function createAelinCompanion(section = document.querySelector('#aelin-sh
     const resting = state === 'perched' || !moving;
     const drift = moving ? Math.sin(now * .0017) * (resting ? 1 : 2) : 0;
     button.style.transform = `translate3d(${pose.x.toFixed(2)}px,${(pose.y + drift).toFixed(2)}px,0) translate(-50%,-50%)`;
-    art.style.transform = `rotate(${angle.toFixed(2)}deg) scale(${resting ? 1 : 1.025})`;
+    art.style.transform = `rotate(${angle.toFixed(2)}deg) scaleX(${facing}) scale(${resting ? 1 : 1.025})`;
+    button.dataset.facing = facing < 0 ? 'left' : 'right';
     const flap = moving ? Math.sin(now * (resting ? .0034 : state === 'darting' ? .052 : .039)) : 0;
     const wingAngle = resting ? 14 + flap * 7 : 18 + flap * 36;
     leftWing.style.transform = `rotateY(${wingAngle.toFixed(2)}deg) rotateZ(${(-flap * 2).toFixed(2)}deg)`;
@@ -145,6 +151,7 @@ export function createAelinCompanion(section = document.querySelector('#aelin-sh
       const progress = clamp((clock - flight.start) / flight.duration);
       const t = smooth(progress), before = pose;
       pose = cubic(...flight.path, t);
+      if (Math.abs(pose.x - before.x) > .035) facing = pose.x < before.x ? -1 : 1;
       const direction = clamp((pose.x - before.x) * 6, -16, 16);
       angle += (direction - angle) * .12;
       if (progress === 1) {
@@ -164,22 +171,22 @@ export function createAelinCompanion(section = document.querySelector('#aelin-sh
 
   function settleInClearSpace() {
     if (!pose) {
-      pose = nearestSafe({x: innerWidth * .24, y: innerHeight * .34});
+      pose = nearestSafe({x: innerWidth * .78, y: innerHeight * .43});
       state = 'perched';
       deadline = clock + 1100;
       return;
     }
-    if (usable(pose) || flight && usable(flight.path[3])) return;
-    const destination = nearestSafe(pose);
-    if (moving && distance(pose, destination) > 3) {
-      flight = {path: controls({...pose}, destination, 24), start: clock, duration: 650};
-      state = 'flying';
-    } else {
-      pose = destination;
+    if (flight && !pathIsClear(flight.path)) {
       flight = null;
       state = 'perched';
-      deadline = clock + 1100;
+      deadline = clock + 300;
     }
+    if (usable(pose)) return;
+    const destination = nearestSafe(pose);
+    pose = destination;
+    flight = null;
+    state = 'perched';
+    deadline = clock + 1100;
   }
 
   function update(options = {}) {
@@ -213,7 +220,11 @@ export function createAelinCompanion(section = document.querySelector('#aelin-sh
       if (!raf) raf = requestAnimationFrame(tick);
     } else {
       const destination = candidates.filter(point => distance(point, pose) > size * 2);
-      if (destination.length) pose = destination[(visit++ * 17) % destination.length];
+      if (destination.length) {
+        const next = destination[(visit++ * 17) % destination.length];
+        facing = next.x < pose.x ? -1 : 1;
+        pose = next;
+      }
       paint(clock);
     }
   }

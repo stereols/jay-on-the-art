@@ -1,0 +1,19 @@
+/* First-entry background reveal; the preview controls are query-gated. */
+.pixel-intro-settled #cosmos-canvas{transition:filter .2s}
+.pixel-intro-pending #cosmos-canvas,.pixel-intro-active #cosmos-canvas{opacity:0;transition:none}
+.pixel-intro-pending .cosmos .cosmos-fallback,.pixel-intro-active .cosmos .cosmos-fallback{opacity:0;transition:none}
+.pixel-intro-revealing #cosmos-canvas{opacity:1;transition:none}
+.pixel-intro-canvas{position:absolute;inset:0;width:100%;height:100%;display:block;background:var(--paper);pointer-events:none;image-rendering:pixelated}
+.pixel-intro-pending .hero :is(.hero-signature,.hero-role,.hero-description){opacity:0}
+.pixel-intro-active .hero :is(.hero-signature,.hero-role,.hero-description){opacity:var(--intro-copy-opacity,0)}
+.pixel-intro-pending .aelin-companion-layer[data-owner="top"],.pixel-intro-active:not(.pixel-intro-revealing) .aelin-companion-layer[data-owner="top"]{visibility:hidden!important}
+.pixel-intro-revealing .aelin-companion-layer[data-owner="top"]{opacity:var(--intro-copy-opacity,0)!important}
+.pixel-intro-preview{position:fixed;top:84px;right:24px;z-index:120;display:flex;align-items:center;flex-wrap:wrap;gap:8px 12px;max-width:calc(100vw - 32px);padding:12px 14px;border:1px solid #26483c30;border-radius:8px;background:#f6f1e8f2;color:#26483c;font:12px/1.5 'Noto Sans KR',sans-serif;box-shadow:0 4px 24px #193a2f10}
+.pixel-intro-preview>span{font-weight:700}
+.pixel-intro-preview button{font:inherit;color:inherit;padding:4px 8px;border:1px solid #26483c50;border-radius:4px;background:transparent;cursor:pointer}
+.pixel-intro-preview button:hover{background:#26483c10}
+.pixel-intro-preview button:focus-visible{outline:2px solid #c54b61;outline-offset:3px}
+.pixel-intro-preview output{flex-basis:100%;font-size:10px;color:#52625e;text-align:right}
+@media(max-width:760px){.pixel-intro-preview{top:72px;left:16px;right:16px;font-size:10px;gap:6px;padding:8px 10px}.pixel-intro-preview output{flex-basis:auto;margin-left:auto}}
+@media(prefers-reduced-motion:reduce){.pixel-intro-canvas{display:none}.pixel-intro-pending #cosmos-canvas,.pixel-intro-active #cosmos-canvas{opacity:1}.pixel-intro-pending .hero :is(.hero-signature,.hero-role,.hero-description),.pixel-intro-active .hero :is(.hero-signature,.hero-role,.hero-description){opacity:1}}
+@media print{.pixel-intro-preview,.pixel-intro-canvas{display:none!important}}

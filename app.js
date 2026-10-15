@@ -6,6 +6,7 @@ import {createCameraTimeline} from './camera-timeline.js?v=20261015-after-morai'
 import {createExperience} from './experience.js';
 import {createExperienceCharacter} from './experience-character.js?v=20261015-career-fade-fast';
 import {createAelinCompanion} from './aelin-companion.js?v=20261015-wide';
+import {createPixelIntro} from './pixel-intro.js';
 (() => {
   'use strict';
   const root = document.documentElement;
@@ -66,7 +67,7 @@ import {createAelinCompanion} from './aelin-companion.js?v=20261015-wide';
   const specialFilmSection=document.querySelector('#yigo .special-story');
   const specialStory=createSpecialFilm(document.getElementById('yigo'));
   const aelinShowcase=createAelinShowcase(document.getElementById('aelin-showcase'));
-  const aelinCompanion=createAelinCompanion(document.getElementById('aelin-showcase'));
+  const homeCompanion=createAelinCompanion(document.getElementById('top'));
   const cameraTimeline=createCameraTimeline();
   const lab=document.getElementById('lab');
   const stepsUI=[...document.querySelectorAll('.process-list li')];
@@ -135,7 +136,7 @@ import {createAelinCompanion} from './aelin-companion.js?v=20261015-wide';
 
   function updateScroll(){
     aelinShowcase.update();
-    aelinCompanion.update({motionEnabled:motionEnabled()});
+    homeCompanion.update({motionEnabled:motionEnabled()});
     const marker=innerHeight*.1;
     let section=sections[0];
     for(const s of sections)if(s.getBoundingClientRect().top<=marker)section=s;
@@ -248,5 +249,6 @@ import {createAelinCompanion} from './aelin-companion.js?v=20261015-wide';
   requestAnimationFrame(()=>{const entry=new URLSearchParams(location.search).get('entry');if(['top','yigo','project-overview'].includes(entry))resumeDestination(entry);else navigateHash(location.hash);scheduleScroll();});
   const params=new URLSearchParams(location.search);
   if(params.get('view')==='static'){paused=true;setLayout();root.dataset.renderMode='static';motionButton.hidden=true;return;}
-  import('./cosmos.bundle.js?v=20261015-planet-light-core').then(module=>{cosmos=module.createCosmos(document.getElementById('cosmos-canvas'),{paused,reducedMotion:reduced.matches});cosmos.setScene(lastScene);cosmos.setAtmosphere({visibility:atmosphereVisibility,experience:flourish,blur:motionEnabled()?(lastScene.blur||0):0});}).catch(error=>{console.warn('Living Cosmos uses the static artwork fallback.',error);root.dataset.renderMode='fallback';});
+  const pixelIntro=createPixelIntro({root,reduced});
+  import('./cosmos.bundle.js?v=20261015-planet-light-core').then(module=>{cosmos=module.createCosmos(document.getElementById('cosmos-canvas'),{paused,reducedMotion:reduced.matches});cosmos.setScene(lastScene);cosmos.setAtmosphere({visibility:atmosphereVisibility,experience:flourish,blur:motionEnabled()?(lastScene.blur||0):0});pixelIntro?.ready(cosmos);}).catch(error=>{console.warn('Living Cosmos uses the static artwork fallback.',error);root.dataset.renderMode='fallback';pixelIntro?.cancel();});
 })();
