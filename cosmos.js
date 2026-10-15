@@ -3,6 +3,7 @@ import {CAMERA_POSES} from './camera-timeline.js';
 import {createLuminousTrail} from './cosmos-trail.js';
 import {createExperienceVisual} from './experience-visual.js';
 import {createCosmosCompositor} from './cosmos-compositor.js';
+import {createOrbitalLight} from './orbital-light.js';
 
 // Original procedural scene. No screenshot or generated still is used as 3D geometry.
 // The static concept image is a separate, accessible rendering fallback in CSS.
@@ -215,14 +216,14 @@ export function createCosmos(canvas, options = {}) {
       if(previous)addSegment(ringSegments,previous,point);previous=point;
     }
   }
-  ringSystem.add(new THREE.LineSegments(lineGeometry(ringSegments),new THREE.LineBasicMaterial({color:0xc98c93,transparent:true,opacity:.32,depthWrite:false})));
+  ringSystem.add(new THREE.LineSegments(lineGeometry(ringSegments),new THREE.LineBasicMaterial({color:0xc98c93,transparent:true,opacity:.10,depthWrite:false})));
   const orbitalParticles=[];
   for(let i=0;i<220;i++){
     const t=random()*TAU,r=2.20+random()*.24;
     orbitalParticles.push(Math.cos(t)*r,Math.sin(t)*r*.49,Math.sin(t)*.13+(random()-.5)*.035);
   }
   const ringDots=new THREE.BufferGeometry();ringDots.setAttribute('position',new THREE.Float32BufferAttribute(orbitalParticles,3));
-  ringSystem.add(new THREE.Points(ringDots,new THREE.PointsMaterial({color:0xf0b8ae,size:.018,transparent:true,opacity:.8,depthWrite:false})));
+  ringSystem.add(new THREE.Points(ringDots,new THREE.PointsMaterial({color:0xf0b8ae,size:.018,transparent:true,opacity:.35,depthWrite:false})));
   for(let i=0;i<3;i++){
     const dot=new THREE.Mesh(new THREE.SphereGeometry(.035+i*.009,16,12),pearlMaterial(i===1?colors.coral:colors.pearl,i*3,.2));
     ringSystem.add(dot);orbiters.push({mesh:dot,phase:i*2.1,radius:2.24+i*.055});
@@ -272,6 +273,14 @@ export function createCosmos(canvas, options = {}) {
   });
   const stars=new THREE.Points(starGeo,starMat);universe.add(stars);
 
+  // This effect inherits the planet's center, rotation and camera perspective.
+  // Layer 0 also gives its rings and glow the planet's own depth and blur pass.
+  const planetLight=createOrbitalLight({name:'hero-planet-light',layer:0,core:false,spherical:true,lineWeight:.65});
+  planetLight.group.scale.setScalar(2.55);
+  main.add(planetLight.group);
+  const lightFrustum=new THREE.Frustum(),lightProjection=new THREE.Matrix4();
+  const lightBounds=new THREE.Sphere(new THREE.Vector3(),4.5);
+  let lightTime=0;
   const trail=createLuminousTrail(scene);
   trail.group.traverse(object=>object.layers.set(1));
   const experienceVisual=createExperienceVisual(scene,()=>{
@@ -418,12 +427,18 @@ export function createCosmos(canvas, options = {}) {
     orbiters.forEach(o=>{const t=o.phase+orbitPhase*.22;o.mesh.position.set(Math.cos(t)*o.radius,Math.sin(t)*o.radius*.49,Math.sin(t)*.13);});
     camera.updateMatrixWorld();
     const moving=!paused&&!reducedMotion;
+    if(moving)lightTime+=dt;
+    main.getWorldPosition(lightBounds.center);
+    lightProjection.multiplyMatrices(camera.projectionMatrix,camera.matrixWorldInverse);
+    lightFrustum.setFromProjectionMatrix(lightProjection);
+    const planetLightVisible=lightFrustum.intersectsSphere(lightBounds)&&atmosphereVisibility>.001;
+    planetLight.update({time:lightTime,alpha:planetLightVisible?atmosphereVisibility*(mobile()?.65:.82):0,camera});
     const trailActive=trail.update({camera,dt,
       visibility:atmosphereVisibility*(1-THREE.MathUtils.smoothstep(orbitPhase,2.60,2.7)),
       night:environment.uNight.value,mobile:mobile(),paused:!moving,pointer:softPointer});
-    const portraitActive=experienceVisual.update({camera,experience:experienceState,time,
+    const portraitActive=experienceVisual.update({camera,experience:experienceState,time,effectTime:lightTime,
       paused:!moving,visibility:atmosphereVisibility,mobile:mobile()});
-    animationActive=trailActive||portraitActive;
+    animationActive=trailActive||portraitActive||(moving&&planetLightVisible);
     compositor.render(scene,camera,{blur:moving?atmosphereBlur:0});
     canvas.dataset.scene=legacyMode?String(progress.toFixed(3)):sceneState.id;
     canvas.dataset.progress=String((legacyMode?progress:sceneState.progress).toFixed(4));
@@ -508,6 +523,6 @@ export function createCosmos(canvas, options = {}) {
     setProgress(value){const next=THREE.MathUtils.clamp(Number.isFinite(value)?value:0,0,frames.length-1);if(!legacyMode||next!==progress){legacyMode=true;progress=next;dirty=true;}},
     setPaused(value){paused=!!value;pointer.set(0,0);softPointer.set(0,0);if(!paused)poseReady=false;dirty=true;canvas.dataset.motion=paused?'paused':'playing';},
     setReducedMotion(value){reducedMotion=!!value;pointer.set(0,0);softPointer.set(0,0);poseReady=false;dirty=true;},
-    dispose(){disposed=true;cancelAnimationFrame(raf);trail.dispose();experienceVisual.dispose();compositor.dispose();removeEventListener('pointermove',onPointer);removeEventListener('resize',resize);document.removeEventListener('pointerleave',onPointerLeave);canvas.removeEventListener('webglcontextlost',onLost);canvas.removeEventListener('webglcontextrestored',onRestored);scene.traverse(o=>{o.geometry?.dispose();if(o.material){(Array.isArray(o.material)?o.material:[o.material]).forEach(m=>m.dispose());}});renderer.dispose();}
+    dispose(){disposed=true;cancelAnimationFrame(raf);trail.dispose();planetLight.dispose();experienceVisual.dispose();compositor.dispose();removeEventListener('pointermove',onPointer);removeEventListener('resize',resize);document.removeEventListener('pointerleave',onPointerLeave);canvas.removeEventListener('webglcontextlost',onLost);canvas.removeEventListener('webglcontextrestored',onRestored);scene.traverse(o=>{o.geometry?.dispose();if(o.material){(Array.isArray(o.material)?o.material:[o.material]).forEach(m=>m.dispose());}});renderer.dispose();}
   };
 }

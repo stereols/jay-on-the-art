@@ -14,6 +14,18 @@ the public site contains this revision.
 
 ## One scene for planets, point and portrait
 
+- `orbital-light.js` supplies the same glow shaders, three rotating torus rings
+  and five orbiting sparks for the palm and primary pink planet. Both instances
+  use one animation clock, which freezes when motion is paused. Orbiting sparks use camera-facing planes with a translucent solid disk inside a soft radial halo instead of hard sphere silhouettes; depth testing still hides particles behind the planet.
+- The planet instance is a child of `main`, centered at its local origin. Its
+  2.55 scale puts the rings outside the 1.66-radius surface; particle positions
+  are normalized onto surrounding spherical paths. The planet itself replaces
+  the small palm light's central dot. Glow billboarding compensates for the
+  parent's rotation without changing the rings' world-space orientation.
+- The planet effect uses layer 0, ordinary depth testing and the planet's blur
+  pass. The palm effect retains layer 1 for a sharp foreground appearance.
+  Existing dense orbital filaments are dimmed to support the new rings.
+
 - `cosmos.js` owns the shared Three scene and render loop. It updates
   `cosmos-trail.js` and `experience-visual.js` with the same camera, viewport,
   motion setting and fullscreen-film visibility.
@@ -141,7 +153,7 @@ quality 92 and alpha quality 100.
 `npm run build` synchronizes the existing wordmarks, builds `cosmos.bundle.js`
 and prepares page images. `data-manual-media` keeps the alpha artwork outside
 the general photograph rewrite pipeline. The current local script revision
-identifier is `20261015-career-fade-fast`.
+identifier is `20261015-planet-light-core`.
 
 The transition into the fullscreen Aelin film waits for the MORAI chapter to
 release. Chapter lighting stays at the ivory setting while the Works scene is
