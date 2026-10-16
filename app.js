@@ -22,6 +22,46 @@ import {createPixelIntro} from './pixel-intro.js';
     reveals.forEach(element => observer.observe(element));
   } else reveals.forEach(element => element.classList.add('in-view'));
 
+  const emailCopy = document.getElementById('email-copy');
+  const emailStatus = document.getElementById('email-copy-status');
+  if (emailCopy && emailStatus) {
+    let emailStatusTimer;
+    let copyingEmail = false;
+    function copyEmailFallback(email) {
+      const focused = document.activeElement;
+      const field = document.createElement('textarea');
+      field.value = email;
+      field.readOnly = true;
+      field.tabIndex = -1;
+      field.style.cssText = 'position:fixed;top:0;left:0;opacity:0;pointer-events:none';
+      document.body.append(field);
+      try {
+        field.select();
+        field.setSelectionRange(0, email.length);
+        if (!document.execCommand('copy')) throw new Error('Copy unavailable');
+      } finally {
+        field.remove();
+        focused?.focus({preventScroll:true});
+      }
+    }
+    emailCopy.addEventListener('click', async () => {
+      if (copyingEmail) return;
+      copyingEmail = true;
+      clearTimeout(emailStatusTimer);
+      const email = emailCopy.dataset.email;
+      try {
+        if (navigator.clipboard?.writeText) {
+          try { await navigator.clipboard.writeText(email); }
+          catch { copyEmailFallback(email); }
+        } else copyEmailFallback(email);
+        emailStatus.textContent = '이메일 주소가 복사되었습니다.';
+        emailStatusTimer = setTimeout(() => { emailStatus.textContent = ''; }, 5000);
+      } catch {
+        emailStatus.textContent = '복사하지 못했습니다. ' + email + '을 직접 복사해 주세요.';
+      } finally { copyingEmail = false; }
+    });
+  }
+
   const menuButton = document.getElementById('menu-toggle');
   const menu = document.getElementById('mobile-nav');
   function closeMenu(returnFocus = false) {

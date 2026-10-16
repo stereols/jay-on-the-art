@@ -144,3 +144,14 @@
 #motion-toggle,.dark-chapter #motion-toggle{background:transparent;border:0;border-radius:0;box-shadow:none;backdrop-filter:none;-webkit-backdrop-filter:none}
 
 #map-toggle,.dark-chapter #map-toggle{background:transparent;border:0;border-radius:0;box-shadow:none;backdrop-filter:none;-webkit-backdrop-filter:none}
+
+/* Contact actions share the existing closing links' typography and spacing. */
+.closing-links{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:clamp(24px,3vw,55px)}
+.closing-links .closing-email{appearance:none;display:flex;align-items:center;justify-content:flex-start;gap:20px;width:100%;border:0;border-radius:0;background:transparent;box-shadow:none;padding:22px 0;color:inherit;font-family:inherit;font-size:28px;font-weight:inherit;line-height:inherit;letter-spacing:-.04em;text-align:left;cursor:pointer;transition:color .2s}
+.closing-email .link-label{text-decoration:underline;text-decoration-color:transparent;text-decoration-thickness:1px;text-underline-offset:.25em;transition:text-decoration-color .2s}
+.closing-links .closing-email:is(:hover,:focus-visible){color:var(--primary)}
+.closing-email:is(:hover,:focus-visible) .link-label{text-decoration-color:currentColor}
+.closing-email:focus-visible{outline:2px solid currentColor;outline-offset:6px}
+.closing-links .closing-copy-icon{width:24px;height:24px;flex:none;stroke:currentColor;fill:none;stroke-width:1.4;letter-spacing:0}
+.email-copy-status{min-height:1.8em;margin-top:14px;font-size:14px;line-height:1.8;color:var(--muted);overflow-wrap:anywhere}
+@media(max-width:900px){.closing-links{grid-template-columns:1fr;gap:10px}.closing-links .closing-email{padding:19px 0}}
