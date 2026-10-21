@@ -65,7 +65,7 @@
 .aelin-showcase.is-animated .aelin-detail.is-active{animation:aelin-detail-arrive .35s ease both}
 @keyframes aelin-detail-arrive{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
 .aelin-showcase.is-animated .aelin-production{grid-column:1/-1;grid-row:2;margin-top:18px;padding-top:21px;grid-template-columns:minmax(300px,.78fr) minmax(0,1.22fr);gap:3vw}
-.aelin-showcase.is-animated .aelin-production p{font-size:12px;line-height:1.75;max-width:66ch}
+.aelin-showcase.is-animated .aelin-production p{font-size:14px;line-height:1.8;max-width:66ch}
 
 @media(min-width:1000px) and (max-height:760px){
  .aelin-showcase.is-animated .aelin-pin{padding-top:88px;padding-bottom:90px}
