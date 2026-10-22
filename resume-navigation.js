@@ -27,6 +27,12 @@ if(isResume){
   document.body.append(dialog);
   const frame=dialog.querySelector('iframe'),closeButton=dialog.querySelector('button');
   let opener=null;
+  function open(link=null){
+    opener=link;
+    if(!frame.hasAttribute('src'))frame.src='resume.html?overlay=1';
+    if(!dialog.open)dialog.showModal();
+    document.body.classList.add('reading-resume');closeButton.focus();
+  }
   function close(restoreFocus=true){
     dialog.close();document.body.classList.remove('reading-resume');
     if(restoreFocus)opener?.focus({preventScroll:true});
@@ -38,9 +44,7 @@ if(isResume){
   document.addEventListener('click',event=>{
     const link=event.target.closest('a[href="resume.html"]');
     if(!link||event.button!==0||event.metaKey||event.ctrlKey||event.shiftKey||event.altKey)return;
-    event.preventDefault();opener=link;
-    if(!frame.hasAttribute('src'))frame.src='resume.html?overlay=1';
-    dialog.showModal();document.body.classList.add('reading-resume');closeButton.focus();
+    event.preventDefault();open(link);
   });
   window.addEventListener('message',event=>{
     if(event.origin!==location.origin||event.source!==frame.contentWindow||event.data?.type!=='jay-resume-navigate')return;
@@ -48,4 +52,5 @@ if(isResume){
     if(!['top','yigo','project-overview'].includes(target))return;
     close(false);window.dispatchEvent(new CustomEvent('resume-navigate',{detail:target}));
   });
+  if(new URLSearchParams(location.search).get('resume')==='popup')open();
 }
