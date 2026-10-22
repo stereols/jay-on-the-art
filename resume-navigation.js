@@ -27,22 +27,26 @@ if(isResume){
   document.body.append(dialog);
   const frame=dialog.querySelector('iframe'),closeButton=dialog.querySelector('button');
   let opener=null;
+  let returnHash=location.hash==='#resume'?'':location.hash;
   function open(link=null){
+    if(!dialog.open&&location.hash!=='#resume')returnHash=location.hash;
     opener=link;
+    if(location.hash!=='#resume')history.replaceState(history.state,'',location.pathname+location.search+'#resume');
     if(!frame.hasAttribute('src'))frame.src='resume.html?overlay=1';
     if(!dialog.open)dialog.showModal();
     document.body.classList.add('reading-resume');closeButton.focus();
   }
   function close(restoreFocus=true){
     dialog.close();document.body.classList.remove('reading-resume');
+    if(location.hash==='#resume')history.replaceState(history.state,'',location.pathname+location.search+returnHash);
     if(restoreFocus)opener?.focus({preventScroll:true});
     else{const main=document.querySelector('main');main.tabIndex=-1;main.focus({preventScroll:true});}
   }
   closeButton.addEventListener('click',()=>close());
-  dialog.addEventListener('cancel',()=>{document.body.classList.remove('reading-resume');});
+  dialog.addEventListener('cancel',event=>{event.preventDefault();close();});
   dialog.addEventListener('click',event=>{if(event.target===dialog){const r=dialog.getBoundingClientRect();if(event.clientX<r.left||event.clientX>r.right||event.clientY<r.top||event.clientY>r.bottom)close();}});
   document.addEventListener('click',event=>{
-    const link=event.target.closest('a[href="resume.html"]');
+    const link=event.target.closest('a[href="#resume"]');
     if(!link||event.button!==0||event.metaKey||event.ctrlKey||event.shiftKey||event.altKey)return;
     event.preventDefault();open(link);
   });
@@ -52,5 +56,11 @@ if(isResume){
     if(!['top','yigo','project-overview'].includes(target))return;
     close(false);window.dispatchEvent(new CustomEvent('resume-navigate',{detail:target}));
   });
-  if(new URLSearchParams(location.search).get('resume')==='popup')open();
+  function syncResumeHash(){
+    if(location.hash==='#resume'){if(!dialog.open)open();}
+    else if(dialog.open)close();
+  }
+  window.addEventListener('hashchange',syncResumeHash);
+  window.addEventListener('popstate',syncResumeHash);
+  syncResumeHash();
 }
