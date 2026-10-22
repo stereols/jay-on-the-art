@@ -293,5 +293,5 @@ import {createPixelIntro} from './pixel-intro.js';
   const params=new URLSearchParams(location.search);
   if(params.get('view')==='static'){paused=true;setLayout();root.dataset.renderMode='static';motionButton.hidden=true;return;}
   const pixelIntro=createPixelIntro({root,reduced});
-  import('./cosmos.bundle.js?v=20261015-planet-light-core').then(module=>{cosmos=module.createCosmos(document.getElementById('cosmos-canvas'),{paused,reducedMotion:reduced.matches});cosmos.setScene(lastScene);cosmos.setAtmosphere({visibility:atmosphereVisibility,experience:flourish,blur:motionEnabled()?(lastScene.blur||0):0});pixelIntro?.ready(cosmos);}).catch(error=>{console.warn('Living Cosmos uses the static artwork fallback.',error);root.dataset.renderMode='fallback';pixelIntro?.cancel();});
+  import('./cosmos.bundle.js?v=471e99db7792').then(module=>{cosmos=module.createCosmos(document.getElementById('cosmos-canvas'),{paused,reducedMotion:reduced.matches});cosmos.setScene(lastScene);cosmos.setAtmosphere({visibility:atmosphereVisibility,experience:flourish,blur:motionEnabled()?(lastScene.blur||0):0});pixelIntro?.ready(cosmos);}).catch(error=>{console.warn('Living Cosmos uses the static artwork fallback.',error);root.dataset.renderMode='fallback';pixelIntro?.cancel();});
 })();

@@ -411,8 +411,8 @@ export function createCosmos(canvas, options = {}) {
     }
     const reading=!legacyMode&&((sceneState.id==='works'&&sceneState.worldPhase==='cards')||['career','about','links'].includes(sceneState.id));
     const amplitude=paused||reducedMotion?0:sceneState.pose&&!legacyMode?sceneState.pose.pointerStrength:reading?.22:1;
-    camera.position.x+=softPointer.x*.7*amplitude;camera.position.y-=softPointer.y*.5*amplitude;
-    target.x-=softPointer.x*.14*amplitude;target.y+=softPointer.y*.12*amplitude;
+    camera.position.x+=softPointer.x*.875*amplitude;camera.position.y-=softPointer.y*.625*amplitude;
+    target.x-=softPointer.x*.175*amplitude;target.y+=softPointer.y*.15*amplitude;
     camera.lookAt(target);
     universe.position.set(0,0,0);universe.rotation.set(0,0,0);
   }
